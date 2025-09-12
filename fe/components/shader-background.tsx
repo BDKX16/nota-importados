@@ -12,8 +12,24 @@ interface ShaderBackgroundProps {
 export default function ShaderBackground({ children }: ShaderBackgroundProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isActive, setIsActive] = useState(false);
+  const [webGLSupported, setWebGLSupported] = useState(true);
+
+  // Función para detectar soporte de WebGL
+  const checkWebGLSupport = () => {
+    try {
+      const canvas = document.createElement("canvas");
+      const gl =
+        canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+      return !!gl;
+    } catch (e) {
+      return false;
+    }
+  };
 
   useEffect(() => {
+    // Verificar soporte de WebGL al montar el componente
+    setWebGLSupported(checkWebGLSupport());
+
     const handleMouseEnter = () => setIsActive(true);
     const handleMouseLeave = () => setIsActive(false);
 
@@ -34,7 +50,9 @@ export default function ShaderBackground({ children }: ShaderBackgroundProps) {
   return (
     <div
       ref={containerRef}
-      className="min-h-screen bg-background relative overflow-hidden"
+      className={`min-h-screen bg-background relative overflow-hidden ${
+        !webGLSupported ? "landing-mesh-bg" : ""
+      }`}
     >
       {/* SVG Filters */}
       <svg className="absolute inset-0 w-0 h-0">
@@ -76,28 +94,40 @@ export default function ShaderBackground({ children }: ShaderBackgroundProps) {
         </defs>
       </svg>
 
-      {/* Background Shaders */}
-      <MeshGradient
-        className="absolute inset-0 w-full h-full"
-        colors={[
-          "hsl(45, 15%, 97%)", // --background: Crema cálido
-          "hsl(25, 40%, 35%)", // --primary: Marrón caoba elegante
-          "hsl(50, 30%, 75%)", // --secondary: Dorado champagne
-          "hsl(35, 40%, 55%)", // --accent: Bronce elegante
-          "hsl(30, 30%, 20%)", // --foreground: Marrón chocolate profundo
-        ]}
-        speed={0.3}
-      />
-      <MeshGradient
-        className="absolute inset-0 w-full h-full opacity-60"
-        colors={[
-          "hsl(40, 15%, 96%)", // --card: Beige cremoso
-          "hsl(40, 10%, 92%)", // --muted: Beige suave
-          "hsl(35, 40%, 55%)", // --accent: Bronce elegante
-          "hsl(50, 30%, 75%)", // --secondary: Dorado champagne
-        ]}
-        speed={0.2}
-      />
+      {/* Renderizado condicional: Shaders si WebGL está disponible, fallback CSS si no */}
+      {webGLSupported ? (
+        <>
+          {/* Background Shaders */}
+          <MeshGradient
+            className="absolute inset-0 w-full h-full"
+            colors={[
+              "hsl(45, 15%, 97%)", // --background: Crema cálido
+              "hsl(25, 40%, 35%)", // --primary: Marrón caoba elegante
+              "hsl(50, 30%, 75%)", // --secondary: Dorado champagne
+              "hsl(35, 40%, 55%)", // --accent: Bronce elegante
+              "hsl(30, 30%, 20%)", // --foreground: Marrón chocolate profundo
+            ]}
+            speed={0.3}
+          />
+          <MeshGradient
+            className="absolute inset-0 w-full h-full opacity-60"
+            colors={[
+              "hsl(40, 15%, 96%)", // --card: Beige cremoso
+              "hsl(40, 10%, 92%)", // --muted: Beige suave
+              "hsl(35, 40%, 55%)", // --accent: Bronce elegante
+              "hsl(50, 30%, 75%)", // --secondary: Dorado champagne
+            ]}
+            speed={0.2}
+          />
+        </>
+      ) : (
+        // Fallback: gradiente CSS con mensaje opcional
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-center text-muted-foreground text-sm opacity-50">
+            {/* Mensaje opcional para debug */}
+          </div>
+        </div>
+      )}
 
       {children}
     </div>

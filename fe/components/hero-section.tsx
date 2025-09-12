@@ -17,7 +17,7 @@ export function HeroSection() {
                   Exclusivos
                 </span>
               </h1>
-              <p className="text-xl text-white font-bold max-w-md text-pretty font-light leading-relaxed">
+              <p className="text-xl text-white font-light max-w-md text-pretty leading-relaxed">
                 Descubre fragancias únicas de las mejores casas de perfumería
                 del mundo.
               </p>
@@ -31,13 +31,13 @@ export function HeroSection() {
               >
                 <Link href="/productos">
                   Explorar Colección
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  <ArrowRight className="ml-2 h-5 w-5 mt-1" />
                 </Link>
               </Button>
               <Button
                 variant="outline"
                 size="lg"
-                className="text-lg px-8 py-6 bg-transparent border-2 border-white text-white hover:bg-secondary "
+                className="text-lg px-8 py-6 bg-transparent border-2 border-white text-white hover:bg-secondary rounded-full"
               >
                 Ver Ofertas
               </Button>

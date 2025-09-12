@@ -1,12 +1,12 @@
-import { Header } from "@/components/header";
+import { HeaderSecondary } from "@/components/header-secondary";
 import { ProductGrid } from "@/components/product-grid";
 import { ProductFilters } from "@/components/product-filters";
 
 export default function ProductsPage() {
   return (
-    <div className="min-h-screen">
-      <Header />
-      <main className="container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-white">
+      <HeaderSecondary />
+      <main className="container mx-auto px-4 py-8 bg-white">
         <div className="mb-8">
           <h1 className="text-3xl md:text-4xl font-bold mb-4 text-balance">
             Nuestra Colección
@@ -30,7 +30,7 @@ export default function ProductsPage() {
               <span className="text-sm text-muted-foreground">
                 Mostrando 6 productos
               </span>
-              <select className="text-sm border rounded-md px-3 py-1 bg-white">
+              <select className="text-sm border rounded-md px-3 py-1 bg-background">
                 <option>Ordenar por precio</option>
                 <option>Precio: menor a mayor</option>
                 <option>Precio: mayor a menor</option>
