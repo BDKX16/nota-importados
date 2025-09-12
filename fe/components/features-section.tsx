@@ -15,38 +15,43 @@ export function FeaturesSection() {
       description: "Las mejores casas de perfumería mundial",
       image: "/luxury-perfume-brands-collection.jpg",
     },
-  ]
+  ];
 
   return (
-    <section className="py-32 bg-gradient-to-b from-background via-muted/20 to-background">
+    <section className="py-24 bg-gradient-to-b from-background via-muted/20 to-background">
       <div className="container mx-auto px-4">
         <div className="text-center mb-20">
-          <h2 className="text-4xl md:text-5xl font-serif font-light mb-6 text-balance tracking-tight">
+          <h2 className="text-3xl md:text-4xl font-sans font-semibold mb-4 text-balance tracking-tight uppercase">
             ¿Por qué elegirnos?
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-light leading-relaxed">
-            Experiencia de lujo en cada detalle, desde la selección hasta la entrega
+          <p className="text-base text-muted-foreground max-w-2xl mx-auto font-medium leading-relaxed">
+            Calidad y confianza en cada transacción, respaldado por años de
+            experiencia
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-12">
+        <div className="grid md:grid-cols-3 gap-8 ">
           {features.map((feature, index) => (
-            <div key={index} className="text-center space-y-8 group">
-              <div className="aspect-video rounded-2xl overflow-hidden bg-card mx-auto max-w-sm shadow-xl shadow-primary/5 group-hover:shadow-2xl group-hover:shadow-primary/10 transition-all duration-500">
+            <div key={index} className="text-center space-y-6 group">
+              <div className="aspect-video rounded-lg overflow-hidden bg-card mx-auto max-w-sm shadow-lg shadow-foreground/10 group-hover:shadow-xl group-hover:shadow-foreground/15 transition-all duration-300">
                 <img
                   src={feature.image || "/placeholder.svg"}
                   alt={feature.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300"
                 />
               </div>
-              <div className="space-y-3">
-                <h3 className="text-2xl font-serif font-light text-balance tracking-wide">{feature.title}</h3>
-                <p className="text-muted-foreground text-pretty font-light leading-relaxed">{feature.description}</p>
+              <div className="space-y-2">
+                <h3 className="text-xl font-sans font-bold text-balance tracking-wide uppercase text-foreground">
+                  {feature.title}
+                </h3>
+                <p className="text-muted-foreground text-pretty font-normal leading-relaxed text-sm">
+                  {feature.description}
+                </p>
               </div>
             </div>
           ))}
         </div>
       </div>
     </section>
-  )
+  );
 }
