@@ -21,14 +21,14 @@ app.use(
 app.use(cors());
 
 //express
-app.use("/api", require("./routes/users.js"));
-app.use("/api", require("./routes/products.js"));
-app.use("/api", require("./routes/payments.js"));
-app.use("/api", require("./routes/subscriptions.js"));
+app.use("/api/users", require("./routes/users.js"));
+app.use("/api/products", require("./routes/products.js"));
+app.use("/api/categories", require("./routes/categories.js"));
+app.use("/api/brands", require("./routes/brands.js"));
+app.use("/api/payments", require("./routes/payments.js"));
 app.use("/api/landing", require("./routes/landing-config.js"));
-app.use("/api/admin", require("./routes/recipes.js"));
-app.use("/api/admin", require("./routes/admin-payments.js"));
-app.use("/api/admin", require("./routes/admin-products.js"));
+app.use("/api/admin/payments", require("./routes/admin-payments.js"));
+app.use("/api/admin/products", require("./routes/admin-products.js"));
 app.use("/api/admin", require("./routes/configuration.js"));
 app.use("/api/admin/emails", require("./routes/admin-emails.js"));
 

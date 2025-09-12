@@ -24,7 +24,7 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
-            cd /srv/luna-brew-house
+            cd /srv/nota-importados
 
             # Detener contenedores actuales
             docker compose down
