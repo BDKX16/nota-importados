@@ -32,7 +32,7 @@ jobs:
             # Configurar Git
             git config --global user.email "xaveeg@gmail.com"
             git config --global user.name "BDKX16"
-            git remote set-url origin https://BDKX16:${{ secrets.TOKEN }}@github.com/BDKX16/luna-brew-house.git
+            git remote set-url origin https://BDKX16:${{ secrets.TOKEN }}@github.com/BDKX16/nota-importados.git
 
             # Actualizar código
             git pull origin main
