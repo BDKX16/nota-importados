@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+  backend:
+    container_name: nodesv-luna-brew-house
+    restart: always
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    env_file:
+      - ./api/.env
+    environment:
+      - TZ=America/Argentina/Buenos_Aires
+      - NODE_ENV=production
+    ports:
+      - "3019:3001"
+    networks:
+      - shared-network
+
+  nextjs:
+    container_name: frontend-nextjs
+    build:
+      context: ./fe
+      dockerfile: Dockerfile
+    restart: always
+    env_file:
+      - ./fe/.env
+    ports:
+      - "3018:3000" # Exponer el puerto 3008 al host
+    environment:
+      - NODE_ENV=production
+      # Importante para que Next.js escuche en todas las interfaces
+      - HOSTNAME=0.0.0.0
+networks:
+  shared-network:
+    external: true
+    name: shared-network

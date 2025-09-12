@@ -1,0 +1,58 @@
+import type { Product } from "./store"
+
+export const products: Product[] = [
+  {
+    id: "1",
+    name: "Chanel No. 5",
+    price: 150,
+    image: "/elegant-perfume-bottle-chanel.jpg",
+    description: "El perfume más icónico del mundo, una fragancia atemporal y elegante.",
+    brand: "Chanel",
+    size: "100ml",
+  },
+  {
+    id: "2",
+    name: "Dior Sauvage",
+    price: 120,
+    image: "/luxury-perfume-bottle-dior.jpg",
+    description: "Una fragancia masculina fresca y magnética con notas de bergamota.",
+    brand: "Dior",
+    size: "100ml",
+  },
+  {
+    id: "3",
+    name: "Tom Ford Black Orchid",
+    price: 180,
+    image: "/premium-perfume-bottle-tom-ford.jpg",
+    description: "Una fragancia lujosa y seductora con notas florales oscuras.",
+    brand: "Tom Ford",
+    size: "50ml",
+  },
+  {
+    id: "4",
+    name: "Creed Aventus",
+    price: 300,
+    image: "/creed-aventus-premium-perfume-bottle.jpg",
+    description: "Una fragancia premium con notas de piña, abedul y almizcle.",
+    brand: "Creed",
+    size: "120ml",
+  },
+  {
+    id: "5",
+    name: "Yves Saint Laurent Black Opium",
+    price: 110,
+    image: "/ysl-black-opium-perfume.jpg",
+    description: "Una fragancia adictiva con café negro, vainilla y flor de naranjo.",
+    brand: "YSL",
+    size: "90ml",
+  },
+  {
+    id: "6",
+    name: "Maison Margiela Replica",
+    price: 140,
+    image: "/maison-margiela-replica-perfume.jpg",
+    description: "By the Fireplace - Una fragancia que evoca la calidez del hogar.",
+    brand: "Maison Margiela",
+    size: "100ml",
+  },
+]
