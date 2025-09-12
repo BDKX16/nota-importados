@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, Lock, User } from "lucide-react";
 import Image from "next/image";
 
 export default function LoginPage() {
@@ -44,7 +44,7 @@ export default function LoginPage() {
       const normalizedEmail = email.toLowerCase().trim();
       const result = await login(normalizedEmail, password);
       console.log(result);
-      if (result) {
+      if (result.success) {
         const redirectPath = searchParams?.get("redirect") || "/";
         router.push(redirectPath);
       } else {
@@ -67,31 +67,42 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-amber-50">
-      <div className="max-w-md w-full p-4">
-        <div className="flex justify-center mb-6">
-          <div className="relative w-16 h-16">
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
+      {/* Fondo con gradiente de lujo */}
+      <div className="absolute inset-0 bg-gradient-to-br from-luxury-brown via-luxury-brown-light to-luxury-brown-dark"></div>
+
+      {/* Patrón de malla sutil */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent bg-repeat"></div>
+      </div>
+
+      <div className="relative z-10 max-w-md w-full p-6">
+        {/* Logo */}
+        <div className="flex justify-center mb-8">
+          <div className="relative w-20 h-20">
             <Image
-              src="/images/luna-logo.png"
-              alt="Luna Brew House"
+              src="/nota-logo-white.jpg"
+              alt="Nota Perfumes"
               fill
               className="object-contain"
             />
           </div>
         </div>
 
-        <Card>
-          <CardHeader className="space-y-1 text-center">
-            <CardTitle className="text-2xl font-bold">Iniciar sesión</CardTitle>
-            <CardDescription>
-              Accede a tu cuenta para comprar y gestionar tus suscripciones
+        <Card className="backdrop-blur-md bg-white/95 border-0 shadow-2xl">
+          <CardHeader className="space-y-2 text-center pb-6">
+            <CardTitle className="text-3xl font-serif text-luxury-brown-dark">
+              Bienvenido
+            </CardTitle>
+            <CardDescription className="text-luxury-brown/70">
+              Accede a tu cuenta para descubrir fragancias exclusivas
             </CardDescription>
           </CardHeader>
 
           <CardContent>
             {showRegistrationSuccess && (
-              <Alert className="mb-4 bg-green-50 border-green-200 text-green-800">
-                <CheckCircle2 className="h-4 w-4 text-green-600" />
+              <Alert className="mb-6 bg-emerald-50 border-emerald-200 text-emerald-800">
+                <CheckCircle2 className="h-4 w-4 text-emerald-600" />
                 <AlertDescription>
                   ¡Registro exitoso! Ya puedes iniciar sesión con tus
                   credenciales.
@@ -99,7 +110,7 @@ export default function LoginPage() {
               </Alert>
             )}
 
-            <form onSubmit={handleLogin} className="space-y-4">
+            <form onSubmit={handleLogin} className="space-y-6">
               {error && (
                 <Alert className="bg-red-50 border-red-200">
                   <AlertDescription className="text-red-800">
@@ -108,7 +119,7 @@ export default function LoginPage() {
                       <div className="mt-2">
                         <Link
                           href="/auth/registro"
-                          className="text-amber-600 hover:text-amber-800 underline font-medium"
+                          className="text-luxury-brown hover:text-luxury-brown-dark underline font-medium"
                         >
                           Crear cuenta nueva
                         </Link>
@@ -119,72 +130,93 @@ export default function LoginPage() {
               )}
 
               <div className="space-y-2">
-                <label htmlFor="email" className="text-sm font-medium">
-                  Email
+                <label
+                  htmlFor="email"
+                  className="text-sm font-medium text-luxury-brown-dark"
+                >
+                  Correo Electrónico
                 </label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="tu@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  required
-                  autoComplete="email"
-                />
+                <div className="relative">
+                  <User className="absolute left-3 top-3 h-4 w-4 text-luxury-brown/50" />
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="tu@email.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    required
+                    autoComplete="email"
+                    className="pl-10 border-luxury-brown/20 focus:border-luxury-brown focus:ring-luxury-brown/20 bg-white/80"
+                  />
+                </div>
               </div>
 
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <label htmlFor="password" className="text-sm font-medium">
+                  <label
+                    htmlFor="password"
+                    className="text-sm font-medium text-luxury-brown-dark"
+                  >
                     Contraseña
                   </label>
                   <Link
                     href="/auth/recuperar-password"
-                    className="text-xs text-amber-600 hover:text-amber-800"
+                    className="text-xs text-luxury-brown hover:text-luxury-brown-dark transition-colors"
                     tabIndex={-1}
                   >
                     ¿Olvidaste tu contraseña?
                   </Link>
                 </div>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  required
-                  autoComplete="current-password"
-                />
+                <div className="relative">
+                  <Lock className="absolute left-3 top-3 h-4 w-4 text-luxury-brown/50" />
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    required
+                    autoComplete="current-password"
+                    className="pl-10 border-luxury-brown/20 focus:border-luxury-brown focus:ring-luxury-brown/20 bg-white/80"
+                  />
+                </div>
               </div>
 
               <Button
                 type="submit"
-                className="w-full bg-amber-600 hover:bg-amber-700"
+                className="w-full bg-gradient-to-r from-luxury-brown to-luxury-brown-dark hover:from-luxury-brown-dark hover:to-luxury-brown text-white font-medium py-3 transition-all duration-300 shadow-lg hover:shadow-xl"
                 disabled={isLoading || !email || !password}
               >
-                {isLoading ? "Iniciando sesión..." : "Iniciar sesión"}
+                {isLoading ? (
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <span>Iniciando sesión...</span>
+                  </div>
+                ) : (
+                  "Iniciar Sesión"
+                )}
               </Button>
             </form>
           </CardContent>
 
-          <CardFooter className="flex flex-col space-y-4">
-            <div className="text-sm text-center text-gray-500">
+          <CardFooter className="flex flex-col space-y-4 pt-6">
+            <div className="text-sm text-center text-luxury-brown/70">
               ¿No tienes una cuenta?{" "}
               <Link
                 href="/auth/registro"
-                className="text-amber-600 hover:text-amber-800"
+                className="text-luxury-brown hover:text-luxury-brown-dark font-medium transition-colors"
               >
-                Regístrate
+                Regístrate aquí
               </Link>
             </div>
 
             <Link
               href="/"
-              className="text-amber-700 hover:text-amber-900 text-sm text-center"
+              className="text-luxury-brown/60 hover:text-luxury-brown text-sm text-center transition-colors"
             >
-              Volver a la página principal
+              ← Volver a la página principal
             </Link>
           </CardFooter>
         </Card>

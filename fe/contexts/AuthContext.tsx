@@ -6,6 +6,7 @@ import { login as loginService } from "@/services/public";
 import { useDispatch } from "react-redux";
 import { setUser, clearUser } from "@/redux/slices/userSlice";
 import useFetchAndLoad from "@/hooks/useFetchAndLoad";
+import { LoadingScreen } from "@/components/ui/loading-screen";
 
 interface AuthContextType {
   user: any | null;
@@ -30,6 +31,10 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  return <AuthProviderInner>{children}</AuthProviderInner>;
+};
+
+const AuthProviderInner = ({ children }: { children: React.ReactNode }) => {
   const [user, setUserState] = useState<any | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
@@ -154,7 +159,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         updateUser,
       }}
     >
-      {isLoading ? <div>Cargando...</div> : children}
+      {isLoading ? (
+        <LoadingScreen message="Verificando autenticación..." />
+      ) : (
+        children
+      )}
     </AuthContext.Provider>
   );
 };

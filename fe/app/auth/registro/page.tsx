@@ -16,6 +16,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAuth } from "@/contexts/AuthContext";
+import { User, Mail, Phone, MapPin, Lock } from "lucide-react";
 import Image from "next/image";
 import useFetchAndLoad from "@/hooks/useFetchAndLoad";
 import { register } from "@/services/public";
@@ -260,157 +261,209 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-amber-50">
-      <div className="max-w-md w-full p-4">
-        <div className="flex justify-center mb-6">
-          <div className="relative w-16 h-16">
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
+      {/* Fondo con gradiente de lujo */}
+      <div className="absolute inset-0 bg-gradient-to-br from-luxury-brown via-luxury-brown-light to-luxury-brown-dark"></div>
+
+      {/* Patrón de malla sutil */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent bg-repeat"></div>
+      </div>
+
+      <div className="relative z-10 max-w-md w-full p-6">
+        {/* Logo */}
+        <div className="flex justify-center mb-8">
+          <div className="relative w-20 h-20">
             <Image
-              src="/images/luna-logo.png"
-              alt="Luna Brew House"
+              src="/nota-logo-white.jpg"
+              alt="Nota Perfumes"
               fill
               className="object-contain"
             />
           </div>
         </div>
 
-        <Card>
-          <CardHeader className="space-y-1 text-center">
-            <CardTitle className="text-2xl font-bold">Crear cuenta</CardTitle>
-            <CardDescription>
-              Regístrate para comprar y disfrutar de nuestras cervezas
-              artesanales
+        <Card className="backdrop-blur-md bg-white/95 border-0 shadow-2xl">
+          <CardHeader className="space-y-2 text-center pb-6">
+            <CardTitle className="text-3xl font-serif text-luxury-brown-dark">
+              Únete a nosotros
+            </CardTitle>
+            <CardDescription className="text-luxury-brown/70">
+              Crea tu cuenta y descubre fragancias únicas
             </CardDescription>
           </CardHeader>
 
           <CardContent>
             <form onSubmit={handleRegister} className="space-y-4">
               {error && (
-                <div className="p-3 rounded-md bg-red-50 text-red-600 text-sm">
-                  {error}
-                </div>
+                <Alert className="bg-red-50 border-red-200">
+                  <AlertDescription className="text-red-800">
+                    {error}
+                  </AlertDescription>
+                </Alert>
               )}
 
               <div className="space-y-2">
-                <label htmlFor="name" className="text-sm font-medium">
+                <label
+                  htmlFor="name"
+                  className="text-sm font-medium text-luxury-brown-dark"
+                >
                   Nombre completo
                 </label>
-                <Input
-                  id="name"
-                  placeholder="Tu nombre"
-                  value={name}
-                  onChange={(e) => {
-                    setName(e.target.value);
-                    clearFieldError("name");
-                  }}
-                  onBlur={() => validateFieldOnBlur("name", name)}
-                  onKeyPress={handleKeyPress}
-                  required
-                  className={fieldErrors.name ? "border-red-500" : ""}
-                />
+                <div className="relative">
+                  <User className="absolute left-3 top-3 h-4 w-4 text-luxury-brown/50" />
+                  <Input
+                    id="name"
+                    placeholder="Tu nombre"
+                    value={name}
+                    onChange={(e) => {
+                      setName(e.target.value);
+                      clearFieldError("name");
+                    }}
+                    onBlur={() => validateFieldOnBlur("name", name)}
+                    onKeyPress={handleKeyPress}
+                    required
+                    className={`pl-10 border-luxury-brown/20 focus:border-luxury-brown focus:ring-luxury-brown/20 bg-white/80 ${
+                      fieldErrors.name ? "border-red-500" : ""
+                    }`}
+                  />
+                </div>
                 {fieldErrors.name && (
                   <p className="text-xs text-red-500">{fieldErrors.name}</p>
                 )}
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="email" className="text-sm font-medium">
-                  Email
+                <label
+                  htmlFor="email"
+                  className="text-sm font-medium text-luxury-brown-dark"
+                >
+                  Correo Electrónico
                 </label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="tu@email.com"
-                  value={email}
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                    clearFieldError("email");
-                  }}
-                  onBlur={() => validateFieldOnBlur("email", email)}
-                  onKeyPress={handleKeyPress}
-                  required
-                  className={fieldErrors.email ? "border-red-500" : ""}
-                />
+                <div className="relative">
+                  <Mail className="absolute left-3 top-3 h-4 w-4 text-luxury-brown/50" />
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="tu@email.com"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      clearFieldError("email");
+                    }}
+                    onBlur={() => validateFieldOnBlur("email", email)}
+                    onKeyPress={handleKeyPress}
+                    required
+                    className={`pl-10 border-luxury-brown/20 focus:border-luxury-brown focus:ring-luxury-brown/20 bg-white/80 ${
+                      fieldErrors.email ? "border-red-500" : ""
+                    }`}
+                  />
+                </div>
                 {fieldErrors.email && (
                   <p className="text-xs text-red-500">{fieldErrors.email}</p>
                 )}
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="phone" className="text-sm font-medium">
+                <label
+                  htmlFor="phone"
+                  className="text-sm font-medium text-luxury-brown-dark"
+                >
                   Teléfono
                 </label>
-                <Input
-                  id="phone"
-                  type="tel"
-                  placeholder="Ej: 11 1234-5678"
-                  value={phone}
-                  onChange={(e) => {
-                    setPhone(e.target.value);
-                    clearFieldError("phone");
-                  }}
-                  onBlur={() => validateFieldOnBlur("phone", phone)}
-                  onKeyPress={handleKeyPress}
-                  required
-                  className={fieldErrors.phone ? "border-red-500" : ""}
-                />
+                <div className="relative">
+                  <Phone className="absolute left-3 top-3 h-4 w-4 text-luxury-brown/50" />
+                  <Input
+                    id="phone"
+                    type="tel"
+                    placeholder="Ej: 11 1234-5678"
+                    value={phone}
+                    onChange={(e) => {
+                      setPhone(e.target.value);
+                      clearFieldError("phone");
+                    }}
+                    onBlur={() => validateFieldOnBlur("phone", phone)}
+                    onKeyPress={handleKeyPress}
+                    required
+                    className={`pl-10 border-luxury-brown/20 focus:border-luxury-brown focus:ring-luxury-brown/20 bg-white/80 ${
+                      fieldErrors.phone ? "border-red-500" : ""
+                    }`}
+                  />
+                </div>
                 {fieldErrors.phone ? (
                   <p className="text-xs text-red-500">{fieldErrors.phone}</p>
                 ) : (
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-luxury-brown/60">
                     Necesario para coordinar las entregas
                   </p>
                 )}
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="address" className="text-sm font-medium">
+                <label
+                  htmlFor="address"
+                  className="text-sm font-medium text-luxury-brown-dark"
+                >
                   Dirección de entrega
                 </label>
-                <Input
-                  id="address"
-                  type="text"
-                  placeholder="Calle, número, localidad"
-                  value={address}
-                  onChange={(e) => {
-                    setAddress(e.target.value);
-                    clearFieldError("address");
-                  }}
-                  onBlur={() => validateFieldOnBlur("address", address)}
-                  onKeyPress={handleKeyPress}
-                  required
-                  className={fieldErrors.address ? "border-red-500" : ""}
-                />
+                <div className="relative">
+                  <MapPin className="absolute left-3 top-3 h-4 w-4 text-luxury-brown/50" />
+                  <Input
+                    id="address"
+                    type="text"
+                    placeholder="Calle, número, localidad"
+                    value={address}
+                    onChange={(e) => {
+                      setAddress(e.target.value);
+                      clearFieldError("address");
+                    }}
+                    onBlur={() => validateFieldOnBlur("address", address)}
+                    onKeyPress={handleKeyPress}
+                    required
+                    className={`pl-10 border-luxury-brown/20 focus:border-luxury-brown focus:ring-luxury-brown/20 bg-white/80 ${
+                      fieldErrors.address ? "border-red-500" : ""
+                    }`}
+                  />
+                </div>
                 {fieldErrors.address ? (
                   <p className="text-xs text-red-500">{fieldErrors.address}</p>
                 ) : (
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-luxury-brown/60">
                     Dirección completa donde realizaremos las entregas
                   </p>
                 )}
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="password" className="text-sm font-medium">
+                <label
+                  htmlFor="password"
+                  className="text-sm font-medium text-luxury-brown-dark"
+                >
                   Contraseña
                 </label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                    clearFieldError("password");
-                  }}
-                  onBlur={() => validateFieldOnBlur("password", password)}
-                  onKeyPress={handleKeyPress}
-                  required
-                  className={fieldErrors.password ? "border-red-500" : ""}
-                />
+                <div className="relative">
+                  <Lock className="absolute left-3 top-3 h-4 w-4 text-luxury-brown/50" />
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      clearFieldError("password");
+                    }}
+                    onBlur={() => validateFieldOnBlur("password", password)}
+                    onKeyPress={handleKeyPress}
+                    required
+                    className={`pl-10 border-luxury-brown/20 focus:border-luxury-brown focus:ring-luxury-brown/20 bg-white/80 ${
+                      fieldErrors.password ? "border-red-500" : ""
+                    }`}
+                  />
+                </div>
                 {fieldErrors.password ? (
                   <p className="text-xs text-red-500">{fieldErrors.password}</p>
                 ) : (
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-luxury-brown/60">
                     La contraseña debe tener al menos 8 caracteres
                   </p>
                 )}
@@ -419,28 +472,31 @@ export default function RegisterPage() {
               <div className="space-y-2">
                 <label
                   htmlFor="confirmPassword"
-                  className="text-sm font-medium"
+                  className="text-sm font-medium text-luxury-brown-dark"
                 >
                   Confirmar contraseña
                 </label>
-                <Input
-                  id="confirmPassword"
-                  type="password"
-                  placeholder="••••••••"
-                  value={confirmPassword}
-                  onChange={(e) => {
-                    setConfirmPassword(e.target.value);
-                    clearFieldError("confirmPassword");
-                  }}
-                  onBlur={() =>
-                    validateFieldOnBlur("confirmPassword", confirmPassword)
-                  }
-                  onKeyPress={handleKeyPress}
-                  required
-                  className={
-                    fieldErrors.confirmPassword ? "border-red-500" : ""
-                  }
-                />
+                <div className="relative">
+                  <Lock className="absolute left-3 top-3 h-4 w-4 text-luxury-brown/50" />
+                  <Input
+                    id="confirmPassword"
+                    type="password"
+                    placeholder="••••••••"
+                    value={confirmPassword}
+                    onChange={(e) => {
+                      setConfirmPassword(e.target.value);
+                      clearFieldError("confirmPassword");
+                    }}
+                    onBlur={() =>
+                      validateFieldOnBlur("confirmPassword", confirmPassword)
+                    }
+                    onKeyPress={handleKeyPress}
+                    required
+                    className={`pl-10 border-luxury-brown/20 focus:border-luxury-brown focus:ring-luxury-brown/20 bg-white/80 ${
+                      fieldErrors.confirmPassword ? "border-red-500" : ""
+                    }`}
+                  />
+                </div>
                 {fieldErrors.confirmPassword && (
                   <p className="text-xs text-red-500">
                     {fieldErrors.confirmPassword}
@@ -458,12 +514,12 @@ export default function RegisterPage() {
                 />
                 <label
                   htmlFor="terms"
-                  className="text-sm text-gray-500 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  className="text-sm text-luxury-brown/70 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 >
                   Acepto los{" "}
                   <Link
                     href="/terminos"
-                    className="text-amber-600 hover:text-amber-800"
+                    className="text-luxury-brown hover:text-luxury-brown-dark font-medium"
                   >
                     términos y condiciones
                   </Link>
@@ -472,20 +528,27 @@ export default function RegisterPage() {
 
               <Button
                 type="submit"
-                className="w-full bg-amber-600 hover:bg-amber-700"
+                className="w-full bg-gradient-to-r from-luxury-brown to-luxury-brown-dark hover:from-luxury-brown-dark hover:to-luxury-brown text-white font-medium py-3 transition-all duration-300 shadow-lg hover:shadow-xl"
                 disabled={isLoading}
               >
-                {isLoading ? "Creando cuenta..." : "Registrarse"}
+                {isLoading ? (
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <span>Creando cuenta...</span>
+                  </div>
+                ) : (
+                  "Crear Cuenta"
+                )}
               </Button>
             </form>
           </CardContent>
 
-          <CardFooter className="flex flex-col space-y-4">
-            <div className="text-sm text-center text-gray-500">
+          <CardFooter className="flex flex-col space-y-4 pt-6">
+            <div className="text-sm text-center text-luxury-brown/70">
               ¿Ya tienes una cuenta?{" "}
               <Link
                 href="/auth/login"
-                className="text-amber-600 hover:text-amber-800"
+                className="text-luxury-brown hover:text-luxury-brown-dark font-medium transition-colors"
               >
                 Iniciar sesión
               </Link>
@@ -493,9 +556,9 @@ export default function RegisterPage() {
 
             <Link
               href="/"
-              className="text-amber-700 hover:text-amber-900 text-sm text-center"
+              className="text-luxury-brown/60 hover:text-luxury-brown text-sm text-center transition-colors"
             >
-              Volver a la página principal
+              ← Volver a la página principal
             </Link>
           </CardFooter>
         </Card>

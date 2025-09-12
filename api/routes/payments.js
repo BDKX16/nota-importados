@@ -7,7 +7,7 @@ const { checkAuth, checkRole } = require("../middlewares/authentication");
 const trackInteraction = require("../middlewares/interaction-tracker");
 
 const Payments = require("../models/payment.js");
-const { Beer, Subscription } = require("../models/products");
+const { Product, Discount } = require("../models/products");
 const Order = require("../models/order");
 const UserSubscription = require("../models/subscription");
 const User = require("../models/user");
@@ -15,7 +15,8 @@ const User = require("../models/user");
 // Email service import
 const emailService = require("../infraestructure/services/emailService");
 const adminNotificationService = require("../infraestructure/services/adminNotificationService");
-const { checkLowStock } = require("./products");
+// TODO: Implementar checkLowStock más adelante
+// const { checkLowStock } = require("./products");
 
 // Set up MercadoPago credentials
 const client = new MercadoPagoConfig({
@@ -63,8 +64,11 @@ router.post("/payments/create-preference", checkAuth, async (req, res) => {
     let totalAmount = 0;
 
     for (const cartItem of cartItems) {
-      if (cartItem.type === "beer") {
-        const product = await Beer.findOne({ id: cartItem.id, nullDate: null });
+      if (cartItem.type === "product") {
+        const product = await Product.findOne({
+          _id: cartItem.id,
+          isActive: true,
+        });
         if (!product) {
           return res.status(400).json({
             success: false,
@@ -76,18 +80,19 @@ router.post("/payments/create-preference", checkAuth, async (req, res) => {
         const itemTotal = itemPrice * cartItem.quantity;
 
         items.push({
-          id: product.id,
+          id: product._id,
           title: product.name,
-          description: `${product.name} - Cerveza ${product.type}`,
-          picture_url: product.image || "https://via.placeholder.com/150",
-          category_id: "beer",
+          description: `${product.name} - ${product.description || "Producto"}`,
+          picture_url: product.images?.[0] || "https://via.placeholder.com/150",
+          category_id: "product",
           quantity: cartItem.quantity,
           currency_id: "ARS",
           unit_price: itemPrice,
         });
 
         totalAmount += itemTotal;
-      } else if (cartItem.type === "subscription") {
+        // TODO: Implementar lógica de suscripciones más adelante
+        /*} else if (cartItem.type === "subscription") {
         const subscription = await Subscription.findOne({
           id: cartItem.id,
           nullDate: null,
@@ -97,7 +102,7 @@ router.post("/payments/create-preference", checkAuth, async (req, res) => {
             success: false,
             message: `Plan de suscripción no encontrado: ${cartItem.id}`,
           });
-        }
+        }*/
 
         items.push({
           id: subscription.id,
@@ -683,13 +688,15 @@ router.post("/payments/webhook", async (req, res) => {
             current: true,
           });
 
-          // Reducir stock de productos y crear suscripciones
+          // Reducir stock de productos
           for (const item of order.items) {
-            if (item.type === "beer") {
-              await Beer.findOneAndUpdate(
-                { id: item.id },
+            if (item.type === "product") {
+              await Product.findOneAndUpdate(
+                { _id: item.id },
                 { $inc: { stock: -item.quantity } }
               );
+            }
+            /* TODO: Implementar suscripciones más adelante
             } else if (item.type === "subscription") {
               // Crear suscripción del usuario
               try {
@@ -750,8 +757,11 @@ router.post("/payments/webhook", async (req, res) => {
                 );
               }
             }
+            */
           }
 
+          // TODO: Implementar verificación de stock bajo más adelante
+          /*
           // Verificar stock bajo después de procesar los items
           try {
             const { checkLowStock } = require("./products");
@@ -759,6 +769,7 @@ router.post("/payments/webhook", async (req, res) => {
           } catch (stockError) {
             console.error("❌ Error al verificar stock bajo:", stockError);
           }
+          */
         }
       } else if (
         ["rejected", "cancelled", "refunded", "charged_back"].includes(
