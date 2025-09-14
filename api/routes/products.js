@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { checkAuth, checkRole } = require("../middlewares/authentication");
 const trackInteraction = require("../middlewares/interaction-tracker");
+const { validateSearch, validateId } = require("../middlewares/validation");
 const {
   Product,
   Discount,
@@ -10,7 +11,7 @@ const {
 } = require("../models/products");
 
 // Obtener todos los productos con filtros opcionales
-router.get("/", trackInteraction("landing", true), async (req, res) => {
+router.get("/", validateSearch, trackInteraction("landing", true), async (req, res) => {
   try {
     const {
       category,

@@ -6,33 +6,39 @@ import { Badge } from "@/components/ui/badge";
 import { ShoppingBag, Heart } from "lucide-react";
 import type { Product } from "@/lib/store";
 import { useStore } from "@/lib/store";
-import { useState } from "react";
+import { useState, memo, useCallback } from "react";
+import CachedImage from "@/components/ui/cached-image";
 
 interface ProductCardProps {
   product: Product;
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+export const ProductCard = memo(function ProductCard({ product }: ProductCardProps) {
   const { dispatch } = useStore();
   const [isLiked, setIsLiked] = useState(false);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = useCallback(() => {
     dispatch({ type: "ADD_TO_CART", product });
-  };
+  }, [dispatch, product]);
+
+  const handleToggleLike = useCallback(() => {
+    setIsLiked(prev => !prev);
+  }, []);
 
   return (
     <Card className="group overflow-hidden border-0 shadow-sm hover:shadow-lg transition-all duration-300 rounded-none py-0">
       <div className="relative aspect-square overflow-hidden bg-muted py-0">
-        <img
+        <CachedImage
           src={product.images?.[0] || "/placeholder.svg"}
           alt={product.name}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          fallback="/placeholder.svg"
         />
         <Button
           variant="ghost"
           size="icon"
           className="absolute top-3 right-3 bg-background/80 backdrop-blur-sm hover:bg-background"
-          onClick={() => setIsLiked(!isLiked)}
+          onClick={handleToggleLike}
         >
           <Heart
             className={`h-4 w-4 ${isLiked ? "fill-red-500 text-red-500" : ""}`}
@@ -68,4 +74,4 @@ export function ProductCard({ product }: ProductCardProps) {
       </CardContent>
     </Card>
   );
-}
+});

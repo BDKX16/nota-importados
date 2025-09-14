@@ -1,9 +1,10 @@
 "use client";
 
 import { ProductCard } from "./product-card";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { getAllProducts } from "@/services/productsService";
 import useFetchAndLoad from "@/hooks/useFetchAndLoad";
+import { Button } from "@/components/ui/button";
 
 interface Product {
   id: string;
@@ -39,29 +40,15 @@ export function ProductGrid({
   onProductsCountChange,
 }: ProductGridProps) {
   const [products, setProducts] = useState<Product[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [visibleCount, setVisibleCount] = useState(9); // Mostrar 9 productos inicialmente
   const { loading, callEndpoint } = useFetchAndLoad();
 
   useEffect(() => {
     loadProducts();
   }, []);
 
-  useEffect(() => {
-    applyFilters();
-  }, [products, filters]);
-
-  const loadProducts = async () => {
-    try {
-      const response = await callEndpoint(getAllProducts());
-      if (response && response.data && response.data.products) {
-        setProducts(response.data.products);
-      }
-    } catch (error) {
-      console.error("Error loading products:", error);
-    }
-  };
-
-  const applyFilters = () => {
+  // Memoizar el filtrado de productos
+  const filteredProducts = useMemo(() => {
     let filtered = [...products];
 
     if (filters) {
@@ -119,8 +106,37 @@ export function ProductGrid({
       }
     }
 
-    setFilteredProducts(filtered);
-    onProductsCountChange?.(filtered.length);
+    return filtered;
+  }, [products, filters]);
+
+  // Productos visibles (limitados por visibleCount)
+  const visibleProducts = useMemo(() => {
+    return filteredProducts.slice(0, visibleCount);
+  }, [filteredProducts, visibleCount]);
+
+  // Efecto para notificar cambios en el conteo
+  useEffect(() => {
+    onProductsCountChange?.(filteredProducts.length);
+  }, [filteredProducts.length, onProductsCountChange]);
+
+  // Resetear visibleCount cuando cambian los filtros
+  useEffect(() => {
+    setVisibleCount(9);
+  }, [filters]);
+
+  const loadMoreProducts = useCallback(() => {
+    setVisibleCount(prev => Math.min(prev + 9, filteredProducts.length));
+  }, [filteredProducts.length]);
+
+  const loadProducts = async () => {
+    try {
+      const response = await callEndpoint(getAllProducts());
+      if (response && response.data && response.data.products) {
+        setProducts(response.data.products);
+      }
+    } catch (error) {
+      console.error("Error loading products:", error);
+    }
   };
 
   if (loading) {
@@ -141,10 +157,31 @@ export function ProductGrid({
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      {filteredProducts.map((product) => (
-        <ProductCard key={product.id} product={product} />
-      ))}
+    <div className="space-y-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {visibleProducts.map((product, index) => (
+          <ProductCard 
+            key={product.id} 
+            product={product}
+          />
+        ))}
+      </div>
+      
+      {/* Botón para cargar más productos */}
+      {visibleCount < filteredProducts.length && (
+        <div className="flex justify-center">
+          <Button 
+            onClick={loadMoreProducts}
+            variant="outline"
+            size="lg"
+            className="min-w-[200px]"
+          >
+            Cargar más productos ({filteredProducts.length - visibleCount} restantes)
+          </Button>
+        </div>
+      )}
+      
+      {/* Mensaje cuando no hay productos */}
       {filteredProducts.length === 0 && !loading && (
         <div className="col-span-full text-center py-12">
           <p className="text-muted-foreground">

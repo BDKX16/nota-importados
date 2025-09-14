@@ -3,6 +3,7 @@
 import { HeaderSecondary } from "@/components/header-secondary";
 import { ProductGrid } from "@/components/product-grid";
 import { ProductFilters } from "@/components/product-filters";
+import { ImageCacheDebug } from "@/components/debug/ImageCacheDebug";
 import { useState, useCallback } from "react";
 
 interface Filters {
@@ -71,6 +72,9 @@ export default function ProductsPage() {
           </div>
         </div>
       </main>
+      
+      {/* Debug component - solo en desarrollo */}
+      <ImageCacheDebug />
     </div>
   );
 }
