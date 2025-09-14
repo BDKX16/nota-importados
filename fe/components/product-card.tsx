@@ -24,7 +24,7 @@ export function ProductCard({ product }: ProductCardProps) {
     <Card className="group overflow-hidden border-0 shadow-sm hover:shadow-lg transition-all duration-300 rounded-none py-0">
       <div className="relative aspect-square overflow-hidden bg-muted py-0">
         <img
-          src={product.image || "/placeholder.svg"}
+          src={product.images?.[0] || "/placeholder.svg"}
           alt={product.name}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
@@ -53,7 +53,7 @@ export function ProductCard({ product }: ProductCardProps) {
           </p>
           <div className="flex items-center justify-between">
             <span className="text-sm text-muted-foreground">
-              {product.size}
+              {product.volume || "N/A"}
             </span>
             <span className="text-2xl font-bold text-primary">
               ${product.price}
