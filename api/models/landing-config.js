@@ -134,12 +134,23 @@ landingConfigSchema.statics.getActiveConfig = async function () {
 
   // Si no existe configuración, crear una por defecto
   if (!config) {
-    config = new this({
-      siteName: "Luna Brew House",
-      tagline: "Cervezas Artesanales Premium",
-      isActive: true,
-    });
-    await config.save();
+    // Primero verificar si existe alguna configuración
+    const existingConfig = await this.findOne({});
+    
+    if (existingConfig) {
+      // Si existe una configuración, activarla
+      existingConfig.isActive = true;
+      await existingConfig.save();
+      config = existingConfig;
+    } else {
+      // Si no existe ninguna configuración, crear una nueva
+      config = new this({
+        siteName: "Luna Brew House",
+        tagline: "Cervezas Artesanales Premium",
+        isActive: true,
+      });
+      await config.save();
+    }
   }
 
   return config;

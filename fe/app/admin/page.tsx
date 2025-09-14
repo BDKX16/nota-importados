@@ -15,7 +15,7 @@ import {
   DollarSign,
   ArrowUpRight,
   ArrowDownRight,
-  Beer,
+  Package,
   ShoppingCart,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -83,13 +83,13 @@ export default function AdminDashboard() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
           <p className="text-muted-foreground">
-            Resumen de ventas y actividad de Luna Brew House.
+            Resumen de ventas y actividad de Nota Importados.
           </p>
         </div>
         <div className="flex gap-2">
           <Link href="/admin/productos">
             <div className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
-              <Beer className="mr-2 h-4 w-4" />
+              <Package className="mr-2 h-4 w-4" />
               Gestionar Productos
             </div>
           </Link>

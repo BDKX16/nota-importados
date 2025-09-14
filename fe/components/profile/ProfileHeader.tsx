@@ -43,7 +43,7 @@ export default function ProfileHeader({
   };
 
   return (
-    <div className="bg-white/80 backdrop-blur-sm border-b border-amber-200">
+    <div className="bg-card/90 backdrop-blur-md border-b border-border shadow-lg">
       <div className="container py-6 md:py-8">
         {/* Para página principal de perfil con información completa */}
         {showUserInfo && (
@@ -52,19 +52,19 @@ export default function ProfileHeader({
             <div className="flex items-start gap-3 md:gap-6">
               {/* Avatar */}
               <div className="relative flex-shrink-0">
-                <Avatar className="h-12 w-12 md:h-24 md:w-24 ring-2 ring-amber-200 ring-offset-2 md:ring-4 md:ring-offset-4">
+                <Avatar className="h-12 w-12 md:h-24 md:w-24 ring-2 ring-primary/30 ring-offset-2 md:ring-4 md:ring-offset-4 ring-offset-background">
                   <AvatarImage
                     src="/professional-avatar.png"
                     alt={userInfo.name}
                   />
-                  <AvatarFallback className="text-sm md:text-xl bg-gradient-to-br from-amber-400 to-orange-500 text-white">
+                  <AvatarFallback className="text-sm md:text-xl bg-gradient-to-br from-primary to-accent text-primary-foreground font-serif">
                     {userInfo.name
                       .split(" ")
                       .map((n) => n[0])
                       .join("")}
                   </AvatarFallback>
                 </Avatar>
-                <div className="absolute -bottom-1 -right-1 bg-green-500 rounded-full p-0.5 md:p-1">
+                <div className="absolute -bottom-1 -right-1 bg-green-500 rounded-full p-0.5 md:p-1 shadow-lg">
                   <CheckCircle className="h-2 w-2 md:h-4 md:w-4 text-white" />
                 </div>
               </div>
@@ -74,12 +74,12 @@ export default function ProfileHeader({
                 {/* Título, badge y botón */}
                 <div className="flex items-center justify-between gap-2 md:gap-3 mb-1 md:mb-2">
                   <div className="flex items-center gap-2 md:gap-3 min-w-0">
-                    <h1 className="text-lg md:text-3xl font-bold text-gray-900 truncate">
+                    <h1 className="text-lg md:text-3xl font-bold text-foreground truncate font-serif">
                       {userInfo.name}
                     </h1>
-                    <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 text-xs">
+                    <Badge className="bg-gradient-to-r from-primary to-accent text-primary-foreground border-0 text-xs px-3 py-1 rounded-full shadow-md">
                       <Crown className="h-2 w-2 md:h-3 md:w-3 mr-1" />
-                      {isAdmin ? "Admin" : "Premium"}
+                      {isAdmin ? "Admin" : "VIP"}
                     </Badge>
                   </div>
 
@@ -88,7 +88,7 @@ export default function ProfileHeader({
                     <Button
                       variant="outline"
                       size="sm"
-                      className="border-amber-300 hover:bg-amber-50 text-xs px-2 py-1 h-auto"
+                      className="border-primary/30 hover:bg-primary/10 text-primary text-xs px-3 py-1 h-auto rounded-xl font-medium transition-all duration-300"
                     >
                       <ArrowLeft className="h-3 w-3 mr-1" />
                       Volver
@@ -97,8 +97,8 @@ export default function ProfileHeader({
                 </div>
 
                 {/* Info de miembro */}
-                <p className="text-xs md:text-gray-600 mb-2 md:mb-3 text-gray-500">
-                  Miembro desde {userInfo.memberSince} • Cervecero apasionado
+                <p className="text-xs md:text-muted-foreground mb-2 md:mb-3 text-muted-foreground">
+                  Miembro desde {userInfo.memberSince} • Cliente Premium
                 </p>
 
                 {/* Stats */}
@@ -109,18 +109,18 @@ export default function ProfileHeader({
                       return (
                         <div
                           key={index}
-                          className="flex items-center gap-2 md:flex-col md:text-center bg-white/60 backdrop-blur-sm rounded-lg p-2 md:p-0 md:bg-transparent"
+                          className="flex items-center gap-2 md:flex-col md:text-center bg-card/80 backdrop-blur-sm rounded-xl p-3 md:p-4 border border-border/50 hover:border-primary/30 transition-all duration-300 md:bg-transparent md:border-0"
                         >
                           <div
-                            className={`flex-shrink-0 w-6 h-6 md:w-12 md:h-12 rounded-full flex items-center justify-center ${stat.color} md:mb-2`}
+                            className={`flex-shrink-0 w-6 h-6 md:w-12 md:h-12 rounded-xl flex items-center justify-center ${stat.color} md:mb-2 shadow-sm`}
                           >
                             <Icon className="h-3 w-3 md:h-6 md:w-6" />
                           </div>
                           <div className="min-w-0">
-                            <div className="text-sm md:text-2xl font-semibold md:font-bold text-gray-900 leading-none md:mb-1">
+                            <div className="text-sm md:text-2xl font-semibold md:font-bold text-foreground leading-none md:mb-1 font-serif">
                               {stat.value}
                             </div>
-                            <div className="text-xs md:text-sm text-gray-600 truncate">
+                            <div className="text-xs md:text-sm text-muted-foreground truncate font-medium">
                               {stat.label}
                             </div>
                           </div>
@@ -143,7 +143,7 @@ export default function ProfileHeader({
                 <Button
                   variant="outline"
                   size="sm"
-                  className="border-amber-300 hover:bg-amber-50"
+                  className="border-primary/30 hover:bg-primary/10 text-primary rounded-xl font-medium transition-all duration-300"
                 >
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   {backLabel}
@@ -155,9 +155,13 @@ export default function ProfileHeader({
             {(title || subtitle) && (
               <div>
                 {title && (
-                  <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
+                  <h1 className="text-2xl font-bold text-foreground font-serif">
+                    {title}
+                  </h1>
                 )}
-                {subtitle && <p className="text-gray-600 mt-1">{subtitle}</p>}
+                {subtitle && (
+                  <p className="text-muted-foreground mt-1">{subtitle}</p>
+                )}
               </div>
             )}
           </>

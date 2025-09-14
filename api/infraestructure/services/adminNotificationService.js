@@ -289,6 +289,28 @@ class AdminNotificationService {
       return { success: false, error: error.message };
     }
   }
+
+  /**
+   * Notifica cuando se registra un nuevo usuario
+   */
+  static async notifyNewUser(userData) {
+    try {
+      const notificationData = {
+        userName: userData.name,
+        userEmail: userData.email,
+        userPhone: userData.phone || "No proporcionado",
+        userAddress: userData.address || "No proporcionada",
+        registrationDate: new Date(),
+        source: "Registro web",
+      };
+
+      const result = await emailService.notifyAdminNewUser(notificationData);
+      return result;
+    } catch (error) {
+      console.error("Error en notificación de nuevo usuario:", error);
+      return { success: false, error: error.message };
+    }
+  }
 }
 
 module.exports = AdminNotificationService;

@@ -5,6 +5,7 @@ import { ShoppingBag, Menu } from "lucide-react";
 import { useStore } from "@/lib/store";
 import Link from "next/link";
 import Image from "next/image";
+import UserNav from "@/components/user-nav";
 
 export function Header() {
   const { state, dispatch } = useStore();
@@ -52,7 +53,7 @@ export function Header() {
           </nav>
         </div>
 
-        {/* Rectángulo derecho - Carrito e Iniciar sesión */}
+        {/* Rectángulo derecho - Carrito y Usuario */}
         <div className="bg-background/95 backdrop-blur-md border border-border/50 rounded-full shadow-lg px-2 py-2 flex items-center space-x-4 pointer-events-auto">
           <Button
             variant="ghost"
@@ -66,12 +67,7 @@ export function Header() {
               </span>
             )}
           </Button>
-          <Button
-            variant="outline"
-            className="bg-primary text-primary-foreground hover:bg-primary/10 hover:text-primary transition-all duration-300 text-sm font-medium px-4 py-6 rounded-full"
-          >
-            Iniciar sesión
-          </Button>
+          <UserNav />
         </div>
       </div>
     </header>

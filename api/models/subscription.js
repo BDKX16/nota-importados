@@ -1,14 +1,34 @@
+// Archivo temporal para evitar errores de import// Archivo temporal para evitar errores de importconst mongoose = require("mongoose");
+
+// Este modelo está deshabilitado para el negocio de productos de lujo
+
+// Este modelo está deshabilitado para el negocio de productos de lujo
+
 const mongoose = require("mongoose");
 
 const userSubscriptionSchema = new mongoose.Schema(
-  {
-    userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
+
+// Schema temporal vacío
+
+const tempSubscriptionSchema = new mongoose.Schema({const mongoose = require("mongoose");  {
+
+  _id: { type: mongoose.Schema.Types.ObjectId, auto: true }
+
+}, { collection: 'temp_disabled_subscriptions' });    userId: {
+
+
+
+module.exports = mongoose.model("UserSubscription", tempSubscriptionSchema);// Schema temporal vacío      type: mongoose.Schema.Types.ObjectId,
+
+const tempSubscriptionSchema = new mongoose.Schema({      ref: "User",
+
+  _id: { type: mongoose.Schema.Types.ObjectId, auto: true }      required: true,
+
+}, { collection: 'temp_disabled_subscriptions' });    },
+
     productId: {
-      type: mongoose.Schema.Types.ObjectId,
+
+module.exports = mongoose.model("UserSubscription", tempSubscriptionSchema);      type: mongoose.Schema.Types.ObjectId,
       ref: "Product",
       required: true,
     },

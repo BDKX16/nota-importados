@@ -9,7 +9,6 @@ const trackInteraction = require("../middlewares/interaction-tracker");
 const Payments = require("../models/payment.js");
 const { Product, Discount } = require("../models/products");
 const Order = require("../models/order");
-const UserSubscription = require("../models/subscription");
 const User = require("../models/user");
 
 // Email service import
@@ -696,68 +695,7 @@ router.post("/payments/webhook", async (req, res) => {
                 { $inc: { stock: -item.quantity } }
               );
             }
-            /* TODO: Implementar suscripciones más adelante
-            } else if (item.type === "subscription") {
-              // Crear suscripción del usuario
-              try {
-                const subscription = await Subscription.findOne({
-                  id: item.id,
-                });
-                if (subscription) {
-                  // Verificar si ya existe una suscripción activa para este usuario y plan
-                  const existingSubscription = await UserSubscription.findOne({
-                    userId: order.customer.userId,
-                    subscriptionId: item.id,
-                    status: "active",
-                    nullDate: null,
-                  });
-
-                  if (!existingSubscription) {
-                    // Crear nueva suscripción
-                    const newSubscription = new UserSubscription({
-                      id: `sub_${Date.now()}_${order.customer.userId}`,
-                      userId: order.customer.userId,
-                      subscriptionId: item.id,
-                      name: subscription.name,
-                      beerType: item.beerType || "golden", // Usar el tipo seleccionado por el usuario
-                      beerName: getBeerNameFromType(item.beerType || "golden"),
-                      liters: subscription.liters,
-                      price: subscription.price,
-                      status: "active",
-                      startDate: new Date(),
-                      nextDelivery: new Date(
-                        Date.now() + 30 * 24 * 60 * 60 * 1000
-                      ), // 30 días
-                      deliveries: [],
-                      billingInfo: {
-                        orderId: order._id,
-                        paymentId: paymentInfo.id,
-                        paymentDate: new Date(),
-                      },
-                    });
-
-                    await newSubscription.save();
-                    console.log(
-                      `✅ Suscripción creada para usuario ${order.customer.userId}: ${subscription.name}`
-                    );
-                  } else {
-                    console.log(
-                      `⚠️ Suscripción ya existe para usuario ${order.customer.userId}: ${subscription.name}`
-                    );
-                  }
-                } else {
-                  console.error(
-                    `❌ Plan de suscripción no encontrado: ${item.id}`
-                  );
-                }
-              } catch (subscriptionError) {
-                console.error(
-                  "❌ Error creando suscripción:",
-                  subscriptionError
-                );
-              }
-            }
-            */
+            // Las suscripciones han sido eliminadas para productos de lujo
           }
 
           // TODO: Implementar verificación de stock bajo más adelante
@@ -950,60 +888,10 @@ router.post("/payments/webhook", async (req, res) => {
                   { $inc: { stock: -item.quantity } }
                 );
               } else if (item.type === "subscription") {
-                // Crear suscripción del usuario
-                try {
-                  const subscription = await Subscription.findOne({
-                    id: item.id,
-                  });
-                  if (subscription) {
-                    // Verificar si ya existe una suscripción activa
-                    const existingSubscription = await UserSubscription.findOne(
-                      {
-                        userId: orderByField.customer.userId,
-                        subscriptionId: item.id,
-                        status: "active",
-                        nullDate: null,
-                      }
-                    );
-
-                    if (!existingSubscription) {
-                      // Crear nueva suscripción
-                      const newSubscription = new UserSubscription({
-                        id: `sub_${Date.now()}_${orderByField.customer.userId}`,
-                        userId: orderByField.customer.userId,
-                        subscriptionId: item.id,
-                        name: subscription.name,
-                        beerType: item.beerType || "golden", // Usar el tipo seleccionado por el usuario
-                        beerName: getBeerNameFromType(
-                          item.beerType || "golden"
-                        ),
-                        liters: subscription.liters,
-                        price: subscription.price,
-                        status: "active",
-                        startDate: new Date(),
-                        nextDelivery: new Date(
-                          Date.now() + 30 * 24 * 60 * 60 * 1000
-                        ),
-                        deliveries: [],
-                        billingInfo: {
-                          orderId: orderByField._id,
-                          paymentId: paymentInfo.id,
-                          paymentDate: new Date(),
-                        },
-                      });
-
-                      await newSubscription.save();
-                      console.log(
-                        `✅ Suscripción creada (búsqueda alt) para usuario ${orderByField.customer.userId}: ${subscription.name}`
-                      );
-                    }
-                  }
-                } catch (subscriptionError) {
-                  console.error(
-                    "❌ Error creando suscripción (búsqueda alt):",
-                    subscriptionError
-                  );
-                }
+                // COMENTADO: Lógica de suscripciones no necesaria para productos de lujo
+                console.log(
+                  "Suscripciones deshabilitadas para productos de lujo"
+                );
               }
             }
 
@@ -1055,36 +943,10 @@ router.post("/payments/webhook", async (req, res) => {
               );
 
               if (hasSubscriptions) {
-                // Enviar email de confirmación de suscripción para cada suscripción
-                const subscriptionItems = orderByField.items.filter(
-                  (item) => item.type === "subscription"
+                // Las suscripciones han sido eliminadas para productos de lujo
+                console.log(
+                  "Email de suscripción omitido - característica deshabilitada"
                 );
-
-                for (const subItem of subscriptionItems) {
-                  const subscriptionData = {
-                    customerName: user.name,
-                    subscriptionId: `sub_${Date.now()}_${
-                      orderByField.customer.userId
-                    }`,
-                    planName: subItem.name,
-                    beerType: subItem.beerType || "golden",
-                    beerName: getBeerNameFromType(subItem.beerType || "golden"),
-                    liters: subItem.liters || 1,
-                    price: subItem.price,
-                    nextDelivery: new Date(
-                      Date.now() + 30 * 24 * 60 * 60 * 1000
-                    ),
-                    shippingAddress: user.address,
-                  };
-
-                  await emailService.sendSubscriptionConfirmation(
-                    user.email,
-                    subscriptionData
-                  );
-                  console.log(
-                    `✅ Email de confirmación de suscripción enviado a ${user.email} (búsqueda alt)`
-                  );
-                }
               } else {
                 // Enviar email de confirmación de pedido regular
                 await emailService.sendOrderConfirmation(user.email, orderData);
@@ -1100,60 +962,6 @@ router.post("/payments/webhook", async (req, res) => {
             );
             // No fallar el webhook si el email falla
           }
-
-          // Enviar notificaciones a administradores (búsqueda alternativa)
-          try {
-            const user = await User.findById(orderByField.customer.userId);
-            if (user) {
-              // Verificar si hay suscripciones en el pedido
-              const hasSubscriptions = orderByField.items.some(
-                (item) => item.type === "subscription"
-              );
-
-              if (hasSubscriptions) {
-                // Notificar nueva suscripción a administradores
-                const subscriptionItems = orderByField.items.filter(
-                  (item) => item.type === "subscription"
-                );
-                for (const subItem of subscriptionItems) {
-                  const subscriptionNotificationData = {
-                    id: `sub_${Date.now()}_${orderByField.customer.userId}`,
-                    name: subItem.name,
-                    beerType: subItem.beerType || "golden",
-                    beerName: getBeerNameFromType(subItem.beerType || "golden"),
-                    liters: subItem.liters || 1,
-                    price: subItem.price,
-                    nextDelivery: new Date(
-                      Date.now() + 30 * 24 * 60 * 60 * 1000
-                    ),
-                  };
-
-                  await adminNotificationService.notifyNewSubscription(
-                    subscriptionNotificationData,
-                    user
-                  );
-                  console.log(
-                    `✅ Notificación de nueva suscripción enviada a administradores (búsqueda alt)`
-                  );
-                }
-              } else {
-                // Notificar nuevo pedido a administradores
-                await adminNotificationService.notifyNewOrder(
-                  orderByField,
-                  user
-                );
-                console.log(
-                  `✅ Notificación de nuevo pedido enviada a administradores (búsqueda alt)`
-                );
-              }
-            }
-          } catch (adminNotificationError) {
-            console.error(
-              `❌ Error al enviar notificación a administradores (búsqueda alt):`,
-              adminNotificationError
-            );
-            // No fallar el webhook si la notificación administrativa falla
-          }
         }
       }
     }
@@ -1162,102 +970,6 @@ router.post("/payments/webhook", async (req, res) => {
   } catch (error) {
     console.error("❌ Error en webhook de pagos:", error);
     console.error("Stack trace:", error.stack);
-    res.status(500).send();
-  }
-});
-
-// Webhook para suscripciones
-router.post("/payments/subscription-webhook", async (req, res) => {
-  try {
-    const { type } = req.query;
-    const paymentId = req.query["data.id"]; // Obtener el ID del pago de los query params
-
-    // Solo procesar notificaciones de pagos
-    if (type !== "payment") {
-      return res.status(200).send();
-    }
-
-    // Validar que tenemos el ID del pago
-    if (!paymentId) {
-      console.error(
-        "❌ No se encontró data.id en los query params para suscripción"
-      );
-      return res.status(400).send();
-    }
-
-    // Obtener información detallada del pago
-    let paymentInfo;
-
-    try {
-      paymentInfo = await new Payment(client).get({ id: paymentId });
-    } catch (error) {
-      console.error("Error al obtener información del pago:", error);
-      return res.status(500).send();
-    }
-
-    // Obtener referencia externa (orderId)
-    const orderId = paymentInfo.external_reference;
-
-    if (!orderId || !orderId.startsWith("SUB-")) {
-      console.error("Orden de suscripción no válida");
-      return res.status(400).send();
-    }
-
-    // Actualizar estado de pago
-    const payment = await Payments.findOneAndUpdate(
-      { orderId },
-      {
-        status: paymentInfo.status,
-        paymentId: paymentInfo.id,
-        userData: paymentInfo.payer,
-      },
-      { new: true }
-    );
-
-    if (!payment) {
-      console.error("Pago no encontrado para la suscripción:", orderId);
-      return res.status(404).send();
-    }
-
-    // Si el pago fue aprobado, crear la suscripción
-    if (
-      paymentInfo.status === "approved" ||
-      paymentInfo.status === "authorized"
-    ) {
-      // Esta implementación requeriría tener los datos de la suscripción almacenados
-      // o recuperarlos de alguna manera. Aquí usaremos un enfoque simulado.
-
-      // En una implementación real, obtendríamos esto de la base de datos o caché
-      const userId = payment.userId;
-      const subscriptionInfo = await getSubscriptionInfoFromPayment(payment);
-
-      if (subscriptionInfo) {
-        const nextDeliveryDate = new Date();
-        nextDeliveryDate.setDate(nextDeliveryDate.getDate() + 30);
-
-        // Crear suscripción activa
-        const newSubscription = new UserSubscription({
-          id: `ACTIVE-${orderId}`,
-          userId,
-          subscriptionId: subscriptionInfo.subscriptionId,
-          name: subscriptionInfo.name,
-          beerType: subscriptionInfo.beerType,
-          beerName: subscriptionInfo.beerName,
-          liters: subscriptionInfo.liters,
-          price: subscriptionInfo.price,
-          status: "active",
-          startDate: new Date(),
-          nextDelivery: nextDeliveryDate,
-          deliveries: [],
-        });
-
-        await newSubscription.save();
-      }
-    }
-
-    res.status(200).send();
-  } catch (error) {
-    console.error("Error en webhook de suscripciones:", error);
     res.status(500).send();
   }
 });

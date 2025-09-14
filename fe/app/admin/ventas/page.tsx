@@ -464,14 +464,14 @@ export default function VentasPage() {
             </span>
           </Badge>
         );
-      case "cervezas":
+      case "productos":
         return (
           <Badge
             variant="outline"
             className="bg-amber-50 text-amber-700 hover:bg-amber-50"
           >
             <span className="flex items-center gap-1">
-              <ShoppingBag className="w-3 h-3" /> Cervezas
+              <ShoppingBag className="w-3 h-3" /> Productos
             </span>
           </Badge>
         );
@@ -606,7 +606,7 @@ export default function VentasPage() {
             Ventas y Pedidos
           </h1>
           <p className="text-muted-foreground">
-            Gestiona y visualiza todos los pedidos de Luna Brew House.
+            Gestiona y visualiza todos los pedidos de Nota Importados.
           </p>
         </div>
         <div className="w-full md:w-auto flex flex-col sm:flex-row gap-2">
@@ -957,12 +957,12 @@ export default function VentasPage() {
               <div className="border rounded-lg p-4 bg-white">
                 <p className="text-sm">
                   <span className="font-medium">Asunto:</span> Selecciona tu
-                  horario de entrega preferido - Luna Brew House
+                  horario de entrega preferido - Nota Importados
                 </p>
                 <div className="mt-3 text-sm border-t pt-3">
                   <p>Hola {selectedOrder?.customer.name},</p>
                   <p className="mt-2">
-                    Gracias por tu pedido en Luna Brew House. Estamos listos
+                    Gracias por tu pedido en Nota Importados. Estamos listos
                     para enviarte tu pedido y nos gustaría que puedas elegir el
                     horario que más te convenga.
                   </p>
@@ -974,7 +974,7 @@ export default function VentasPage() {
                     [Enlace para seleccionar horario de entrega]
                   </div>
                   <p>¡Saludos cordiales!</p>
-                  <p>El equipo de Luna Brew House</p>
+                  <p>El equipo de Nota Importados</p>
                 </div>
               </div>
             </div>

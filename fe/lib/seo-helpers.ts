@@ -44,25 +44,25 @@ export const pageMetadataConfigs = {
   products: {
     title: "Productos",
     description:
-      "Descubre nuestra selección de cervezas artesanales premium. Varietales únicos elaborados con los mejores ingredientes.",
+      "Descubre nuestra selección de perfumes y productos de lujo importados. Fragancias exclusivas y productos premium.",
     canonicalPath: "/productos",
     keywords:
-      "cerveza artesanal, craft beer, cervezas premium, varietales, ingredientes naturales",
+      "perfumes importados, fragancias de lujo, productos premium, perfumes originales, cosmética de lujo",
   },
   subscriptions: {
     title: "Suscripciones",
     description:
-      "Planes de suscripción personalizados para disfrutar de cervezas artesanales en casa. Entregas mensuales y descuentos exclusivos.",
+      "Planes de suscripción personalizados para recibir productos de lujo en casa. Entregas mensuales y descuentos exclusivos.",
     canonicalPath: "/suscripciones",
     keywords:
-      "suscripción cerveza, planes mensuales, entrega domicilio, cerveza artesanal",
+      "suscripción productos lujo, planes mensuales, entrega domicilio, perfumes",
   },
   checkout: {
     title: "Checkout",
     description:
       "Finaliza tu compra de forma segura. Acepta múltiples métodos de pago y entregas rápidas.",
     canonicalPath: "/checkout",
-    keywords: "comprar cerveza, checkout seguro, pago online, entrega rápida",
+    keywords: "comprar perfumes, checkout seguro, pago online, entrega rápida",
   },
   profile: {
     title: "Mi Perfil",
@@ -81,7 +81,7 @@ export const pageMetadataConfigs = {
     },
     register: {
       title: "Registro",
-      description: "Crea tu cuenta y únete a la comunidad Luna Brew House.",
+      description: "Crea tu cuenta y únete a la comunidad Nota Importados.",
       canonicalPath: "/auth/registro",
       keywords: "registro, crear cuenta, unirse comunidad",
     },

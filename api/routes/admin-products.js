@@ -1,322 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const { checkAuth, checkRole } = require("../middlewares/authentication");
-const { Beer, Subscription, Discount } = require("../models/products");
-
-/**
- * RUTAS PARA LA GESTIÓN DE CERVEZAS
- */
-
-// Obtener todas las cervezas
-router.get(
-  "/beers",
-  checkAuth,
-  checkRole(["admin", "owner"]),
-  async (req, res) => {
-    try {
-      const beers = await Beer.find({ nullDate: null });
-      res.status(200).json({ beers });
-    } catch (error) {
-      console.error("Error al obtener cervezas:", error);
-      res
-        .status(500)
-        .json({ error: "Error al obtener el listado de cervezas" });
-    }
-  }
-);
-
-// Obtener una cerveza por ID
-router.get(
-  "/beers/:id",
-  checkAuth,
-  checkRole(["admin", "owner"]),
-  async (req, res) => {
-    try {
-      const beer = await Beer.findOne({ id: req.params.id, nullDate: null });
-
-      if (!beer) {
-        return res.status(404).json({ error: "Cerveza no encontrada" });
-      }
-
-      res.status(200).json({ beer });
-    } catch (error) {
-      console.error("Error al obtener la cerveza:", error);
-      res
-        .status(500)
-        .json({ error: "Error al obtener la información de la cerveza" });
-    }
-  }
-);
-
-// Crear una nueva cerveza
-router.post(
-  "/beers",
-  checkAuth,
-  checkRole(["admin", "owner"]),
-  async (req, res) => {
-    try {
-      const { id, name, type, typeId, price, image, description, stock } =
-        req.body;
-
-      // Verificar si ya existe
-      const existingBeer = await Beer.findOne({ id });
-      if (existingBeer) {
-        return res
-          .status(400)
-          .json({ error: "Ya existe una cerveza con ese ID" });
-      }
-
-      const beer = new Beer({
-        id,
-        name,
-        type,
-        typeId,
-        price,
-        image,
-        description,
-        stock,
-      });
-
-      await beer.save();
-      res.status(201).json({ message: "Cerveza creada con éxito", beer });
-    } catch (error) {
-      console.error("Error al crear cerveza:", error);
-      res.status(500).json({ error: "Error al crear la cerveza" });
-    }
-  }
-);
-
-// Actualizar una cerveza
-router.put(
-  "/beers/:id",
-  checkAuth,
-  checkRole(["admin", "owner"]),
-  async (req, res) => {
-    try {
-      const { name, type, typeId, price, image, description, stock } = req.body;
-
-      const beer = await Beer.findOne({ id: req.params.id, nullDate: null });
-
-      if (!beer) {
-        return res.status(404).json({ error: "Cerveza no encontrada" });
-      }
-
-      // Actualizar campos
-      beer.name = name || beer.name;
-      beer.type = type || beer.type;
-      beer.typeId = typeId || beer.typeId;
-      beer.price = price || beer.price;
-      beer.image = image || beer.image;
-      beer.description = description || beer.description;
-      beer.stock = stock !== undefined ? stock : beer.stock;
-
-      await beer.save();
-      res.status(200).json({ message: "Cerveza actualizada con éxito", beer });
-    } catch (error) {
-      console.error("Error al actualizar cerveza:", error);
-      res.status(500).json({ error: "Error al actualizar la cerveza" });
-    }
-  }
-);
-
-// Eliminar una cerveza (soft delete)
-router.delete(
-  "/beers/:id",
-  checkAuth,
-  checkRole(["admin", "owner"]),
-  async (req, res) => {
-    try {
-      const beer = await Beer.findOne({ id: req.params.id, nullDate: null });
-
-      if (!beer) {
-        return res.status(404).json({ error: "Cerveza no encontrada" });
-      }
-
-      beer.nullDate = new Date();
-      await beer.save();
-
-      res.status(200).json({ message: "Cerveza eliminada con éxito" });
-    } catch (error) {
-      console.error("Error al eliminar cerveza:", error);
-      res.status(500).json({ error: "Error al eliminar la cerveza" });
-    }
-  }
-);
-
-/**
- * RUTAS PARA LA GESTIÓN DE PLANES DE SUSCRIPCIÓN
- */
-
-// Obtener todos los planes de suscripción
-router.get(
-  "/subscriptions",
-  checkAuth,
-  checkRole(["admin", "owner"]),
-  async (req, res) => {
-    try {
-      console.log("subscriptions");
-      const subscriptions = await Subscription.find({ nullDate: null });
-      console.log(subscriptions);
-      res.status(200).json({ subscriptions });
-    } catch (error) {
-      console.error("Error al obtener planes de suscripción:", error);
-      res.status(500).json({
-        error: "Error al obtener el listado de planes de suscripción",
-      });
-    }
-  }
-);
-
-// Obtener todos los planes de suscripción
-router.get(
-  "/subscription-plans",
-  checkAuth,
-  checkRole(["admin"]),
-  async (req, res) => {
-    try {
-      const subscriptions = await Subscription.find({ nullDate: null });
-
-      res.status(200).json({ subscriptions });
-    } catch (error) {
-      console.error("Error al obtener planes de suscripción:", error);
-      res.status(500).json({
-        error: "Error al obtener el listado de planes de suscripción",
-      });
-    }
-  }
-);
-
-// Obtener un plan de suscripción por ID
-router.get(
-  "/subscription-plan/:id",
-  checkAuth,
-  checkRole(["admin", "owner"]),
-  async (req, res) => {
-    try {
-      console.log("subscriptions/:id");
-      const subscription = await Subscription.findOne({
-        id: req.params.id,
-        nullDate: null,
-      });
-
-      if (!subscription) {
-        return res
-          .status(404)
-          .json({ error: "Plan de suscripción no encontrado" });
-      }
-
-      res.status(200).json({ subscription });
-    } catch (error) {
-      console.error("Error al obtener el plan de suscripción:", error);
-      res
-        .status(500)
-        .json({ error: "Error al obtener la información del plan" });
-    }
-  }
-);
-
-// Crear un nuevo plan de suscripción
-router.post(
-  "/subscriptions",
-  checkAuth,
-  checkRole(["admin", "owner"]),
-  async (req, res) => {
-    try {
-      const { id, name, liters, price, features, popular } = req.body;
-
-      // Verificar si ya existe
-      const existingSubscription = await Subscription.findOne({ id });
-      if (existingSubscription) {
-        return res.status(400).json({ error: "Ya existe un plan con ese ID" });
-      }
-
-      const subscription = new Subscription({
-        id,
-        name,
-        liters,
-        price,
-        features,
-        popular: popular || false,
-      });
-
-      await subscription.save();
-      res.status(201).json({ message: "Plan creado con éxito", subscription });
-    } catch (error) {
-      console.error("Error al crear plan de suscripción:", error);
-      res.status(500).json({ error: "Error al crear el plan" });
-    }
-  }
-);
-
-// Actualizar un plan de suscripción
-router.put(
-  "/subscriptions/:id",
-  checkAuth,
-  checkRole(["admin", "owner"]),
-  async (req, res) => {
-    try {
-      const { name, liters, price, features, popular } = req.body;
-
-      const subscription = await Subscription.findOne({
-        id: req.params.id,
-        nullDate: null,
-      });
-
-      if (!subscription) {
-        return res
-          .status(404)
-          .json({ error: "Plan de suscripción no encontrado" });
-      }
-
-      // Actualizar campos
-      subscription.name = name || subscription.name;
-      subscription.liters = liters || subscription.liters;
-      subscription.price = price || subscription.price;
-      subscription.features = features || subscription.features;
-
-      if (popular !== undefined) {
-        subscription.popular = popular;
-      }
-
-      await subscription.save();
-      res
-        .status(200)
-        .json({ message: "Plan actualizado con éxito", subscription });
-    } catch (error) {
-      console.error("Error al actualizar plan de suscripción:", error);
-      res.status(500).json({ error: "Error al actualizar el plan" });
-    }
-  }
-);
-
-// Eliminar un plan de suscripción (soft delete)
-router.delete(
-  "/subscriptions/:id",
-  checkAuth,
-  checkRole(["admin", "owner"]),
-  async (req, res) => {
-    try {
-      const subscription = await Subscription.findOne({
-        id: req.params.id,
-        nullDate: null,
-      });
-
-      if (!subscription) {
-        return res
-          .status(404)
-          .json({ error: "Plan de suscripción no encontrado" });
-      }
-
-      subscription.nullDate = new Date();
-      await subscription.save();
-
-      res.status(200).json({ message: "Plan eliminado con éxito" });
-    } catch (error) {
-      console.error("Error al eliminar plan de suscripción:", error);
-      res.status(500).json({ error: "Error al eliminar el plan" });
-    }
-  }
-);
+const {
+  Beer,
+  Discount,
+  Product,
+  PerfumeProduct,
+  Category,
+} = require("../models/products");
 
 /**
  * RUTAS PARA LA GESTIÓN DE DESCUENTOS/PROMOCIONES
@@ -674,6 +365,375 @@ router.get(
       res
         .status(500)
         .json({ error: "Error al obtener estadísticas de conversión" });
+    }
+  }
+);
+
+/**
+ * RUTAS PARA LA GESTIÓN DE CATEGORÍAS
+ */
+
+// Obtener todas las categorías
+router.get(
+  "/categories",
+  checkAuth,
+  checkRole(["admin", "owner"]),
+  async (req, res) => {
+    try {
+      const categories = await Category.find({ nullDate: null }).sort({
+        sortOrder: 1,
+        name: 1,
+      });
+      res.status(200).json({ categories });
+    } catch (error) {
+      console.error("Error al obtener categorías:", error);
+      res
+        .status(500)
+        .json({ error: "Error al obtener el listado de categorías" });
+    }
+  }
+);
+
+// Obtener una categoría por ID
+router.get(
+  "/categories/:id",
+  checkAuth,
+  checkRole(["admin", "owner"]),
+  async (req, res) => {
+    try {
+      const category = await Category.findOne({
+        id: req.params.id,
+        nullDate: null,
+      });
+
+      if (!category) {
+        return res.status(404).json({ error: "Categoría no encontrada" });
+      }
+
+      res.status(200).json({ category });
+    } catch (error) {
+      console.error("Error al obtener la categoría:", error);
+      res
+        .status(500)
+        .json({ error: "Error al obtener la información de la categoría" });
+    }
+  }
+);
+
+// Crear una nueva categoría
+router.post(
+  "/categories",
+  checkAuth,
+  checkRole(["admin", "owner"]),
+  async (req, res) => {
+    try {
+      const { id, name, description, icon, color, parentCategory, sortOrder } =
+        req.body;
+
+      // Verificar si ya existe
+      const existingCategory = await Category.findOne({
+        $or: [
+          { id },
+          {
+            slug: name
+              .toLowerCase()
+              .replace(/[^a-z0-9\s-]/g, "")
+              .replace(/\s+/g, "-")
+              .trim(),
+          },
+        ],
+      });
+
+      if (existingCategory) {
+        return res
+          .status(400)
+          .json({ error: "Ya existe una categoría con ese nombre o ID" });
+      }
+
+      // Generar slug automáticamente
+      const slug = name
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, "")
+        .replace(/\s+/g, "-")
+        .trim();
+
+      const category = new Category({
+        id: id || `cat-${Date.now()}`,
+        name,
+        description: description || "",
+        slug,
+        icon: icon || "",
+        color: color || "#8B4513",
+        parentCategory: parentCategory || null,
+        sortOrder: sortOrder || 0,
+      });
+
+      await category.save();
+      res.status(201).json({ message: "Categoría creada con éxito", category });
+    } catch (error) {
+      console.error("Error al crear categoría:", error);
+      res.status(500).json({ error: "Error al crear la categoría" });
+    }
+  }
+);
+
+// Actualizar una categoría
+router.put(
+  "/categories/:id",
+  checkAuth,
+  checkRole(["admin", "owner"]),
+  async (req, res) => {
+    try {
+      const {
+        name,
+        description,
+        icon,
+        color,
+        parentCategory,
+        sortOrder,
+        isActive,
+      } = req.body;
+
+      const category = await Category.findOne({
+        id: req.params.id,
+        nullDate: null,
+      });
+
+      if (!category) {
+        return res.status(404).json({ error: "Categoría no encontrada" });
+      }
+
+      // Actualizar campos
+      if (name) {
+        category.name = name;
+        category.slug = name
+          .toLowerCase()
+          .replace(/[^a-z0-9\s-]/g, "")
+          .replace(/\s+/g, "-")
+          .trim();
+      }
+
+      if (description !== undefined) category.description = description;
+      if (icon !== undefined) category.icon = icon;
+      if (color !== undefined) category.color = color;
+      if (parentCategory !== undefined)
+        category.parentCategory = parentCategory;
+      if (sortOrder !== undefined) category.sortOrder = sortOrder;
+      if (isActive !== undefined) category.isActive = isActive;
+
+      await category.save();
+      res
+        .status(200)
+        .json({ message: "Categoría actualizada con éxito", category });
+    } catch (error) {
+      console.error("Error al actualizar categoría:", error);
+      res.status(500).json({ error: "Error al actualizar la categoría" });
+    }
+  }
+);
+
+// Eliminar una categoría (soft delete)
+router.delete(
+  "/categories/:id",
+  checkAuth,
+  checkRole(["admin", "owner"]),
+  async (req, res) => {
+    try {
+      const category = await Category.findOne({
+        id: req.params.id,
+        nullDate: null,
+      });
+
+      if (!category) {
+        return res.status(404).json({ error: "Categoría no encontrada" });
+      }
+
+      // Verificar si hay productos usando esta categoría
+      const productsUsingCategory = await PerfumeProduct.find({
+        categories: category._id,
+        nullDate: null,
+      });
+
+      if (productsUsingCategory.length > 0) {
+        return res.status(400).json({
+          error: `No se puede eliminar la categoría porque ${productsUsingCategory.length} producto(s) la están usando`,
+        });
+      }
+
+      category.nullDate = new Date();
+      await category.save();
+
+      res.status(200).json({ message: "Categoría eliminada con éxito" });
+    } catch (error) {
+      console.error("Error al eliminar categoría:", error);
+      res.status(500).json({ error: "Error al eliminar la categoría" });
+    }
+  }
+);
+
+/**
+ * RUTAS PARA LA GESTIÓN DE PRODUCTOS GENERALES
+ */
+
+// Obtener todos los productos
+router.get("/", checkAuth, checkRole(["admin", "owner"]), async (req, res) => {
+  try {
+    const products = await PerfumeProduct.find({ nullDate: null });
+    res.status(200).json({ products });
+  } catch (error) {
+    console.error("Error al obtener productos:", error);
+    res.status(500).json({ error: "Error al obtener el listado de productos" });
+  }
+});
+
+// Obtener un producto por ID
+router.get(
+  "/:id",
+  checkAuth,
+  checkRole(["admin", "owner"]),
+  async (req, res) => {
+    try {
+      const product = await PerfumeProduct.findOne({
+        id: req.params.id,
+        nullDate: null,
+      });
+
+      if (!product) {
+        return res.status(404).json({ error: "Producto no encontrado" });
+      }
+
+      res.status(200).json({ product });
+    } catch (error) {
+      console.error("Error al obtener el producto:", error);
+      res
+        .status(500)
+        .json({ error: "Error al obtener la información del producto" });
+    }
+  }
+);
+
+// Crear un nuevo producto
+router.post("/", checkAuth, checkRole(["admin", "owner"]), async (req, res) => {
+  try {
+    const {
+      id,
+      name,
+      category,
+      categoryId,
+      price,
+      images,
+      description,
+      stock,
+      brand,
+      volume,
+      concentration,
+    } = req.body;
+
+    // Verificar si ya existe
+    const existingProduct = await PerfumeProduct.findOne({ id });
+    if (existingProduct) {
+      return res
+        .status(400)
+        .json({ error: "Ya existe un producto con ese ID" });
+    }
+
+    const product = new PerfumeProduct({
+      id,
+      name,
+      category,
+      categoryId,
+      price,
+      images: images || [],
+      description,
+      stock,
+      brand,
+      volume,
+      concentration,
+    });
+
+    await product.save();
+    res.status(201).json({ message: "Producto creado con éxito", product });
+  } catch (error) {
+    console.error("Error al crear producto:", error);
+    res.status(500).json({ error: "Error al crear el producto" });
+  }
+});
+
+// Actualizar un producto
+router.put(
+  "/:id",
+  checkAuth,
+  checkRole(["admin", "owner"]),
+  async (req, res) => {
+    try {
+      const {
+        name,
+        category,
+        categoryId,
+        price,
+        images,
+        description,
+        stock,
+        brand,
+        volume,
+        concentration,
+      } = req.body;
+
+      const product = await PerfumeProduct.findOne({
+        id: req.params.id,
+        nullDate: null,
+      });
+
+      if (!product) {
+        return res.status(404).json({ error: "Producto no encontrado" });
+      }
+
+      // Actualizar campos
+      product.name = name || product.name;
+      product.category = category || product.category;
+      product.categoryId = categoryId || product.categoryId;
+      product.price = price !== undefined ? price : product.price;
+      product.images = images !== undefined ? images : product.images;
+      product.description = description || product.description;
+      product.stock = stock !== undefined ? stock : product.stock;
+      product.brand = brand || product.brand;
+      product.volume = volume || product.volume;
+      product.concentration = concentration || product.concentration;
+
+      await product.save();
+      res
+        .status(200)
+        .json({ message: "Producto actualizado con éxito", product });
+    } catch (error) {
+      console.error("Error al actualizar producto:", error);
+      res.status(500).json({ error: "Error al actualizar el producto" });
+    }
+  }
+);
+
+// Eliminar un producto (soft delete)
+router.delete(
+  "/:id",
+  checkAuth,
+  checkRole(["admin", "owner"]),
+  async (req, res) => {
+    try {
+      const product = await PerfumeProduct.findOne({
+        id: req.params.id,
+        nullDate: null,
+      });
+
+      if (!product) {
+        return res.status(404).json({ error: "Producto no encontrado" });
+      }
+
+      product.nullDate = new Date();
+      await product.save();
+
+      res.status(200).json({ message: "Producto eliminado con éxito" });
+    } catch (error) {
+      console.error("Error al eliminar producto:", error);
+      res.status(500).json({ error: "Error al eliminar el producto" });
     }
   }
 );

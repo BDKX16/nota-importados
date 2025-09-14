@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { User, LogOut, ShoppingCart } from "lucide-react";
+import { User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -30,23 +30,28 @@ export default function UserNav() {
   };
 
   return (
-    <div className="flex items-center gap-4">
-      <Link href="/checkout" className="text-sm font-medium hover:text-primary">
-        <ShoppingCart className="h-5 w-5" />
-        <span className="sr-only">Carrito</span>
-      </Link>
-
+    <div className="flex items-center">
       {isAuthenticated ? (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-100 text-amber-700">
-                <User className="h-4 w-4" />
+            <Button
+              variant="ghost"
+              className="relative hover:bg-primary/10 hover:text-primary transition-all duration-300 text-sm font-medium px-4 py-6 rounded-full"
+            >
+              <div className="flex items-center gap-2">
+                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-accent/20 text-primary">
+                  <User className="h-4 w-4" />
+                </div>
+                <span className="hidden md:inline">Mi cuenta</span>
               </div>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56" align="end" forceMount>
-            <DropdownMenuLabel className="font-normal">
+          <DropdownMenuContent
+            className="w-56 bg-white/30 backdrop-blur-xl border border-white/30 rounded-2xl shadow-2xl p-2"
+            align="end"
+            forceMount
+          >
+            <DropdownMenuLabel className="font-normal py-3 px-3">
               <div className="flex flex-col space-y-1">
                 <p className="text-sm font-medium leading-none">
                   {user?.name || "Usuario"}
@@ -56,51 +61,43 @@ export default function UserNav() {
                 </p>
               </div>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
+            <DropdownMenuSeparator className="mx-2" />
+            <DropdownMenuItem
+              asChild
+              className="py-3 px-3 rounded-xl mx-1 my-1 h-12 flex items-center"
+            >
               <Link href="/perfil">Mi perfil</Link>
             </DropdownMenuItem>
-            <DropdownMenuItem asChild>
+            <DropdownMenuItem
+              asChild
+              className="py-3 px-3 rounded-xl mx-1 my-1 h-12 flex items-center"
+            >
               <Link href="/perfil/pedidos">Mis pedidos</Link>
             </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href="/perfil/suscripciones">Mis suscripciones</Link>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
+
+            <DropdownMenuSeparator className="mx-2" />
             <DropdownMenuItem
-              className="text-red-500 cursor-pointer"
+              className="text-red-500 cursor-pointer py-3 px-3 rounded-xl mx-1 my-1 h-12 flex items-center"
               onClick={handleLogout}
             >
-              <LogOut className="mr-2 h-4 w-4" />
+              <LogOut className="mr-2 h-4 w-4 text-red-500" />
               <span>Cerrar sesión</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       ) : (
-        <>
-          {/* Versión desktop - botón completo */}
-          <Button
-            variant="ghost"
-            size="sm"
-            asChild
-            className="rounded-full hidden md:flex"
-          >
-            <Link href="/auth/login">Iniciar sesión</Link>
-          </Button>
-
-          {/* Versión mobile - solo icono */}
-          <Button
-            variant="ghost"
-            size="sm"
-            asChild
-            className="rounded-full md:hidden h-8 w-8 p-0"
-          >
-            <Link href="/auth/login">
+        <Button
+          variant="ghost"
+          asChild
+          className="hover:bg-primary/10 hover:text-primary transition-all duration-300 text-sm font-medium px-4 py-6 rounded-full"
+        >
+          <Link href="/auth/login">
+            <div className="flex items-center gap-2">
               <User className="h-4 w-4" />
-              <span className="sr-only">Iniciar sesión</span>
-            </Link>
-          </Button>
-        </>
+              <span className="hidden md:inline">Iniciar sesión</span>
+            </div>
+          </Link>
+        </Button>
       )}
     </div>
   );

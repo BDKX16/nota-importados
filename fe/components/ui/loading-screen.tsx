@@ -32,28 +32,15 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({
         {/* Spinner de carga elegante */}
         <div className="mb-6">
           <div className="relative w-16 h-16 mx-auto">
-            <div className="absolute inset-0 border-4 border-white/20 rounded-full"></div>
-            <div className="absolute inset-0 border-4 border-transparent border-t-white rounded-full animate-spin"></div>
+            <div className="absolute inset-0 border-4 border-primary/20 rounded-full"></div>
+            <div className="absolute inset-0 border-4 border-transparent border-t-primary rounded-full animate-spin"></div>
           </div>
         </div>
 
         {/* Mensaje */}
-        <p className="text-white/90 text-lg font-light tracking-wide">
+        <p className="text-primary/90 text-lg font-light tracking-wide">
           {message}
         </p>
-
-        {/* Puntos animados */}
-        <div className="flex justify-center space-x-1 mt-4">
-          <div className="w-2 h-2 bg-white/60 rounded-full animate-pulse"></div>
-          <div
-            className="w-2 h-2 bg-white/60 rounded-full animate-pulse"
-            style={{ animationDelay: "0.2s" }}
-          ></div>
-          <div
-            className="w-2 h-2 bg-white/60 rounded-full animate-pulse"
-            style={{ animationDelay: "0.4s" }}
-          ></div>
-        </div>
       </div>
     </div>
   );

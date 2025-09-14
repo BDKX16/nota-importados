@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
+// Importar el modelo Category existente
+const Category = require("./category");
+
 // Esquema para variantes de productos (tallas, colores, etc.)
 const variantSchema = new Schema({
   name: {
@@ -401,7 +404,188 @@ discountSchema.methods.canApplyTo = function (productId, categoryId, brandId) {
 const Product = mongoose.model("Product", productSchema);
 const Discount = mongoose.model("Discount", discountSchema);
 
+// Esquema específico para cervezas (compatibilidad con código existente)
+const beerSchema = new Schema(
+  {
+    id: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    name: {
+      type: String,
+      required: true,
+    },
+    type: {
+      type: String,
+      required: true,
+    },
+    typeId: {
+      type: String,
+      required: true,
+      enum: ["golden", "amber", "dark", "wheat", "ipa", "lager", "ale"],
+    },
+    price: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+    image: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+      required: true,
+    },
+    stock: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+    nullDate: {
+      type: Date,
+      default: null,
+    },
+  },
+  {
+    timestamps: true,
+    collection: "beers",
+  }
+);
+
+// Esquema simplificado para productos de perfumería
+const perfumeProductSchema = new Schema(
+  {
+    id: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    description: {
+      type: String,
+      required: false,
+      default: "",
+    },
+    price: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+    images: {
+      type: [String],
+      required: false,
+      default: [],
+    },
+    // Tipo del producto (único)
+    type: {
+      type: String,
+      required: true,
+      enum: [
+        "perfume",
+        "cologne",
+        "body-spray",
+        "gift-set",
+        "aftershave",
+        "eau-de-toilette",
+        "eau-de-parfum",
+      ],
+      default: "perfume",
+    },
+    // Categorías múltiples (referencias a Category)
+    categories: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Category",
+      },
+    ],
+    // Categorías como strings (para compatibilidad)
+    categoryNames: {
+      type: [String],
+      required: false,
+      default: [],
+    },
+    // Campo legacy para compatibilidad
+    category: {
+      type: String,
+      required: false,
+      default: "General",
+    },
+    categoryId: {
+      type: String,
+      required: false,
+      default: "general",
+    },
+    brand: {
+      type: String,
+      required: false,
+      default: "",
+    },
+    volume: {
+      type: String,
+      required: false,
+      default: "",
+    },
+    concentration: {
+      type: String,
+      required: false,
+      default: "",
+    },
+    sku: {
+      type: String,
+      required: false,
+      default: function () {
+        return `PROD-${Date.now()}`;
+      },
+    },
+    stock: {
+      type: Number,
+      required: true,
+      min: 0,
+      default: 0,
+    },
+    slug: {
+      type: String,
+      required: false,
+      default: function () {
+        return this.name
+          .toLowerCase()
+          .replace(/[^a-z0-9\s-]/g, "")
+          .replace(/\s+/g, "-")
+          .trim();
+      },
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+    isFeatured: {
+      type: Boolean,
+      default: false,
+    },
+    nullDate: {
+      type: Date,
+      default: null,
+    },
+  },
+  {
+    timestamps: true,
+    collection: "perfume_products",
+  }
+);
+
+const Beer = mongoose.model("Beer", beerSchema);
+const PerfumeProduct = mongoose.model("PerfumeProduct", perfumeProductSchema);
+
 module.exports = {
   Product,
   Discount,
+  Beer,
+  PerfumeProduct,
+  Category, // Importado desde ./category
 };

@@ -63,9 +63,9 @@ export default function UserOrdersPage() {
         try {
           const response = await callEndpoint(getMyOrders());
           if (response && response.data && response.data.data) {
-            // Filtrar solo pedidos de cerveza (excluir suscripciones)
+            // Filtrar solo pedidos de productos (excluir suscripciones)
             const allOrders = response.data.data.data;
-            const beerOrders = allOrders.filter((order) => {
+            const productOrders = allOrders.filter((order) => {
               // Filtrar por tipo de orden o por productos
               const isSubscription =
                 order.orderType?.toLowerCase().includes("suscripción") ||
@@ -79,8 +79,8 @@ export default function UserOrdersPage() {
               return !isSubscription;
             });
 
-            setOrders(beerOrders);
-            setFilteredOrders(beerOrders);
+            setOrders(productOrders);
+            setFilteredOrders(productOrders);
           }
         } catch (error) {
           if (error.name !== "CanceledError" && error.name !== "AbortError") {
@@ -462,13 +462,13 @@ export default function UserOrdersPage() {
         ) {
           params.set("product", item.productId || item.id);
           params.set("type", "subscription");
-          if (item.beerType) {
-            params.set("beer-type", item.beerType);
+          if (item.productType) {
+            params.set("product-type", item.productType);
           }
         } else {
-          // Es una cerveza
+          // Es un producto
           params.set("product", item.productId || item.id);
-          params.set("type", "beer");
+          params.set("type", "product");
         }
 
         // Redirigir al checkout con los parámetros
@@ -484,16 +484,16 @@ export default function UserOrdersPage() {
           item.type?.toLowerCase().includes("subscription") ||
           item.type?.toLowerCase().includes("suscripción")
             ? "subscription"
-            : "beer",
+            : "product",
         quantity: item.quantity || 1,
         product: {
           id: item.productId || item.id,
           name: item.name,
           price: item.price,
-          type: item.type || "beer",
+          type: item.type || "product",
           image: item.image || "/placeholder.jpg",
           stock: 100, // Valor por defecto
-          ...(item.beerType && { beerType: item.beerType }),
+          ...(item.productType && { productType: item.productType }),
         },
       }));
 
@@ -682,8 +682,8 @@ export default function UserOrdersPage() {
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50">
       {/* Header */}
       <ProfileHeader
-        title="Mis Pedidos de Cerveza"
-        subtitle="Gestiona y revisa el historial de todos tus pedidos de cerveza"
+        title="Mis Pedidos"
+        subtitle="Gestiona y revisa el historial de todos tus pedidos de productos"
         backUrl="/perfil"
         backLabel="Volver al Perfil"
       />
@@ -1033,15 +1033,15 @@ export default function UserOrdersPage() {
               <Package className="h-16 w-16 text-gray-300 mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
                 {statusFilter === "all"
-                  ? "No tienes pedidos de cerveza aún"
-                  : `No tienes pedidos de cerveza ${statusOptions
+                  ? "No tienes pedidos aún"
+                  : `No tienes pedidos ${statusOptions
                       .find((o) => o.value === statusFilter)
                       ?.label.toLowerCase()}`}
               </h3>
               <p className="text-gray-600 mb-6">
                 {statusFilter === "all"
-                  ? "¡Explora nuestras cervezas y haz tu primer pedido!"
-                  : "Prueba con un filtro diferente o explora nuestras cervezas."}
+                  ? "¡Explora nuestros productos y haz tu primer pedido!"
+                  : "Prueba con un filtro diferente o explora nuestros productos."}
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 {statusFilter !== "all" && (
@@ -1050,12 +1050,12 @@ export default function UserOrdersPage() {
                     onClick={() => setStatusFilter("all")}
                     className="border-amber-300 hover:bg-amber-50"
                   >
-                    Ver todos los pedidos de cerveza
+                    Ver todos los pedidos
                   </Button>
                 )}
                 <Link href="/productos">
                   <Button className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white">
-                    Explorar Cervezas
+                    Explorar Productos
                   </Button>
                 </Link>
               </div>
@@ -1210,7 +1210,9 @@ export default function UserOrdersPage() {
                               {item.name || item.title}
                             </p>
                             <p className="text-sm text-gray-600">
-                              {item.type === "beer" ? "Cerveza" : "Suscripción"}{" "}
+                              {item.type === "product"
+                                ? "Producto"
+                                : "Suscripción"}{" "}
                               - Cantidad: {item.quantity || 1}
                             </p>
                             {item.description && (

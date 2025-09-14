@@ -60,6 +60,10 @@ const categorySchema = new Schema(
       type: [String],
       required: false,
     },
+    nullDate: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true,

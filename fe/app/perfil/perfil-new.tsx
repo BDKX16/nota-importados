@@ -6,7 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { updateUserProfile, getMyOrders } from "@/services/private";
 import {
   getSubscriptionPlans,
-  getBeers,
+  getTopProducts,
   getUserSubscriptions,
 } from "@/services/public";
 import useFetchAndLoad from "@/hooks/useFetchAndLoad";
@@ -37,7 +37,6 @@ import {
   Settings,
   ShoppingBag,
   CreditCard,
-  Beer,
   Crown,
   ArrowRight,
   Shield,
@@ -73,7 +72,7 @@ export default function ProfilePage() {
     useState(false);
   const [userSubscriptionsLoaded, setUserSubscriptionsLoaded] = useState(false);
   const [subscriptions, setSubscriptions] = useState([]);
-  const [beers, setBeers] = useState([]);
+  const [products, setProducts] = useState([]);
   const [contentLoading, setContentLoading] = useState(false);
   const [contentLoaded, setContentLoaded] = useState(false);
 
@@ -117,10 +116,10 @@ export default function ProfilePage() {
           setOrdersLoading(true);
           const response = await callEndpoint(getMyOrders());
           if (response && response.data && response.data.data) {
-            // Filtrar pedidos de cerveza (excluir suscripciones) y ordenar por fecha
+            // Filtrar pedidos generales (excluir suscripciones) y ordenar por fecha
             const allOrders =
               response.data.data.data || response.data.data || [];
-            const beerOrders = allOrders.filter((order) => {
+            const regularOrders = allOrders.filter((order) => {
               const isSubscription =
                 order.orderType?.toLowerCase().includes("suscripción") ||
                 order.orderType?.toLowerCase().includes("subscription") ||
@@ -134,7 +133,7 @@ export default function ProfilePage() {
             });
 
             // Ordenar por fecha (más reciente primero)
-            const sortedOrders = beerOrders.sort(
+            const sortedOrders = regularOrders.sort(
               (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
             );
             setOrders(sortedOrders);
@@ -272,10 +271,10 @@ export default function ProfilePage() {
 
     setContentLoading(true);
     try {
-      // Cargar suscripciones y cervezas en paralelo
-      const [subscriptionsResponse, beersResponse] = await Promise.all([
+      // Cargar suscripciones y productos en paralelo
+      const [subscriptionsResponse, productsResponse] = await Promise.all([
         callEndpoint(getSubscriptionPlans()),
-        callEndpoint(getBeers()),
+        callEndpoint(getTopProducts()),
       ]);
 
       // Guardar suscripciones si están disponibles
@@ -287,15 +286,15 @@ export default function ProfilePage() {
         console.log("Suscripciones cargadas:", subscriptionsResponse.data);
       }
 
-      // Guardar cervezas si están disponibles
-      console.log(beersResponse);
+      // Guardar productos si están disponibles
+      console.log(productsResponse);
       if (
-        beersResponse?.data &&
-        beersResponse?.data?.beers &&
-        beersResponse.data.beers.length > 0
+        productsResponse?.data &&
+        productsResponse?.data?.data &&
+        productsResponse.data.data.length > 0
       ) {
-        setBeers(beersResponse.data.beers);
-        console.log("Cervezas cargadas:", beersResponse.data);
+        setProducts(productsResponse.data.data);
+        console.log("Productos cargados:", productsResponse.data);
       }
 
       setContentLoaded(true);
@@ -347,7 +346,7 @@ export default function ProfilePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50">
+    <div className="min-h-screen bg-gradient-to-br from-background via-card to-secondary/20">
       {/* Header con información del usuario */}
       <ProfileHeader
         backUrl="/"
@@ -360,21 +359,21 @@ export default function ProfilePage() {
       <div className="container py-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Información Personal */}
-          <Card className="bg-white/70 backdrop-blur-sm border-amber-200 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
+          <Card className="bg-card/80 backdrop-blur-md border-border shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden group">
             <CardHeader
               className="pb-4 cursor-pointer md:cursor-default"
               onClick={() => window.innerWidth < 768 && toggleCard("personal")}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-blue-100 rounded-lg">
-                    <User className="h-5 w-5 text-blue-600" />
+                  <div className="p-3 bg-primary/10 rounded-xl border border-primary/20 group-hover:bg-primary/15 transition-colors">
+                    <User className="h-6 w-6 text-primary" />
                   </div>
                   <div>
-                    <CardTitle className="text-xl">
+                    <CardTitle className="text-xl text-foreground font-serif">
                       Información Personal
                     </CardTitle>
-                    <CardDescription className="md:block hidden">
+                    <CardDescription className="md:block hidden text-muted-foreground">
                       Gestiona tus datos de perfil
                     </CardDescription>
                   </div>
@@ -388,7 +387,7 @@ export default function ProfilePage() {
                       }}
                       variant="outline"
                       size="sm"
-                      className="border-amber-300 hover:bg-amber-50"
+                      className="border-primary/30 hover:bg-primary/10 text-primary rounded-xl"
                     >
                       <Edit className="mr-2 h-4 w-4" />
                       Editar
@@ -401,7 +400,7 @@ export default function ProfilePage() {
                           handleSave();
                         }}
                         size="sm"
-                        className="bg-green-600 hover:bg-green-700"
+                        className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl shadow-lg"
                         disabled={isUpdating}
                       >
                         {isUpdating ? (
@@ -418,6 +417,7 @@ export default function ProfilePage() {
                         }}
                         variant="outline"
                         size="sm"
+                        className="border-border hover:bg-muted rounded-xl"
                         disabled={isUpdating}
                       >
                         <X className="mr-2 h-4 w-4" />
@@ -515,106 +515,23 @@ export default function ProfilePage() {
             </div>
           </Card>
 
-          {/* Mis Suscripciones */}
-          <Card className="bg-white/70 backdrop-blur-sm border-amber-200 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col h-full overflow-hidden">
-            <CardHeader
-              className="pb-4 cursor-pointer md:cursor-default"
-              onClick={() =>
-                window.innerWidth < 768 && toggleCard("subscriptions")
-              }
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-green-100 rounded-lg">
-                    <CreditCard className="h-5 w-5 text-green-600" />
-                  </div>
-                  <div>
-                    <CardTitle className="text-xl">Mis Suscripciones</CardTitle>
-                    <CardDescription className="md:block hidden">
-                      Gestiona tus planes de cerveza mensuales
-                    </CardDescription>
-                  </div>
-                </div>
-
-                {/* Icono de acordeón solo en mobile */}
-                <div className="md:hidden">
-                  {expandedCards.includes("subscriptions") ? (
-                    <ChevronUp className="h-4 w-4 text-gray-400" />
-                  ) : (
-                    <ChevronDown className="h-4 w-4 text-gray-400" />
-                  )}
-                </div>
-              </div>
-            </CardHeader>
-
-            {/* Contenido colapsable en mobile, siempre visible en desktop */}
-            <div
-              className={`md:block transition-all duration-300 flex-1 flex flex-col ${
-                expandedCards.includes("subscriptions") ? "block" : "hidden"
-              }`}
-            >
-              <CardContent className="flex-1 flex flex-col">
-                <div className="flex-1 space-y-4">
-                  <p className="text-gray-600">
-                    Revisa y gestiona tus suscripciones activas e históricas.
-                  </p>
-
-                  <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                    <div className="flex items-center gap-2 mb-2">
-                      <CheckCircle className="h-4 w-4 text-green-600" />
-                      <span className="font-medium text-green-800">
-                        {userSubscriptionsLoading
-                          ? "Cargando..."
-                          : `${userSubscriptions.length} Suscripciones Activas`}
-                      </span>
-                    </div>
-                    <p className="text-sm text-green-700">
-                      {userSubscriptions.length > 0
-                        ? "Revisa tus planes activos y próximos envíos"
-                        : "No tienes suscripciones activas"}
-                    </p>
-                    {userSubscriptions.length > 0 && (
-                      <div className="mt-2 space-y-1">
-                        {userSubscriptions.slice(0, 2).map((subscription) => (
-                          <div
-                            key={subscription._id}
-                            className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded"
-                          >
-                            {subscription.name} - {subscription.beerName}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div className="mt-4">
-                  <Link href="/perfil/suscripciones">
-                    <Button className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white border-0">
-                      Ver Suscripciones
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
-                  </Link>
-                </div>
-              </CardContent>
-            </div>
-          </Card>
-
           {/* Mis Pedidos */}
-          <Card className="bg-white/70 backdrop-blur-sm border-amber-200 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col h-full overflow-hidden">
+          <Card className="bg-card/80 backdrop-blur-md border-border shadow-xl hover:shadow-2xl transition-all duration-500 flex flex-col h-full overflow-hidden group">
             <CardHeader
               className="pb-4 cursor-pointer md:cursor-default"
               onClick={() => window.innerWidth < 768 && toggleCard("orders")}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-purple-100 rounded-lg">
-                    <ShoppingBag className="h-5 w-5 text-purple-600" />
+                  <div className="p-3 bg-accent/10 rounded-xl border border-accent/20 group-hover:bg-accent/15 transition-colors">
+                    <ShoppingBag className="h-6 w-6 text-accent" />
                   </div>
                   <div>
-                    <CardTitle className="text-xl">Mis Pedidos</CardTitle>
-                    <CardDescription className="md:block hidden">
-                      Historial de tus pedidos de cerveza
+                    <CardTitle className="text-xl text-foreground font-serif">
+                      Mis Pedidos
+                    </CardTitle>
+                    <CardDescription className="md:block hidden text-muted-foreground">
+                      Historial de tus pedidos
                     </CardDescription>
                   </div>
                 </div>
@@ -638,9 +555,8 @@ export default function ProfilePage() {
             >
               <CardContent className="flex-1 flex flex-col">
                 <div className="flex-1 space-y-4">
-                  <p className="text-gray-600">
-                    Consulta el estado e historial de todos tus pedidos de
-                    cerveza.
+                  <p className="text-muted-foreground">
+                    Consulta el estado e historial de todos tus pedidos.
                   </p>
 
                   {ordersLoading ? (
@@ -962,11 +878,9 @@ export default function ProfilePage() {
                   ) : (
                     <div className="text-center py-6">
                       <Package className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-                      <p className="text-gray-500">
-                        No tienes pedidos de cerveza aún
-                      </p>
+                      <p className="text-gray-500">No tienes pedidos aún</p>
                       <p className="text-sm text-gray-400">
-                        ¡Explora nuestras cervezas y haz tu primer pedido!
+                        ¡Explora nuestros productos y haz tu primer pedido!
                       </p>
                     </div>
                   )}
@@ -977,9 +891,9 @@ export default function ProfilePage() {
                   <Link href="/perfil/pedidos">
                     <Button
                       variant="outline"
-                      className="w-full border-purple-300 hover:bg-purple-50 bg-transparent"
+                      className="w-full border-primary/30 hover:bg-primary/10 text-primary rounded-xl font-medium transition-all duration-300"
                     >
-                      Ver Todos los Pedidos de Cerveza
+                      Ver Todos los Pedidos
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
                   </Link>
@@ -987,24 +901,27 @@ export default function ProfilePage() {
               </CardContent>
             </div>
           </Card>
+        </div>
 
+        {/* Card de productos/administrador que ocupa todo el ancho */}
+        <div className="mt-6">
           {/* Contenido Condicional - Panel Admin o Promocional */}
           {isAdmin ? (
-            <Card className="bg-gradient-to-br from-amber-100 to-orange-100 border-amber-300 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col h-full overflow-hidden">
+            <Card className="bg-gradient-to-br from-secondary/20 to-accent/20 border-border shadow-xl hover:shadow-2xl transition-all duration-500 flex flex-col h-full overflow-hidden group">
               <CardHeader
                 className="pb-4 cursor-pointer md:cursor-default"
                 onClick={() => window.innerWidth < 768 && toggleCard("admin")}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-amber-200 rounded-lg">
-                      <LayoutDashboard className="h-5 w-5 text-amber-700" />
+                    <div className="p-3 bg-primary/10 rounded-xl border border-primary/20 group-hover:bg-primary/15 transition-colors">
+                      <LayoutDashboard className="h-6 w-6 text-primary" />
                     </div>
                     <div>
-                      <CardTitle className="text-xl text-amber-900">
+                      <CardTitle className="text-xl text-foreground font-serif">
                         Panel de Administración
                       </CardTitle>
-                      <CardDescription className="text-amber-700 md:block hidden">
+                      <CardDescription className="text-muted-foreground md:block hidden">
                         Acceso al área administrativa
                       </CardDescription>
                     </div>
@@ -1013,9 +930,9 @@ export default function ProfilePage() {
                   {/* Icono de acordeón solo en mobile */}
                   <div className="md:hidden">
                     {expandedCards.includes("admin") ? (
-                      <ChevronUp className="h-4 w-4 text-amber-600" />
+                      <ChevronUp className="h-4 w-4 text-muted-foreground" />
                     ) : (
-                      <ChevronDown className="h-4 w-4 text-amber-600" />
+                      <ChevronDown className="h-4 w-4 text-muted-foreground" />
                     )}
                   </div>
                 </div>
@@ -1064,30 +981,30 @@ export default function ProfilePage() {
               </div>
             </Card>
           ) : (
-            <Card className="bg-white/70 backdrop-blur-sm border-amber-200 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col h-full overflow-hidden">
+            <Card className="bg-card/80 backdrop-blur-md border-border shadow-xl hover:shadow-2xl transition-all duration-500 flex flex-col h-full overflow-hidden group">
               <CardHeader
                 className="pb-4 cursor-pointer md:cursor-default"
                 onClick={() => window.innerWidth < 768 && toggleCard("promo")}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-orange-100 rounded-lg">
-                      <Beer className="h-5 w-5 text-orange-600" />
+                    <div className="p-3 bg-secondary/20 rounded-xl border border-secondary/30 group-hover:bg-secondary/25 transition-colors">
+                      <ShoppingBag className="h-6 w-6 text-secondary-foreground" />
                     </div>
                     <div>
-                      <CardTitle className="text-xl">
+                      <CardTitle className="text-xl text-foreground font-serif">
                         {userSubscriptions.length > 0
                           ? "Mis Suscripciones"
                           : subscriptions.length > 0
                           ? "Planes de Suscripción"
-                          : "Cervezas Artesanales"}
+                          : "Productos Destacados"}
                       </CardTitle>
-                      <CardDescription className="md:block hidden">
+                      <CardDescription className="md:block hidden text-muted-foreground">
                         {userSubscriptions.length > 0
                           ? "Gestiona tus suscripciones activas"
                           : subscriptions.length > 0
                           ? "Descubre nuestros planes con descuentos exclusivos"
-                          : "Explora nuestra selección de cervezas premium"}
+                          : "Explora nuestra selección de productos premium"}
                       </CardDescription>
                     </div>
                   </div>
@@ -1147,7 +1064,7 @@ export default function ProfilePage() {
                       </div>
                       <div className="mt-4">
                         <Link href="/perfil/suscripciones">
-                          <Button className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white border-0">
+                          <Button className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground border-0 rounded-xl shadow-lg font-medium transition-all duration-300">
                             <Crown className="h-4 w-4 mr-2" />
                             Gestionar Suscripciones
                             <ArrowRight className="h-4 w-4 ml-2" />
@@ -1183,7 +1100,7 @@ export default function ProfilePage() {
                       </div>
                       <div className="mt-4">
                         <Link href="/#suscripciones">
-                          <Button className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white border-0">
+                          <Button className="w-full bg-gradient-to-r from-secondary to-accent hover:from-secondary/90 hover:to-accent/90 text-secondary-foreground border-0 rounded-xl shadow-lg font-medium transition-all duration-300">
                             <Crown className="h-4 w-4 mr-2" />
                             Ver Planes de Suscripción
                             <ArrowRight className="h-4 w-4 ml-2" />
@@ -1191,43 +1108,43 @@ export default function ProfilePage() {
                         </Link>
                       </div>
                     </>
-                  ) : beers.length > 0 ? (
-                    // Mostrar cervezas como fallback
+                  ) : products.length > 0 ? (
+                    // Mostrar productos como fallback
                     <>
                       <div className="flex-1 space-y-3">
-                        {beers.slice(0, 2).map((beer) => (
+                        {products.slice(0, 2).map((product) => (
                           <div
-                            key={beer._id}
-                            className="p-4 bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg border border-amber-200"
+                            key={product._id}
+                            className="p-4 bg-gradient-to-br from-secondary/10 to-accent/10 rounded-xl border border-secondary/20 hover:border-secondary/30 transition-all duration-300"
                           >
                             <div className="flex items-start gap-3">
-                              <div className="text-2xl">🍺</div>
+                              <div className="text-2xl">✨</div>
                               <div className="flex-1">
                                 <div className="flex items-center justify-between mb-1">
-                                  <h3 className="font-semibold text-amber-800 text-sm">
-                                    {beer.name}
+                                  <h3 className="font-semibold text-foreground text-sm font-serif">
+                                    {product.name}
                                   </h3>
-                                  <Badge className="bg-amber-600 text-white text-xs">
-                                    ${beer.price?.toLocaleString()}
+                                  <Badge className="bg-primary text-primary-foreground text-xs px-2 py-1 rounded-lg">
+                                    ${product.price?.toLocaleString()}
                                   </Badge>
                                 </div>
-                                <p className="text-xs text-amber-600 mb-2">
-                                  {beer.type}
+                                <p className="text-xs text-accent-foreground mb-2 font-medium">
+                                  {product.category?.name || product.category}
                                 </p>
-                                <p className="text-xs text-gray-600 line-clamp-2">
-                                  {beer.description}
+                                <p className="text-xs text-muted-foreground line-clamp-2">
+                                  {product.description}
                                 </p>
-                                {beer.stock !== undefined && (
+                                {product.stock !== undefined && (
                                   <div className="mt-2">
                                     <span
-                                      className={`text-xs px-2 py-1 rounded-full ${
-                                        beer.stock > 0
+                                      className={`text-xs px-2 py-1 rounded-full font-medium ${
+                                        product.stock > 0
                                           ? "bg-green-100 text-green-700"
                                           : "bg-red-100 text-red-700"
                                       }`}
                                     >
-                                      {beer.stock > 0
-                                        ? `${beer.stock} disponibles`
+                                      {product.stock > 0
+                                        ? `${product.stock} disponibles`
                                         : "Agotado"}
                                     </span>
                                   </div>
@@ -1238,12 +1155,12 @@ export default function ProfilePage() {
                         ))}
                       </div>
                       <div className="mt-4">
-                        <Link href="/productos?category=beer">
+                        <Link href="/productos">
                           <Button
                             variant="outline"
-                            className="w-full border-amber-300 hover:bg-amber-50 bg-transparent"
+                            className="w-full border-primary/30 hover:bg-primary/10 text-primary rounded-xl font-medium transition-all duration-300"
                           >
-                            Ver Todas las Cervezas
+                            Ver Todos los Productos
                             <ArrowRight className="ml-2 h-4 w-4" />
                           </Button>
                         </Link>
@@ -1252,15 +1169,15 @@ export default function ProfilePage() {
                   ) : (
                     // Estado sin contenido
                     <div className="flex-1 flex flex-col justify-center items-center text-center py-6">
-                      <div className="text-3xl mb-3">🍺</div>
-                      <p className="text-gray-500 text-sm mb-3">
+                      <div className="text-3xl mb-3">✨</div>
+                      <p className="text-muted-foreground text-sm mb-3">
                         Estamos preparando contenido especial para ti
                       </p>
                       <Button
                         variant="outline"
                         onClick={() => loadPromotionalContent()}
                         disabled={contentLoading}
-                        className="border-amber-300 hover:bg-amber-50 text-sm"
+                        className="border-primary/30 hover:bg-primary/10 text-primary rounded-xl"
                       >
                         {contentLoading ? "Cargando..." : "Actualizar"}
                       </Button>

@@ -23,7 +23,7 @@ export const login = (username, password) => {
   return {
     call: axios
       .post(
-        process.env.NEXT_PUBLIC_API_URL + "/login",
+        process.env.NEXT_PUBLIC_API_URL + "/users/login",
         { email: username, password },
         { signal: controller.signal }
       )
@@ -39,7 +39,7 @@ export const register = (name, username, password, phone, address) => {
   return {
     call: axios
       .post(
-        process.env.NEXT_PUBLIC_API_URL + "/register",
+        process.env.NEXT_PUBLIC_API_URL + "/users/register",
         {
           name: name,
           email: username,

@@ -31,6 +31,7 @@ app.use("/api/admin/payments", require("./routes/admin-payments.js"));
 app.use("/api/admin/products", require("./routes/admin-products.js"));
 app.use("/api/admin", require("./routes/configuration.js"));
 app.use("/api/admin/emails", require("./routes/admin-emails.js"));
+app.use("/api/images", require("./routes/images.js"));
 
 module.exports = app;
 

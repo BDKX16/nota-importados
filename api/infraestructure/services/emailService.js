@@ -3,14 +3,14 @@ const path = require("path");
 const fs = require("fs");
 
 /**
- * Servicio de envío de emails para Luna Brew House
+ * Servicio de envío de emails para Nota Importados
  * Configurado con Nodemailer y plantillas HTML personalizadas
  */
 class EmailService {
   constructor() {
     this.transporter = null;
     this.from =
-      process.env.EMAIL_FROM || "Luna Brew House <noreply@lunabrewhouse.com>";
+      process.env.EMAIL_FROM || "Nota Importados <noreply@notaimportados.com>";
     this.initializeTransporter();
   }
 
@@ -260,7 +260,7 @@ class EmailService {
           color: #1e40af;
         }
         
-        .beer-info {
+        .product-info {
           background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%);
           border-radius: 8px;
           padding: 20px;
@@ -268,7 +268,7 @@ class EmailService {
           text-align: center;
         }
         
-        .beer-emoji {
+        .product-emoji {
           font-size: 48px;
           margin-bottom: 10px;
         }
@@ -299,8 +299,8 @@ class EmailService {
       <div class="email-container">
         <div class="header">
           <div class="logo">🍺</div>
-          <h1>Luna Brew House</h1>
-          <p>Cervezas artesanales de calidad premium</p>
+          <h1>Nota Importados</h1>
+          <p>Productos importados de calidad premium</p>
         </div>
         
         <div class="content">
@@ -308,17 +308,17 @@ class EmailService {
         </div>
         
         <div class="footer">
-          <p><strong>Luna Brew House</strong></p>
- M          <p>📍 Avenida Pedro Luro 2514</p>
-          <p>📞 +54 (223) 634-4785 | ✉️ lunabrewhouse@gmail.com</p>
+          <p><strong>Nota Importados</strong></p>
+          <p>📍 Buenos Aires, Argentina</p>
+          <p>📞 +54 (11) 1234-5678 | ✉️ info@notaimportados.com</p>
           
           <div class="social-links">
-            <a href="https://www.instagram.com/lunabrewhouse?igsh=MW9rNTB0eWszNHluMQ==" target="_blank">Instagram</a>
+            <a href="#" target="_blank">Instagram</a>
           </div>
           
           <div class="divider"></div>
           <p style="font-size: 12px; opacity: 0.7;">
-            Este email fue enviado porque tienes una cuenta en Luna Brew House.<br>
+            Este email fue enviado porque tienes una cuenta en Nota Importados.<br>
             Si no deseas recibir más emails, puedes <a href="#" style="color: #f59e0b;">darte de baja aquí</a>.
           </p>
         </div>
@@ -333,44 +333,44 @@ class EmailService {
    */
   getWelcomeTemplate(userData) {
     const content = `
-      <h2>¡Bienvenido a Luna Brew House!</h2>
+      <h2>¡Bienvenido a Nota Importados!</h2>
       
       <p>Hola <strong>${userData.name}</strong>,</p>
       
-      <p>¡Gracias por unirte a nuestra comunidad de amantes de la cerveza artesanal! Tu cuenta ha sido creada exitosamente.</p>
+      <p>¡Gracias por unirte a nuestra comunidad! Tu cuenta ha sido creada exitosamente y ya puedes disfrutar de nuestros productos importados de calidad premium.</p>
       
-      <div class="beer-info">
-        <div class="beer-emoji">🍻</div>
-        <h3 style="color: #d97706; margin-bottom: 10px;">¡Tu aventura cervecera comienza aquí!</h3>
-        <p style="margin: 0;">Explora nuestras cervezas únicas y suscríbete para recibir entregas mensuales.</p>
+      <div class="product-info">
+        <div class="product-emoji">📦</div>
+        <h3 style="color: #d97706; margin-bottom: 10px;">¡Tu experiencia de compras comienza aquí!</h3>
+        <p style="margin: 0;">Explora nuestro catálogo de productos importados únicos y encuentra exactamente lo que buscas.</p>
       </div>
       
       <div class="highlight-box">
         <p><strong>¿Qué puedes hacer ahora?</strong></p>
         <ul style="margin-left: 20px;">
-          <li>Explorar nuestro catálogo de cervezas artesanales</li>
-          <li>Suscribirte a nuestro plan mensual</li>
-          <li>Realizar pedidos individuales</li>
-          <li>Seguir tu historial de compras</li>
+          <li>Explorar nuestro catálogo de productos importados</li>
+          <li>Realizar pedidos de tus productos favoritos</li>
+          <li>Seguir el estado de tus compras</li>
+          <li>Gestionar tu perfil y direcciones de entrega</li>
         </ul>
       </div>
       
       <div style="text-align: center;">
         <a href="${
-          process.env.FRONT_URL || "https://lunabrewhouse.com"
+          process.env.FRONT_URL || "https://notaimportados.com"
         }" class="button">
-          Explorar Cervezas
+          Explorar Productos
         </a>
       </div>
       
       <p>Si tienes alguna pregunta, no dudes en contactarnos. ¡Estamos aquí para ayudarte!</p>
       
-      <p>¡Salud! 🍺<br>
-      <strong>El equipo de Luna Brew House</strong></p>
+      <p>¡Saludos! 📦<br>
+      <strong>El equipo de Nota Importados</strong></p>
     `;
 
     return this.getBaseTemplate()
-      .replace("{{TITLE}}", "Bienvenido a Luna Brew House")
+      .replace("{{TITLE}}", "Bienvenido a Nota Importados")
       .replace("{{CONTENT}}", content);
   }
 
@@ -382,7 +382,9 @@ class EmailService {
       .map(
         (item) => `
       <div class="order-item">
-        <span>${item.name} ${item.beerType ? `(${item.beerType})` : ""}</span>
+        <span>${item.name} ${
+          item.productType ? `(${item.productType})` : ""
+        }</span>
         <span>$${item.price.toFixed(2)}</span>
       </div>
     `
@@ -394,7 +396,7 @@ class EmailService {
       
       <p>Hola <strong>${orderData.customerName}</strong>,</p>
       
-      <p>Hemos recibido tu pedido y ya estamos preparándolo con todo el cuidado que nuestras cervezas merecen.</p>
+      <p>Hemos recibido tu pedido y ya estamos preparándolo con todo el cuidado que nuestros productos merecen.</p>
       
       <div class="highlight-box">
         <p><strong>Número de Pedido:</strong> #${orderData.orderId}</p>
@@ -424,7 +426,7 @@ class EmailService {
           : ""
       }
       
-      <div class="beer-info">
+      <div class="product-info">
         <div class="beer-emoji">📦</div>
         <h3 style="color: #d97706; margin-bottom: 10px;">Tiempo de Entrega</h3>
         <p style="margin: 0;">Tu pedido será entregado en un plazo de 3-5 días hábiles.</p>
@@ -438,14 +440,14 @@ class EmailService {
         </a>
       </div>
       
-      <p>Te mantendremos informado sobre el estado de tu pedido. ¡Gracias por elegir Luna Brew House!</p>
+      <p>Te mantendremos informado sobre el estado de tu pedido. ¡Gracias por elegir Nota Importados!</p>
       
-      <p>¡Salud! 🍺<br>
-      <strong>El equipo de Luna Brew House</strong></p>
+      <p>¡Saludos! 📦<br>
+      <strong>El equipo de Nota Importados</strong></p>
     `;
 
     return this.getBaseTemplate()
-      .replace("{{TITLE}}", "Confirmación de Pedido - Luna Brew House")
+      .replace("{{TITLE}}", "Confirmación de Pedido - Nota Importados")
       .replace("{{CONTENT}}", content);
   }
 
@@ -453,7 +455,7 @@ class EmailService {
    * Plantilla para confirmación de suscripción
    */
   getSubscriptionConfirmationTemplate(subscriptionData) {
-    const beerTypeNames = {
+    const productTypeNames = {
       golden: "Golden Ale",
       red: "Red Ale",
       ipa: "India Pale Ale",
@@ -464,12 +466,12 @@ class EmailService {
       
       <p>Hola <strong>${subscriptionData.customerName}</strong>,</p>
       
-      <p>¡Excelente elección! Tu suscripción a Luna Brew House ha sido activada exitosamente.</p>
+      <p>¡Excelente elección! Tu suscripción a Nota Importados ha sido activada exitosamente.</p>
       
-      <div class="beer-info">
+      <div class="product-info">
         <div class="beer-emoji">🎉</div>
         <h3 style="color: #d97706; margin-bottom: 10px;">¡Bienvenido al Club Luna Brew!</h3>
-        <p style="margin: 0;">Cada mes recibirás nuestras mejores cervezas artesanales directamente en tu puerta.</p>
+        <p style="margin: 0;">Cada mes recibirás nuestras mejores productos importados directamente en tu puerta.</p>
       </div>
       
       <div class="highlight-box">
@@ -478,7 +480,8 @@ class EmailService {
         }</p>
         <p><strong>Plan:</strong> ${subscriptionData.planName}</p>
         <p><strong>Cerveza Seleccionada:</strong> ${
-          beerTypeNames[subscriptionData.beerType] || subscriptionData.beerName
+          productTypeNames[subscriptionData.productType] ||
+          subscriptionData.beerName
         }</p>
         <p><strong>Cantidad:</strong> ${subscriptionData.liters}L mensuales</p>
         <p><strong>Precio Mensual:</strong> $${subscriptionData.price.toFixed(
@@ -527,14 +530,14 @@ class EmailService {
         <li>Acceso a cervezas exclusivas para suscriptores</li>
       </ul>
       
-      <p>¡Gracias por confiar en Luna Brew House para tu experiencia cervecera mensual!</p>
+      <p>¡Gracias por confiar en Nota Importados para tu experiencia de compras mensual!</p>
       
       <p>¡Salud! 🍺<br>
-      <strong>El equipo de Luna Brew House</strong></p>
+      <strong>El equipo de Nota Importados</strong></p>
     `;
 
     return this.getBaseTemplate()
-      .replace("{{TITLE}}", "Suscripción Confirmada - Luna Brew House")
+      .replace("{{TITLE}}", "Suscripción Confirmada - Nota Importados")
       .replace("{{CONTENT}}", content);
   }
 
@@ -571,7 +574,7 @@ class EmailService {
       
       <p>Hola <strong>${orderData.customerName}</strong>,</p>
       
-      <div class="beer-info">
+      <div class="product-info">
         <div class="beer-emoji">${status.emoji}</div>
         <h3 style="color: #d97706; margin-bottom: 10px;">Actualización de tu Pedido</h3>
         <p style="margin: 0;">${status.message}</p>
@@ -609,14 +612,14 @@ class EmailService {
         </a>
       </div>
       
-      <p>Gracias por tu paciencia y por elegir Luna Brew House.</p>
+      <p>Gracias por tu paciencia y por elegir Nota Importados.</p>
       
       <p>¡Salud! 🍺<br>
-      <strong>El equipo de Luna Brew House</strong></p>
+      <strong>El equipo de Nota Importados</strong></p>
     `;
 
     return this.getBaseTemplate()
-      .replace("{{TITLE}}", `${status.title} - Luna Brew House`)
+      .replace("{{TITLE}}", `${status.title} - Nota Importados`)
       .replace("{{CONTENT}}", content);
   }
 
@@ -629,9 +632,9 @@ class EmailService {
       
       <p>Hola <strong>${subscriptionData.customerName}</strong>,</p>
       
-      <p>¡Buenas noticias! Tu próxima entrega de Luna Brew House está programada para muy pronto.</p>
+      <p>¡Buenas noticias! Tu próxima entrega de Nota Importados está programada para muy pronto.</p>
       
-      <div class="beer-info">
+      <div class="product-info">
         <div class="beer-emoji">🎯</div>
         <h3 style="color: #d97706; margin-bottom: 10px;">Próxima Entrega</h3>
         <p style="margin: 0;">${new Date(
@@ -668,11 +671,11 @@ class EmailService {
       <p>Si no realizas cambios, enviaremos tu cerveza habitual a la dirección registrada.</p>
       
       <p>¡Salud! 🍺<br>
-      <strong>El equipo de Luna Brew House</strong></p>
+      <strong>El equipo de Nota Importados</strong></p>
     `;
 
     return this.getBaseTemplate()
-      .replace("{{TITLE}}", "Recordatorio de Entrega - Luna Brew House")
+      .replace("{{TITLE}}", "Recordatorio de Entrega - Nota Importados")
       .replace("{{CONTENT}}", content);
   }
 
@@ -685,7 +688,7 @@ class EmailService {
       
       <p>Hola <strong>${userData.name}</strong>,</p>
       
-      <p>Hemos recibido una solicitud para restablecer la contraseña de tu cuenta en Luna Brew House.</p>
+      <p>Hemos recibido una solicitud para restablecer la contraseña de tu cuenta en Nota Importados.</p>
       
       <div class="highlight-box">
         <p><strong>⚠️ Importante:</strong></p>
@@ -717,11 +720,11 @@ class EmailService {
       </p>
       
       <p>¡Salud! 🍺<br>
-      <strong>El equipo de Luna Brew House</strong></p>
+      <strong>El equipo de Nota Importados</strong></p>
     `;
 
     return this.getBaseTemplate()
-      .replace("{{TITLE}}", "Restablecimiento de Contraseña - Luna Brew House")
+      .replace("{{TITLE}}", "Restablecimiento de Contraseña - Nota Importados")
       .replace("{{CONTENT}}", content);
   }
 
@@ -733,9 +736,9 @@ class EmailService {
       .map(
         (item) => `
       <div class="order-item">
-        <span>${item.name} ${item.beerType ? `(${item.beerType})` : ""} x${
-          item.quantity || 1
-        }</span>
+        <span>${item.name} ${
+          item.productType ? `(${item.productType})` : ""
+        } x${item.quantity || 1}</span>
         <span>$${item.price.toFixed(2)}</span>
       </div>
     `
@@ -749,7 +752,7 @@ class EmailService {
       
       <p>¡Excelentes noticias! Tu pedido está listo y necesitamos que selecciones tu horario de entrega preferido.</p>
       
-      <div class="beer-info">
+      <div class="product-info">
         <div class="beer-emoji">📦</div>
         <h3 style="color: #d97706; margin-bottom: 10px;">Detalles de tu Pedido</h3>
         <p style="margin: 0;"><strong>Pedido #${orderData.orderId}</strong></p>
@@ -802,12 +805,12 @@ class EmailService {
         <p>Contáctanos: <a href="mailto:contacto@lunabrewhouse.com" style="color: #d97706;">contacto@lunabrewhouse.com</a></p>
       </div>
       
-      <p>¡Esperamos que disfrutes mucho tu cerveza artesanal! 🍺<br>
-      <strong>El equipo de Luna Brew House</strong></p>
+      <p>¡Esperamos que disfrutes mucho tu producto importado! 🍺<br>
+      <strong>El equipo de Nota Importados</strong></p>
     `;
 
     return this.getBaseTemplate()
-      .replace("{{TITLE}}", "Programa tu Entrega - Luna Brew House")
+      .replace("{{TITLE}}", "Programa tu Entrega - Nota Importados")
       .replace("{{CONTENT}}", content);
   }
 
@@ -823,9 +826,9 @@ class EmailService {
       .map(
         (item) => `
       <div class="order-item">
-        <span>${item.name} ${item.beerType ? `(${item.beerType})` : ""} x${
-          item.quantity || 1
-        }</span>
+        <span>${item.name} ${
+          item.productType ? `(${item.productType})` : ""
+        } x${item.quantity || 1}</span>
         <span>$${item.price.toFixed(2)}</span>
       </div>
     `
@@ -908,7 +911,7 @@ class EmailService {
         </a>
       </div>
       
-      <div class="beer-info">
+      <div class="product-info">
         <div class="beer-emoji">⏰</div>
         <h3 style="color: #d97706; margin-bottom: 10px;">Próximos Pasos</h3>
         <p style="margin: 0;">
@@ -919,10 +922,10 @@ class EmailService {
         </p>
       </div>
       
-      <p><strong>¡Un nuevo cliente confía en Luna Brew House!</strong></p>
+      <p><strong>¡Un nuevo cliente confía en Nota Importados!</strong></p>
       
       <p>Saludos,<br>
-      <strong>Sistema Luna Brew House</strong></p>
+      <strong>Sistema Nota Importados</strong></p>
     `;
 
     return this.getBaseTemplate()
@@ -934,7 +937,7 @@ class EmailService {
    * Plantilla para notificar nueva suscripción a administradores
    */
   getAdminNewSubscriptionTemplate(subscriptionData) {
-    const beerTypeNames = {
+    const productTypeNames = {
       golden: "Golden Ale",
       red: "Red Ale",
       ipa: "India Pale Ale",
@@ -967,7 +970,7 @@ class EmailService {
         <div class="order-item">
           <span><strong>Cerveza Seleccionada:</strong></span>
           <span>${
-            beerTypeNames[subscriptionData.beerType] ||
+            productTypeNames[subscriptionData.productType] ||
             subscriptionData.beerName
           }</span>
         </div>
@@ -1005,7 +1008,7 @@ class EmailService {
         </a>
       </div>
       
-      <div class="beer-info">
+      <div class="product-info">
         <div class="beer-emoji">📅</div>
         <h3 style="color: #d97706; margin-bottom: 10px;">Recordatorio</h3>
         <p style="margin: 0;">
@@ -1018,11 +1021,11 @@ class EmailService {
       <p><strong>¡Nuestro club de suscriptores sigue creciendo!</strong></p>
       
       <p>Saludos,<br>
-      <strong>Sistema Luna Brew House</strong></p>
+      <strong>Sistema Nota Importados</strong></p>
     `;
 
     return this.getBaseTemplate()
-      .replace("{{TITLE}}", "Nueva Suscripción - Luna Brew House")
+      .replace("{{TITLE}}", "Nueva Suscripción - Nota Importados")
       .replace("{{CONTENT}}", content);
   }
 
@@ -1135,7 +1138,7 @@ class EmailService {
         }
       </div>
       
-      <div class="beer-info">
+      <div class="product-info">
         <div class="beer-emoji">⏱️</div>
         <h3 style="color: #d97706; margin-bottom: 10px;">Tiempo de Respuesta</h3>
         <p style="margin: 0;">
@@ -1154,7 +1157,7 @@ class EmailService {
       <p><strong>¡Atención personalizada hace la diferencia!</strong></p>
       
       <p>Saludos,<br>
-      <strong>Sistema Luna Brew House</strong></p>
+      <strong>Sistema Nota Importados</strong></p>
     `;
 
     return this.getBaseTemplate()
@@ -1174,7 +1177,7 @@ class EmailService {
       };">
         <span>
           <strong>${product.name}</strong>
-          ${product.beerType ? `(${product.beerType})` : ""}
+          ${product.productType ? `(${product.productType})` : ""}
         </span>
         <span><strong>${product.stock} ${
           product.unit || "unidades"
@@ -1199,7 +1202,7 @@ class EmailService {
         ${stockItems}
       </div>
       
-      <div class="beer-info">
+      <div class="product-info">
         <div class="beer-emoji">📊</div>
         <h3 style="color: #d97706; margin-bottom: 10px;">Niveles Críticos</h3>
         <p style="margin: 0;">
@@ -1230,11 +1233,11 @@ class EmailService {
       <p><strong>¡Mantener el inventario es clave para el servicio!</strong></p>
       
       <p>Saludos,<br>
-      <strong>Sistema Luna Brew House</strong></p>
+      <strong>Sistema Nota Importados</strong></p>
     `;
 
     return this.getBaseTemplate()
-      .replace("{{TITLE}}", "Alerta de Inventario - Luna Brew House")
+      .replace("{{TITLE}}", "Alerta de Inventario - Nota Importados")
       .replace("{{CONTENT}}", content);
   }
 
@@ -1286,7 +1289,7 @@ class EmailService {
     const template = this.getWelcomeTemplate(userData);
     return await this.sendEmail(
       userEmail,
-      "¡Bienvenido a Luna Brew House! 🍺",
+      "¡Bienvenido a Nota Importados! 🍺",
       template
     );
   }
@@ -1295,7 +1298,7 @@ class EmailService {
     const template = this.getOrderConfirmationTemplate(orderData);
     return await this.sendEmail(
       userEmail,
-      `Confirmación de Pedido #${orderData.orderId} - Luna Brew House`,
+      `Confirmación de Pedido #${orderData.orderId} - Nota Importados`,
       template
     );
   }
@@ -1304,7 +1307,7 @@ class EmailService {
     const template = this.getSubscriptionConfirmationTemplate(subscriptionData);
     return await this.sendEmail(
       userEmail,
-      "¡Tu Suscripción está Activa! 🎉 - Luna Brew House",
+      "¡Tu Suscripción está Activa! 🎉 - Nota Importados",
       template
     );
   }
@@ -1313,7 +1316,7 @@ class EmailService {
     const template = this.getOrderStatusTemplate(orderData);
     return await this.sendEmail(
       userEmail,
-      `Actualización de Pedido #${orderData.orderId} - Luna Brew House`,
+      `Actualización de Pedido #${orderData.orderId} - Nota Importados`,
       template
     );
   }
@@ -1322,7 +1325,7 @@ class EmailService {
     const template = this.getSubscriptionReminderTemplate(subscriptionData);
     return await this.sendEmail(
       userEmail,
-      "Tu Próxima Entrega se Acerca 📦 - Luna Brew House",
+      "Tu Próxima Entrega se Acerca 📦 - Nota Importados",
       template
     );
   }
@@ -1331,7 +1334,7 @@ class EmailService {
     const template = this.getPasswordResetTemplate(userData);
     return await this.sendEmail(
       userEmail,
-      "Restablecimiento de Contraseña - Luna Brew House",
+      "Restablecimiento de Contraseña - Nota Importados",
       template
     );
   }
@@ -1340,7 +1343,7 @@ class EmailService {
     const template = this.getDeliveryScheduleRequestTemplate(orderData);
     return await this.sendEmail(
       userEmail,
-      `📅 Programa tu Entrega - Pedido #${orderData.orderId} - Luna Brew House`,
+      `📅 Programa tu Entrega - Pedido #${orderData.orderId} - Nota Importados`,
       template
     );
   }
@@ -1522,6 +1525,114 @@ class EmailService {
     }
 
     return results;
+  }
+
+  /**
+   * Notifica nuevo usuario registrado a administradores
+   */
+  async notifyAdminNewUser(userData) {
+    try {
+      const adminEmails = await this.getAdminEmails();
+      if (adminEmails.length === 0) {
+        console.warn("⚠️ No hay administradores para notificar");
+        return { success: false, error: "No admin emails found" };
+      }
+
+      const template = this.getAdminNewUserTemplate(userData);
+      const subject = `👤 Nuevo Usuario Registrado - ${userData.userName}`;
+
+      const results = [];
+      for (const email of adminEmails) {
+        const result = await this.sendEmail(email, subject, template);
+        results.push({ email, ...result });
+      }
+
+      console.log(
+        `✅ Notificación de nuevo usuario enviada a ${adminEmails.length} administradores`
+      );
+      return { success: true, results };
+    } catch (error) {
+      console.error("Error al notificar nuevo usuario a admins:", error);
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * Genera el template HTML para notificación de nuevo usuario a administradores
+   */
+  getAdminNewUserTemplate(userData) {
+    return `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Nuevo Usuario Registrado</title>
+        <style>
+          body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5; }
+          .container { max-width: 600px; margin: 0 auto; background-color: white; }
+          .header { background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%); color: white; padding: 30px; text-align: center; }
+          .content { padding: 30px; }
+          .user-info { background-color: #f8f9fa; border-left: 4px solid #8B4513; padding: 20px; margin: 20px 0; }
+          .info-row { margin: 10px 0; }
+          .label { font-weight: bold; color: #8B4513; }
+          .footer { background-color: #f8f9fa; padding: 20px; text-align: center; color: #666; font-size: 12px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>👤 Nuevo Usuario Registrado</h1>
+            <p>Un nuevo usuario se ha registrado en la plataforma</p>
+          </div>
+          
+          <div class="content">
+            <h2>Información del Usuario</h2>
+            
+            <div class="user-info">
+              <div class="info-row">
+                <span class="label">Nombre:</span> ${userData.userName}
+              </div>
+              <div class="info-row">
+                <span class="label">Email:</span> ${userData.userEmail}
+              </div>
+              <div class="info-row">
+                <span class="label">Teléfono:</span> ${userData.userPhone}
+              </div>
+              <div class="info-row">
+                <span class="label">Dirección:</span> ${userData.userAddress}
+              </div>
+              <div class="info-row">
+                <span class="label">Fecha de Registro:</span> ${userData.registrationDate.toLocaleDateString(
+                  "es-ES",
+                  {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  }
+                )}
+              </div>
+              <div class="info-row">
+                <span class="label">Fuente:</span> ${userData.source}
+              </div>
+            </div>
+            
+            <p><strong>Acción recomendada:</strong> Revisar el perfil del usuario y darle la bienvenida si es necesario.</p>
+          </div>
+          
+          <div class="footer">
+            <p>Este es un mensaje automático del sistema de notificaciones.</p>
+            <p>Fecha: ${new Date().toLocaleDateString(
+              "es-ES"
+            )} a las ${new Date().toLocaleTimeString("es-ES")}</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
   }
 }
 

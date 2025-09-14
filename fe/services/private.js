@@ -55,7 +55,7 @@ export const getAdminBeers = () => {
 
   return {
     call: axios
-      .get(process.env.NEXT_PUBLIC_API_URL + "/admin/beers", headers, {
+      .get(process.env.NEXT_PUBLIC_API_URL + "/admin/products/beers", headers, {
         signal: controller.signal,
       })
       .catch((error) => {
@@ -77,7 +77,7 @@ export const getAdminBeerById = (beerId) => {
   return {
     call: axios
       .get(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/beers/${beerId}`,
+        process.env.NEXT_PUBLIC_API_URL + `/admin/products/beers/${beerId}`,
         headers,
         {
           signal: controller.signal,
@@ -102,7 +102,7 @@ export const createBeer = (beerData) => {
   return {
     call: axios
       .post(
-        process.env.NEXT_PUBLIC_API_URL + "/admin/beers",
+        process.env.NEXT_PUBLIC_API_URL + "/admin/products/beers",
         beerData,
         headers,
         {
@@ -128,7 +128,7 @@ export const updateBeer = (beerId, beerData) => {
   return {
     call: axios
       .put(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/beers/${beerId}`,
+        process.env.NEXT_PUBLIC_API_URL + `/admin/products/beers/${beerId}`,
         beerData,
         headers,
         { signal: controller.signal }
@@ -152,7 +152,260 @@ export const deleteBeer = (beerId) => {
   return {
     call: axios
       .delete(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/beers/${beerId}`,
+        process.env.NEXT_PUBLIC_API_URL + `/admin/products/beers/${beerId}`,
+        headers,
+        { signal: controller.signal }
+      )
+      .catch((error) => {
+        notifyError(error);
+      }),
+    controller,
+  };
+};
+
+/**********
+ * GESTIÓN DE PRODUCTOS GENERALES
+ ************/
+
+// Obtener todos los productos
+export const getAdminProducts = () => {
+  const controller = loadAbort();
+  const headers = getAxiosHeaders();
+
+  if (!headers) {
+    return;
+  }
+
+  return {
+    call: axios
+      .get(process.env.NEXT_PUBLIC_API_URL + "/admin/products", headers, {
+        signal: controller.signal,
+      })
+      .catch((error) => {
+        notifyError(error);
+      }),
+    controller,
+  };
+};
+
+// Obtener un producto por ID
+export const getAdminProductById = (productId) => {
+  const controller = loadAbort();
+  const headers = getAxiosHeaders();
+
+  if (!headers) {
+    return;
+  }
+
+  return {
+    call: axios
+      .get(
+        process.env.NEXT_PUBLIC_API_URL + `/admin/products/${productId}`,
+        headers,
+        {
+          signal: controller.signal,
+        }
+      )
+      .catch((error) => {
+        notifyError(error);
+      }),
+    controller,
+  };
+};
+
+// Crear un nuevo producto
+export const createProduct = (productData) => {
+  const controller = loadAbort();
+  const headers = getAxiosHeaders();
+
+  if (!headers) {
+    return;
+  }
+
+  return {
+    call: axios
+      .post(
+        process.env.NEXT_PUBLIC_API_URL + "/admin/products",
+        productData,
+        headers,
+        {
+          signal: controller.signal,
+        }
+      )
+      .catch((error) => {
+        notifyError(error);
+      }),
+    controller,
+  };
+};
+
+// Actualizar un producto
+export const updateProduct = (productId, productData) => {
+  const controller = loadAbort();
+  const headers = getAxiosHeaders();
+
+  if (!headers) {
+    return;
+  }
+
+  return {
+    call: axios
+      .put(
+        process.env.NEXT_PUBLIC_API_URL + `/admin/products/${productId}`,
+        productData,
+        headers,
+        { signal: controller.signal }
+      )
+      .catch((error) => {
+        notifyError(error);
+      }),
+    controller,
+  };
+};
+
+// Eliminar un producto
+export const deleteProduct = (productId) => {
+  const controller = loadAbort();
+  const headers = getAxiosHeaders();
+
+  if (!headers) {
+    return;
+  }
+
+  return {
+    call: axios
+      .delete(
+        process.env.NEXT_PUBLIC_API_URL + `/admin/products/${productId}`,
+        headers,
+        { signal: controller.signal }
+      )
+      .catch((error) => {
+        notifyError(error);
+      }),
+    controller,
+  };
+};
+
+/**
+ * GESTIÓN DE CATEGORÍAS
+ */
+
+// Obtener todas las categorías
+export const getAdminCategories = () => {
+  const controller = loadAbort();
+  const headers = getAxiosHeaders();
+
+  if (!headers) {
+    return;
+  }
+
+  return {
+    call: axios
+      .get(
+        process.env.NEXT_PUBLIC_API_URL + "/admin/products/categories",
+        headers,
+        {
+          signal: controller.signal,
+        }
+      )
+      .catch((error) => {
+        notifyError(error);
+      }),
+    controller,
+  };
+};
+
+// Obtener una categoría por ID
+export const getCategoryById = (categoryId) => {
+  const controller = loadAbort();
+  const headers = getAxiosHeaders();
+
+  if (!headers) {
+    return;
+  }
+
+  return {
+    call: axios
+      .get(
+        process.env.NEXT_PUBLIC_API_URL +
+          `/admin/products/categories/${categoryId}`,
+        headers,
+        {
+          signal: controller.signal,
+        }
+      )
+      .catch((error) => {
+        notifyError(error);
+      }),
+    controller,
+  };
+};
+
+// Crear una nueva categoría
+export const createCategory = (categoryData) => {
+  const controller = loadAbort();
+  const headers = getAxiosHeaders();
+
+  if (!headers) {
+    return;
+  }
+
+  return {
+    call: axios
+      .post(
+        process.env.NEXT_PUBLIC_API_URL + "/admin/products/categories",
+        categoryData,
+        headers,
+        {
+          signal: controller.signal,
+        }
+      )
+      .catch((error) => {
+        notifyError(error);
+      }),
+    controller,
+  };
+};
+
+// Actualizar una categoría
+export const updateCategory = (categoryId, categoryData) => {
+  const controller = loadAbort();
+  const headers = getAxiosHeaders();
+
+  if (!headers) {
+    return;
+  }
+
+  return {
+    call: axios
+      .put(
+        process.env.NEXT_PUBLIC_API_URL +
+          `/admin/products/categories/${categoryId}`,
+        categoryData,
+        headers,
+        { signal: controller.signal }
+      )
+      .catch((error) => {
+        notifyError(error);
+      }),
+    controller,
+  };
+};
+
+// Eliminar una categoría
+export const deleteCategory = (categoryId) => {
+  const controller = loadAbort();
+  const headers = getAxiosHeaders();
+
+  if (!headers) {
+    return;
+  }
+
+  return {
+    call: axios
+      .delete(
+        process.env.NEXT_PUBLIC_API_URL +
+          `/admin/products/categories/${categoryId}`,
         headers,
         { signal: controller.signal }
       )
@@ -178,7 +431,7 @@ export const getAdminSubscriptionPlans = () => {
   return {
     call: axios
       .get(
-        process.env.NEXT_PUBLIC_API_URL + "/admin/subscription-plans",
+        process.env.NEXT_PUBLIC_API_URL + "/admin/products/subscription-plans",
         headers,
         {
           signal: controller.signal,
@@ -203,7 +456,8 @@ export const getAdminSubscriptionPlanById = (planId) => {
   return {
     call: axios
       .get(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/subscription-plan/${planId}`,
+        process.env.NEXT_PUBLIC_API_URL +
+          `/admin/products/subscription-plan/${planId}`,
         headers,
         {
           signal: controller.signal,
@@ -228,7 +482,7 @@ export const createSubscriptionPlan = (planData) => {
   return {
     call: axios
       .post(
-        process.env.NEXT_PUBLIC_API_URL + "/admin/subscriptions",
+        process.env.NEXT_PUBLIC_API_URL + "/admin/products/subscriptions",
         planData,
         headers,
         { signal: controller.signal }
@@ -252,7 +506,8 @@ export const updateSubscriptionPlan = (planId, planData) => {
   return {
     call: axios
       .put(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/subscriptions/${planId}`,
+        process.env.NEXT_PUBLIC_API_URL +
+          `/admin/products/subscriptions/${planId}`,
         planData,
         headers,
         { signal: controller.signal }
@@ -276,7 +531,8 @@ export const deleteSubscriptionPlan = (planId) => {
   return {
     call: axios
       .delete(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/subscriptions/${planId}`,
+        process.env.NEXT_PUBLIC_API_URL +
+          `/admin/products/subscriptions/${planId}`,
         headers,
         { signal: controller.signal }
       )
@@ -302,9 +558,13 @@ export const getAdminDiscounts = () => {
 
   return {
     call: axios
-      .get(process.env.NEXT_PUBLIC_API_URL + "/admin/discounts", headers, {
-        signal: controller.signal,
-      })
+      .get(
+        process.env.NEXT_PUBLIC_API_URL + "/admin/products/discounts",
+        headers,
+        {
+          signal: controller.signal,
+        }
+      )
       .catch((error) => {
         notifyError(error);
       }),
@@ -324,7 +584,8 @@ export const getAdminDiscountById = (discountId) => {
   return {
     call: axios
       .get(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/discounts/${discountId}`,
+        process.env.NEXT_PUBLIC_API_URL +
+          `/admin/products/discounts/${discountId}`,
         headers,
         {
           signal: controller.signal,
@@ -349,7 +610,7 @@ export const createDiscount = (discountData) => {
   return {
     call: axios
       .post(
-        process.env.NEXT_PUBLIC_API_URL + "/admin/discounts",
+        process.env.NEXT_PUBLIC_API_URL + "/admin/products/discounts",
         discountData,
         headers,
         { signal: controller.signal }
@@ -461,7 +722,8 @@ export const getAdminOrders = (filters = {}) => {
   return {
     call: axios
       .get(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/orders${queryString}`,
+        process.env.NEXT_PUBLIC_API_URL +
+          `/admin/payments/orders${queryString}`,
         headers,
         {
           signal: controller.signal,
@@ -486,7 +748,7 @@ export const getAdminOrderById = (orderId) => {
   return {
     call: axios
       .get(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/orders/${orderId}`,
+        process.env.NEXT_PUBLIC_API_URL + `/admin/payments/orders/${orderId}`,
         headers,
         {
           signal: controller.signal,
@@ -511,7 +773,8 @@ export const updateOrderStatus = (orderId, status) => {
   return {
     call: axios
       .patch(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/orders/${orderId}/status`,
+        process.env.NEXT_PUBLIC_API_URL +
+          `/admin/payments/orders/${orderId}/status`,
         { status },
         headers,
         { signal: controller.signal }
@@ -535,7 +798,8 @@ export const updateOrderDelivery = (orderId, deliveryTime) => {
   return {
     call: axios
       .patch(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/orders/${orderId}/delivery`,
+        process.env.NEXT_PUBLIC_API_URL +
+          `/admin/payments/orders/${orderId}/delivery`,
         { deliveryTime },
         headers,
         { signal: controller.signal }
@@ -559,7 +823,8 @@ export const cancelOrder = (orderId, cancellationReason) => {
   return {
     call: axios
       .patch(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/orders/${orderId}/cancel`,
+        process.env.NEXT_PUBLIC_API_URL +
+          `/admin/payments/orders/${orderId}/cancel`,
         { cancellationReason },
         headers,
         { signal: controller.signal }
@@ -583,7 +848,8 @@ export const getAdminOrderStats = (period = "month") => {
   return {
     call: axios
       .get(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/stats?period=${period}`,
+        process.env.NEXT_PUBLIC_API_URL +
+          `/admin/payments/stats?period=${period}`,
         headers,
         {
           signal: controller.signal,
@@ -788,7 +1054,7 @@ export const getSubscriptionStats = () => {
   return {
     call: axios
       .get(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/subscriptions/stats`,
+        process.env.NEXT_PUBLIC_API_URL + `/admin/products/subscriptions/stats`,
         headers,
         {
           signal: controller.signal,
@@ -816,9 +1082,13 @@ export const getRecipes = () => {
 
   return {
     call: axios
-      .get(process.env.NEXT_PUBLIC_API_URL + "/admin/recipes", headers, {
-        signal: controller.signal,
-      })
+      .get(
+        process.env.NEXT_PUBLIC_API_URL + "/admin/products/recipes",
+        headers,
+        {
+          signal: controller.signal,
+        }
+      )
       .catch((error) => {
         notifyError(error);
       }),
@@ -838,7 +1108,7 @@ export const getRecipeById = (recipeId) => {
   return {
     call: axios
       .get(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/recipes/${recipeId}`,
+        process.env.NEXT_PUBLIC_API_URL + `/admin/products/recipes/${recipeId}`,
         headers,
         {
           signal: controller.signal,
@@ -863,7 +1133,7 @@ export const createRecipe = (recipeData) => {
   return {
     call: axios
       .post(
-        process.env.NEXT_PUBLIC_API_URL + "/admin/recipes",
+        process.env.NEXT_PUBLIC_API_URL + "/admin/products/recipes",
         recipeData,
         headers,
         {
@@ -889,7 +1159,7 @@ export const updateRecipe = (recipeId, recipeData) => {
   return {
     call: axios
       .put(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/recipes/${recipeId}`,
+        process.env.NEXT_PUBLIC_API_URL + `/admin/products/recipes/${recipeId}`,
         recipeData,
         headers,
         { signal: controller.signal }
@@ -913,7 +1183,7 @@ export const deleteRecipe = (recipeId) => {
   return {
     call: axios
       .delete(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/recipes/${recipeId}`,
+        process.env.NEXT_PUBLIC_API_URL + `/admin/products/recipes/${recipeId}`,
         headers,
         { signal: controller.signal }
       )
@@ -1128,7 +1398,8 @@ export const updateGravityMeasurements = (recipeId, data) => {
   return {
     call: axios
       .patch(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/recipes/${recipeId}/gravity`,
+        process.env.NEXT_PUBLIC_API_URL +
+          `/admin/products/recipes/${recipeId}/gravity`,
         data,
         headers,
         { signal: controller.signal }
@@ -1152,7 +1423,7 @@ export const getBrewingSessions = () => {
   return {
     call: axios
       .get(
-        process.env.NEXT_PUBLIC_API_URL + "/admin/brewing-sessions",
+        process.env.NEXT_PUBLIC_API_URL + "/admin/products/brewing-sessions",
         headers,
         { signal: controller.signal }
       )
@@ -1176,7 +1447,7 @@ export const deleteBrewingSession = (sessionId) => {
     call: axios
       .delete(
         process.env.NEXT_PUBLIC_API_URL +
-          `/admin/brewing-sessions/${sessionId}`,
+          `/admin/products/brewing-sessions/${sessionId}`,
         headers,
         { signal: controller.signal }
       )
@@ -1200,7 +1471,7 @@ export const updateBrewingSessionPackaging = (sessionId, packagingData) => {
     call: axios
       .patch(
         process.env.NEXT_PUBLIC_API_URL +
-          `/admin/brewing-sessions/${sessionId}/packaging`,
+          `/admin/products/brewing-sessions/${sessionId}/packaging`,
         packagingData,
         headers,
         { signal: controller.signal }
@@ -1224,7 +1495,8 @@ export const addRecipeStep = (recipeId, stepData) => {
   return {
     call: axios
       .post(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/recipes/${recipeId}/steps`,
+        process.env.NEXT_PUBLIC_API_URL +
+          `/admin/products/recipes/${recipeId}/steps`,
         stepData,
         headers,
         { signal: controller.signal }
@@ -1379,7 +1651,7 @@ export const getDashboardStats = () => {
 
   return {
     call: axios
-      .get(`${baseUrl}/admin/dashboard`, headers, {
+      .get(`${baseUrl}/admin/payments/dashboard`, headers, {
         signal: controller.signal,
       })
       .catch((error) => {
@@ -1399,9 +1671,13 @@ export const getTopProducts = (limit = 5) => {
   }
   return {
     call: axios
-      .get(`${baseUrl}/admin/dashboard/top-products?limit=${limit}`, headers, {
-        signal: controller.signal,
-      })
+      .get(
+        `${baseUrl}/admin/payments/dashboard/top-products?limit=${limit}`,
+        headers,
+        {
+          signal: controller.signal,
+        }
+      )
       .catch((error) => {
         notifyError(error);
       }),
@@ -1418,9 +1694,13 @@ export const getRecentOrders = (limit = 5) => {
   }
   return {
     call: axios
-      .get(`${baseUrl}/admin/dashboard/recent-orders?limit=${limit}`, headers, {
-        signal: controller.signal,
-      })
+      .get(
+        `${baseUrl}/admin/payments/dashboard/recent-orders?limit=${limit}`,
+        headers,
+        {
+          signal: controller.signal,
+        }
+      )
       .catch((error) => {
         notifyError(error);
       }),
@@ -1463,10 +1743,14 @@ export const addCustomStepToSession = (sessionId, stepData) => {
 
   return {
     call: axios
-      .post(`${baseUrl}/brewing-sessions/${sessionId}/custom-steps`, stepData, {
-        ...headers,
-        signal: controller.signal,
-      })
+      .post(
+        `${baseUrl}/admin/products/brewing-sessions/${sessionId}/custom-steps`,
+        stepData,
+        {
+          ...headers,
+          signal: controller.signal,
+        }
+      )
       .catch((error) => {
         console.error("Error adding custom step:", error);
         throw error;
@@ -1487,7 +1771,7 @@ export const updateCustomStepInSession = (sessionId, stepId, stepData) => {
   return {
     call: axios
       .put(
-        `${baseUrl}/brewing-sessions/${sessionId}/custom-steps/${stepId}`,
+        `${baseUrl}/admin/products/brewing-sessions/${sessionId}/custom-steps/${stepId}`,
         stepData,
         {
           ...headers,
@@ -1514,7 +1798,7 @@ export const deleteCustomStepFromSession = (sessionId, stepId) => {
   return {
     call: axios
       .delete(
-        `${baseUrl}/brewing-sessions/${sessionId}/custom-steps/${stepId}`,
+        `${baseUrl}/admin/products/brewing-sessions/${sessionId}/custom-steps/${stepId}`,
         {
           ...headers,
           signal: controller.signal,
@@ -1589,7 +1873,7 @@ export const getUserOrderById = (orderId) => {
 
   return {
     call: axios
-      .get(`${baseUrl}/users/orders/${orderId}`, {
+      .get(`${baseUrl}/payments/orders/${orderId}`, {
         ...headers,
         signal: controller.signal,
       })
@@ -1613,7 +1897,7 @@ export const updateUserOrderDeliveryTime = (orderId, deliveryTime) => {
   return {
     call: axios
       .patch(
-        `${baseUrl}/users/orders/${orderId}/delivery-time`,
+        `${baseUrl}/payments/orders/${orderId}/delivery-time`,
         { deliveryTime },
         {
           ...headers,
@@ -1773,148 +2057,5 @@ export const processDirectPayment = (paymentData) => {
   };
 };
 
-// Procesar checkout para cervezas (LEGACY - Checkout Pro)
-export const processCheckout = (checkoutData) => {
-  const controller = loadAbort();
-  const headers = getAxiosHeaders();
-
-  if (!headers) {
-    return Promise.reject(new Error("No authenticated"));
-  }
-
-  return {
-    call: axios
-      .post(`${baseUrl}/payments/checkout`, checkoutData, {
-        ...headers,
-        signal: controller.signal,
-      })
-      .catch((error) => {
-        console.error("Error processing checkout:", error);
-        throw error;
-      }),
-    controller,
-  };
-};
-
-// Procesar checkout para suscripciones (LEGACY - Checkout Pro)
-export const processSubscriptionCheckout = (checkoutData) => {
-  const controller = loadAbort();
-  const headers = getAxiosHeaders();
-
-  if (!headers) {
-    return Promise.reject(new Error("No authenticated"));
-  }
-
-  return {
-    call: axios
-      .post(`${baseUrl}/payments/subscription-checkout`, checkoutData, {
-        ...headers,
-        signal: controller.signal,
-      })
-      .catch((error) => {
-        console.error("Error processing subscription checkout:", error);
-        throw error;
-      }),
-    controller,
-  };
-};
-
-/**********
- * GESTIÓN DE SUSCRIPCIONES (ADMIN)
- ************/
-
-// Obtener todas las suscripciones (solo admins)
-export const getAdminSubscriptions = () => {
-  const controller = loadAbort();
-  const headers = getAxiosHeaders();
-
-  if (!headers) {
-    return Promise.reject(new Error("No authenticated"));
-  }
-
-  return {
-    call: axios
-      .get(`${baseUrl}/admin/subscriptions`, {
-        ...headers,
-        signal: controller.signal,
-      })
-      .catch((error) => {
-        console.error("Error fetching admin subscriptions:", error);
-        throw error;
-      }),
-    controller,
-  };
-};
-
-// Actualizar estado de una suscripción
-export const updateSubscriptionStatus = (subscriptionId, statusData) => {
-  const controller = loadAbort();
-  const headers = getAxiosHeaders();
-
-  if (!headers) {
-    return Promise.reject(new Error("No authenticated"));
-  }
-
-  return {
-    call: axios
-      .put(
-        `${baseUrl}/admin/subscriptions/${subscriptionId}/status`,
-        statusData,
-        {
-          ...headers,
-          signal: controller.signal,
-        }
-      )
-      .catch((error) => {
-        console.error("Error updating subscription status:", error);
-        throw error;
-      }),
-    controller,
-  };
-};
-
-// Eliminar suscripción
-export const deleteSubscription = (subscriptionId) => {
-  const controller = loadAbort();
-  const headers = getAxiosHeaders();
-
-  if (!headers) {
-    return Promise.reject(new Error("No authenticated"));
-  }
-
-  return {
-    call: axios
-      .delete(`${baseUrl}/admin/subscriptions/${subscriptionId}`, {
-        ...headers,
-        signal: controller.signal,
-      })
-      .catch((error) => {
-        console.error("Error deleting subscription:", error);
-        throw error;
-      }),
-    controller,
-  };
-};
-
-// Obtener suscripciones de un usuario específico
-export const getUserSubscriptions = (userId) => {
-  const controller = loadAbort();
-  const headers = getAxiosHeaders();
-
-  if (!headers) {
-    return Promise.reject(new Error("No authenticated"));
-  }
-
-  return {
-    call: axios
-      .get(`${baseUrl}/subscriptions/admin/user/${userId}`, {
-        ...headers,
-        signal: controller.signal,
-      })
-      .catch((error) => {
-        console.error("Error fetching user subscriptions:", error);
-        throw error;
-      }),
-    controller,
-  };
-};
+// Exportar todas las funciones de imagen
+export * from "./imageService.js";

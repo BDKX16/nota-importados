@@ -21,14 +21,15 @@ interface SEOConfig {
 }
 
 const defaultSEOConfig: SEOConfig = {
-  siteName: "Luna Brew House",
-  tagline: "Cervezas Artesanales Premium",
-  description: "Descubre nuestras cervezas artesanales únicas",
-  seoTitle: "Luna Brew House - Cervezas Artesanales Premium",
+  siteName: "Nota Importados",
+  tagline: "Perfumes y Productos de Lujo Importados",
+  description:
+    "Descubre nuestra exclusiva selección de perfumes y productos de lujo importados",
+  seoTitle: "Nota Importados - Perfumes y Productos de Lujo Importados",
   seoDescription:
-    "Disfruta de las mejores cervezas artesanales con entrega a domicilio y planes de suscripción personalizados.",
+    "Disfruta de los mejores perfumes y productos de lujo importados con entrega a domicilio y atención personalizada.",
   seoKeywords:
-    "cerveza artesanal, craft beer, suscripción cerveza, entrega domicilio",
+    "perfumes importados, fragancias de lujo, productos de lujo, entrega domicilio, perfumes originales",
   ogImage: "",
   canonicalUrl: "",
   favicon: "",
