@@ -90,6 +90,7 @@ export function ProductFilters({ onFiltersChange }: ProductFiltersProps) {
     try {
       const response = await callEndpoint(getCategories());
       if (response && response.data && response.data.categories) {
+        console.log("Categorías cargadas:", response.data.categories);
         setCategories(response.data.categories);
       }
     } catch (error) {
@@ -149,12 +150,12 @@ export function ProductFilters({ onFiltersChange }: ProductFiltersProps) {
               <Badge
                 key={category._id}
                 variant={
-                  selectedCategory === category._id ? "default" : "outline"
+                  selectedCategory === category.name ? "default" : "outline"
                 }
                 className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors"
                 onClick={() =>
                   setSelectedCategory(
-                    selectedCategory === category._id ? null : category._id
+                    selectedCategory === category.name ? null : category.name
                   )
                 }
               >

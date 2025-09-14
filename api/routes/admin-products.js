@@ -1,4 +1,5 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const router = express.Router();
 const { checkAuth, checkRole } = require("../middlewares/authentication");
 const {
@@ -620,6 +621,8 @@ router.post("/", checkAuth, checkRole(["admin", "owner"]), async (req, res) => {
       name,
       category,
       categoryId,
+      categories,
+      categoryNames,
       price,
       images,
       description,
@@ -637,11 +640,26 @@ router.post("/", checkAuth, checkRole(["admin", "owner"]), async (req, res) => {
         .json({ error: "Ya existe un producto con ese ID" });
     }
 
+    // Procesar categorías - convertir IDs personalizados a ObjectIds
+    let processedCategories = [];
+    if (categories && Array.isArray(categories) && categories.length > 0) {
+      // Buscar las categorías por sus IDs personalizados para obtener los ObjectIds
+      const foundCategories = await Category.find({
+        id: { $in: categories },
+        nullDate: null,
+      });
+
+      // Extraer los ObjectIds
+      processedCategories = foundCategories.map((cat) => cat._id);
+    }
+
     const product = new PerfumeProduct({
       id,
       name,
       category,
       categoryId,
+      categories: processedCategories,
+      categoryNames: categoryNames || [],
       price,
       images: images || [],
       description,
@@ -670,6 +688,8 @@ router.put(
         name,
         category,
         categoryId,
+        categories,
+        categoryNames,
         price,
         images,
         description,
@@ -688,10 +708,35 @@ router.put(
         return res.status(404).json({ error: "Producto no encontrado" });
       }
 
+      // Procesar categorías - convertir IDs personalizados a ObjectIds
+      let processedCategories = categories;
+      if (
+        categories !== undefined &&
+        Array.isArray(categories) &&
+        categories.length > 0
+      ) {
+        // Buscar las categorías por sus IDs personalizados para obtener los ObjectIds
+        const foundCategories = await Category.find({
+          id: { $in: categories },
+          nullDate: null,
+        });
+
+        // Extraer los ObjectIds
+        processedCategories = foundCategories.map((cat) => cat._id);
+      } else {
+        processedCategories = [];
+      }
+
       // Actualizar campos
       product.name = name || product.name;
       product.category = category || product.category;
       product.categoryId = categoryId || product.categoryId;
+      product.categories =
+        processedCategories !== undefined
+          ? processedCategories
+          : product.categories;
+      product.categoryNames =
+        categoryNames !== undefined ? categoryNames : product.categoryNames;
       product.price = price !== undefined ? price : product.price;
       product.images = images !== undefined ? images : product.images;
       product.description = description || product.description;

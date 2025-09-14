@@ -65,13 +65,21 @@ export function ProductGrid({
     let filtered = [...products];
 
     if (filters) {
-      // Filtrar por categoría
+      // Filtrar por categoría (usando categoryNames)
       if (filters.category) {
-        filtered = filtered.filter(
-          (product) =>
+        filtered = filtered.filter((product) => {
+          // Buscar en el array de nombres de categorías
+          if (product.categoryNames && Array.isArray(product.categoryNames)) {
+            return product.categoryNames.some((catName) =>
+              catName.toLowerCase().includes(filters.category!.toLowerCase())
+            );
+          }
+          // Fallback a campos individuales si no hay categoryNames
+          return (
             product.categoryId === filters.category ||
             product.category === filters.category
-        );
+          );
+        });
       }
 
       // Filtrar por tipo
