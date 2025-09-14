@@ -130,30 +130,63 @@ landingConfigSchema.index(
 
 // Método para obtener la configuración activa
 landingConfigSchema.statics.getActiveConfig = async function () {
-  let config = await this.findOne({ isActive: true });
+  try {
+    // Primero limpiar duplicados
+    await this.cleanupDuplicates();
 
-  // Si no existe configuración, crear una por defecto
-  if (!config) {
-    // Primero verificar si existe alguna configuración
-    const existingConfig = await this.findOne({});
-    
-    if (existingConfig) {
-      // Si existe una configuración, activarla
-      existingConfig.isActive = true;
-      await existingConfig.save();
-      config = existingConfig;
-    } else {
-      // Si no existe ninguna configuración, crear una nueva
-      config = new this({
-        siteName: "Luna Brew House",
-        tagline: "Cervezas Artesanales Premium",
-        isActive: true,
-      });
-      await config.save();
+    let config = await this.findOne({ isActive: true });
+
+    // Si no existe configuración, crear una por defecto
+    if (!config) {
+      // Primero verificar si existe alguna configuración
+      const existingConfig = await this.findOne({});
+
+      if (existingConfig) {
+        // Si existe una configuración, activarla
+        existingConfig.isActive = true;
+        await existingConfig.save();
+        config = existingConfig;
+      } else {
+        // Si no existe ninguna configuración, crear una nueva
+        config = new this({
+          siteName: "Luna Brew House",
+          tagline: "Cervezas Artesanales Premium",
+          isActive: true,
+        });
+        await config.save();
+      }
     }
-  }
 
-  return config;
+    return config;
+  } catch (error) {
+    console.error("Error in getActiveConfig:", error);
+    throw error;
+  }
+}; // Método para limpiar configuraciones duplicadas
+landingConfigSchema.statics.cleanupDuplicates = async function () {
+  try {
+    // Obtener todas las configuraciones activas
+    const activeConfigs = await this.find({ isActive: true });
+
+    if (activeConfigs.length > 1) {
+      // Mantener solo la más reciente y desactivar las demás
+      const mostRecent = activeConfigs.sort(
+        (a, b) => b.updatedAt - a.updatedAt
+      )[0];
+
+      // Desactivar todas las demás
+      await this.updateMany(
+        { isActive: true, _id: { $ne: mostRecent._id } },
+        { isActive: false }
+      );
+
+      console.log(
+        `Cleaned up ${activeConfigs.length - 1} duplicate active configs`
+      );
+    }
+  } catch (error) {
+    console.error("Error cleaning up duplicate configs:", error);
+  }
 };
 
 // Método para obtener configuración pública (para la landing)

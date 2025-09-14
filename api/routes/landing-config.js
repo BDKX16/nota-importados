@@ -158,6 +158,9 @@ router.get("/admin", checkAuth, async (req, res) => {
       });
     }
 
+    // Limpiar configuraciones duplicadas antes de obtener la activa
+    await LandingConfig.cleanupDuplicates();
+
     const config = await LandingConfig.getActiveConfig();
 
     res.status(200).json({
