@@ -4,8 +4,22 @@ const mongoose = require("mongoose");
 const morgan = require("morgan");
 const cors = require("cors");
 const colors = require("colors");
-const { generalLimiter, authLimiter, productsLimiter, uploadLimiter, adminLimiter } = require("./middlewares/rateLimiter");
-const { securityHeaders, compressionMiddleware, cacheProducts, cacheStaticData, noCache, validateFileSize, validateFileTypes } = require("./middlewares/cacheAndSecurity");
+const {
+  generalLimiter,
+  authLimiter,
+  productsLimiter,
+  uploadLimiter,
+  adminLimiter,
+} = require("./middlewares/rateLimiter");
+const {
+  securityHeaders,
+  compressionMiddleware,
+  cacheProducts,
+  cacheStaticData,
+  noCache,
+  validateFileSize,
+  validateFileTypes,
+} = require("./middlewares/cacheAndSecurity");
 
 require("dotenv").config();
 
@@ -31,15 +45,43 @@ app.use(generalLimiter);
 
 //express routes
 app.use("/api/users", authLimiter, noCache, require("./routes/users.js"));
-app.use("/api/products", productsLimiter, cacheProducts, require("./routes/products.js"));
+app.use(
+  "/api/products",
+  productsLimiter,
+  cacheProducts,
+  require("./routes/products.js")
+);
 app.use("/api/categories", cacheStaticData, require("./routes/categories.js"));
 app.use("/api/brands", cacheStaticData, require("./routes/brands.js"));
 app.use("/api/payments", noCache, require("./routes/payments.js"));
 app.use("/api/landing", cacheStaticData, require("./routes/landing-config.js"));
-app.use("/api/admin/payments", adminLimiter, noCache, require("./routes/admin-payments.js"));
-app.use("/api/admin/products", adminLimiter, uploadLimiter, noCache, validateFileSize(10 * 1024 * 1024), validateFileTypes(['image/jpeg', 'image/png', 'image/webp']), require("./routes/admin-products.js"));
-app.use("/api/admin", adminLimiter, noCache, require("./routes/configuration.js"));
-app.use("/api/admin/emails", adminLimiter, noCache, require("./routes/admin-emails.js"));
+app.use(
+  "/api/admin/payments",
+  adminLimiter,
+  noCache,
+  require("./routes/admin-payments.js")
+);
+app.use(
+  "/api/admin/products",
+  adminLimiter,
+  uploadLimiter,
+  noCache,
+  validateFileSize(10 * 1024 * 1024),
+  validateFileTypes(["image/jpeg", "image/png", "image/webp"]),
+  require("./routes/admin-products.js")
+);
+app.use(
+  "/api/admin",
+  adminLimiter,
+  noCache,
+  require("./routes/configuration.js")
+);
+app.use(
+  "/api/admin/emails",
+  adminLimiter,
+  noCache,
+  require("./routes/admin-emails.js")
+);
 app.use("/api/images", require("./routes/images.js"));
 
 module.exports = app;

@@ -2,7 +2,13 @@ const express = require("express");
 const mongoose = require("mongoose");
 const router = express.Router();
 const { checkAuth, checkRole } = require("../middlewares/authentication");
-const { validateProduct, validateId, validateWithJoi, productSchema, sanitizeFileUpload } = require("../middlewares/validation");
+const {
+  validateProduct,
+  validateId,
+  validateWithJoi,
+  productSchema,
+  sanitizeFileUpload,
+} = require("../middlewares/validation");
 const {
   Beer,
   Discount,

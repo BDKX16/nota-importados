@@ -125,7 +125,7 @@ export function ProductGrid({
   }, [filters]);
 
   const loadMoreProducts = useCallback(() => {
-    setVisibleCount(prev => Math.min(prev + 9, filteredProducts.length));
+    setVisibleCount((prev) => Math.min(prev + 9, filteredProducts.length));
   }, [filteredProducts.length]);
 
   const loadProducts = async () => {
@@ -160,27 +160,25 @@ export function ProductGrid({
     <div className="space-y-8">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {visibleProducts.map((product, index) => (
-          <ProductCard 
-            key={product.id} 
-            product={product}
-          />
+          <ProductCard key={product.id} product={product} />
         ))}
       </div>
-      
+
       {/* Botón para cargar más productos */}
       {visibleCount < filteredProducts.length && (
         <div className="flex justify-center">
-          <Button 
+          <Button
             onClick={loadMoreProducts}
             variant="outline"
             size="lg"
             className="min-w-[200px]"
           >
-            Cargar más productos ({filteredProducts.length - visibleCount} restantes)
+            Cargar más productos ({filteredProducts.length - visibleCount}{" "}
+            restantes)
           </Button>
         </div>
       )}
-      
+
       {/* Mensaje cuando no hay productos */}
       {filteredProducts.length === 0 && !loading && (
         <div className="col-span-full text-center py-12">

@@ -1,11 +1,11 @@
-import React from 'react';
-import { useImageCache } from '@/hooks/useImageCache';
+import React from "react";
+import { useImageCache } from "@/hooks/useImageCache";
 
 export function ImageCacheDebug() {
   const { getCacheStats, clearCache } = useImageCache();
   const stats = getCacheStats();
 
-  if (process.env.NODE_ENV !== 'development') {
+  if (process.env.NODE_ENV !== "development") {
     return null;
   }
 
@@ -15,7 +15,7 @@ export function ImageCacheDebug() {
       <div>Total Entries: {stats.totalEntries}</div>
       <div>Memory Entries: {stats.memoryEntries}</div>
       <div>Hit Rate: {stats.cacheHitRate.toFixed(1)}%</div>
-      <button 
+      <button
         onClick={clearCache}
         className="mt-2 px-2 py-1 bg-red-600 rounded text-xs hover:bg-red-700"
       >

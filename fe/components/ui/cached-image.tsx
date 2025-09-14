@@ -1,6 +1,6 @@
-import React, { useState, useEffect, memo, useRef } from 'react';
-import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
-import { useImageCache } from '@/hooks/useImageCache';
+import React, { useState, useEffect, memo, useRef } from "react";
+import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
+import { useImageCache } from "@/hooks/useImageCache";
 
 interface CachedImageProps {
   src: string;
@@ -19,7 +19,7 @@ const CachedImage = memo(function CachedImage({
   fallback = "/placeholder.svg",
   onLoad,
   onError,
-  eager = false
+  eager = false,
 }: CachedImageProps) {
   const [imageSrc, setImageSrc] = useState<string>(fallback);
   const [isLoading, setIsLoading] = useState(true);
@@ -28,7 +28,7 @@ const CachedImage = memo(function CachedImage({
   const imgRef = useRef<HTMLImageElement>(null);
   const { targetRef, hasIntersected } = useIntersectionObserver({
     threshold: 0.1,
-    rootMargin: '100px' // Cargar cuando esté a 100px de ser visible
+    rootMargin: "100px", // Cargar cuando esté a 100px de ser visible
   });
   const { isImageCached, preloadImage } = useImageCache();
 
@@ -69,9 +69,8 @@ const CachedImage = memo(function CachedImage({
       setImageSrc(imageUrl);
       setIsLoading(false);
       onLoad?.();
-      
     } catch (error) {
-      console.error('Error loading image:', error);
+      console.error("Error loading image:", error);
       setImageSrc(fallback);
       setHasError(true);
       setIsLoading(false);
@@ -80,12 +79,11 @@ const CachedImage = memo(function CachedImage({
   };
 
   return (
-    <div 
-      ref={targetRef}
-      className="relative w-full h-full"
-    >
+    <div ref={targetRef} className="relative w-full h-full">
       {(isLoading || !shouldLoad) && (
-        <div className={`absolute inset-0 bg-gray-200 animate-pulse rounded ${className}`}>
+        <div
+          className={`absolute inset-0 bg-gray-200 animate-pulse rounded ${className}`}
+        >
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="w-8 h-8 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin"></div>
           </div>
@@ -96,7 +94,9 @@ const CachedImage = memo(function CachedImage({
           ref={imgRef}
           src={imageSrc}
           alt={alt}
-          className={`${className} ${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
+          className={`${className} ${
+            isLoading ? "opacity-0" : "opacity-100"
+          } transition-opacity duration-300`}
           loading="lazy"
           onLoad={() => {
             setIsLoading(false);
@@ -111,9 +111,9 @@ const CachedImage = memo(function CachedImage({
             }
           }}
           style={{
-            objectFit: 'cover',
-            width: '100%',
-            height: '100%'
+            objectFit: "cover",
+            width: "100%",
+            height: "100%",
           }}
         />
       )}

@@ -13,7 +13,9 @@ interface ProductCardProps {
   product: Product;
 }
 
-export const ProductCard = memo(function ProductCard({ product }: ProductCardProps) {
+export const ProductCard = memo(function ProductCard({
+  product,
+}: ProductCardProps) {
   const { dispatch } = useStore();
   const [isLiked, setIsLiked] = useState(false);
 
@@ -22,7 +24,7 @@ export const ProductCard = memo(function ProductCard({ product }: ProductCardPro
   }, [dispatch, product]);
 
   const handleToggleLike = useCallback(() => {
-    setIsLiked(prev => !prev);
+    setIsLiked((prev) => !prev);
   }, []);
 
   return (

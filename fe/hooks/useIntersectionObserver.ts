@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from "react";
 
 interface UseIntersectionObserverProps {
   threshold?: number;
@@ -9,7 +9,7 @@ interface UseIntersectionObserverProps {
 export function useIntersectionObserver({
   threshold = 0.1,
   root = null,
-  rootMargin = '50px'
+  rootMargin = "50px",
 }: UseIntersectionObserverProps = {}) {
   const [isIntersecting, setIsIntersecting] = useState(false);
   const [hasIntersected, setHasIntersected] = useState(false);
@@ -22,7 +22,7 @@ export function useIntersectionObserver({
     const observer = new IntersectionObserver(
       ([entry]) => {
         setIsIntersecting(entry.isIntersecting);
-        
+
         // Una vez que se intersecta, marcarlo como intersectado para siempre
         if (entry.isIntersecting && !hasIntersected) {
           setHasIntersected(true);
@@ -31,7 +31,7 @@ export function useIntersectionObserver({
       {
         threshold,
         root,
-        rootMargin
+        rootMargin,
       }
     );
 
@@ -45,6 +45,6 @@ export function useIntersectionObserver({
   return {
     targetRef,
     isIntersecting,
-    hasIntersected
+    hasIntersected,
   };
 }

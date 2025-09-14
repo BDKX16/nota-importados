@@ -11,92 +11,97 @@ const {
 } = require("../models/products");
 
 // Obtener todos los productos con filtros opcionales
-router.get("/", validateSearch, trackInteraction("landing", true), async (req, res) => {
-  try {
-    const {
-      category,
-      categoryId,
-      type,
-      brand,
-      minPrice,
-      maxPrice,
-      search,
-      page = 1,
-      limit = 20,
-      sort = "createdAt",
-    } = req.query;
+router.get(
+  "/",
+  validateSearch,
+  trackInteraction("landing", true),
+  async (req, res) => {
+    try {
+      const {
+        category,
+        categoryId,
+        type,
+        brand,
+        minPrice,
+        maxPrice,
+        search,
+        page = 1,
+        limit = 20,
+        sort = "createdAt",
+      } = req.query;
 
-    // Construir filtros - PerfumeProduct no tiene isActive por defecto
-    const filters = {};
+      // Construir filtros - PerfumeProduct no tiene isActive por defecto
+      const filters = {};
 
-    if (category) filters.category = category;
-    if (categoryId) filters.categoryId = categoryId;
-    if (type) filters.type = type;
-    if (brand) filters.brand = brand;
+      if (category) filters.category = category;
+      if (categoryId) filters.categoryId = categoryId;
+      if (type) filters.type = type;
+      if (brand) filters.brand = brand;
 
-    if (minPrice || maxPrice) {
-      filters.price = {};
-      if (minPrice) filters.price.$gte = parseFloat(minPrice);
-      if (maxPrice) filters.price.$lte = parseFloat(maxPrice);
+      if (minPrice || maxPrice) {
+        filters.price = {};
+        if (minPrice) filters.price.$gte = parseFloat(minPrice);
+        if (maxPrice) filters.price.$lte = parseFloat(maxPrice);
+      }
+
+      // Búsqueda por texto en nombre, descripción o marca
+      if (search) {
+        filters.$or = [
+          { name: { $regex: search, $options: "i" } },
+          { description: { $regex: search, $options: "i" } },
+          { brand: { $regex: search, $options: "i" } },
+        ];
+      }
+
+      // Configurar paginación
+      const skip = (parseInt(page) - 1) * parseInt(limit);
+
+      // Configurar ordenamiento
+      const sortOptions = {};
+      switch (sort) {
+        case "price_asc":
+          sortOptions.price = 1;
+          break;
+        case "price_desc":
+          sortOptions.price = -1;
+          break;
+        case "name":
+          sortOptions.name = 1;
+          break;
+        case "newest":
+          sortOptions.createdAt = -1;
+          break;
+        default:
+          sortOptions.createdAt = -1;
+      }
+
+      const products = await PerfumeProduct.find(filters)
+        .populate("category", "name slug")
+        .sort(sortOptions)
+        .skip(skip)
+        .limit(parseInt(limit));
+
+      const total = await PerfumeProduct.countDocuments(filters);
+      const totalPages = Math.ceil(total / parseInt(limit));
+
+      return res.status(200).json({
+        products,
+        pagination: {
+          currentPage: parseInt(page),
+          totalPages,
+          totalProducts: total,
+          hasNextPage: parseInt(page) < totalPages,
+          hasPrevPage: parseInt(page) > 1,
+        },
+      });
+    } catch (error) {
+      console.error("Error al obtener productos:", error);
+      return res
+        .status(500)
+        .json({ error: "Error al obtener el listado de productos" });
     }
-
-    // Búsqueda por texto en nombre, descripción o marca
-    if (search) {
-      filters.$or = [
-        { name: { $regex: search, $options: "i" } },
-        { description: { $regex: search, $options: "i" } },
-        { brand: { $regex: search, $options: "i" } },
-      ];
-    }
-
-    // Configurar paginación
-    const skip = (parseInt(page) - 1) * parseInt(limit);
-
-    // Configurar ordenamiento
-    const sortOptions = {};
-    switch (sort) {
-      case "price_asc":
-        sortOptions.price = 1;
-        break;
-      case "price_desc":
-        sortOptions.price = -1;
-        break;
-      case "name":
-        sortOptions.name = 1;
-        break;
-      case "newest":
-        sortOptions.createdAt = -1;
-        break;
-      default:
-        sortOptions.createdAt = -1;
-    }
-
-    const products = await PerfumeProduct.find(filters)
-      .populate("category", "name slug")
-      .sort(sortOptions)
-      .skip(skip)
-      .limit(parseInt(limit));
-
-    const total = await PerfumeProduct.countDocuments(filters);
-    const totalPages = Math.ceil(total / parseInt(limit));
-
-    return res.status(200).json({
-      products,
-      pagination: {
-        currentPage: parseInt(page),
-        totalPages,
-        totalProducts: total,
-        hasNextPage: parseInt(page) < totalPages,
-        hasPrevPage: parseInt(page) > 1,
-      },
-    });
-  } catch (error) {
-    console.error("Error al obtener productos:", error);
-    return res
-      .status(500)
-      .json({ error: "Error al obtener el listado de productos" });
   }
-});
+);
 // Obtener productos destacados
 router.get("/featured", trackInteraction("landing", true), async (req, res) => {
   try {

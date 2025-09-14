@@ -72,7 +72,7 @@ export default function ProductsPage() {
           </div>
         </div>
       </main>
-      
+
       {/* Debug component - solo en desarrollo */}
       <ImageCacheDebug />
     </div>
