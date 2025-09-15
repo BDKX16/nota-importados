@@ -6,7 +6,6 @@ import { ProductFilters } from "@/components/product-filters";
 import { ImageCacheDebug } from "@/components/debug/ImageCacheDebug";
 import { useState, useCallback, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-
 interface Filters {
   category?: string;
   type?: string;
@@ -25,7 +24,6 @@ export default function ProductsPage() {
   // Leer parámetros de URL al cargar la página
   useEffect(() => {
     const urlFilters: Filters = {};
-
     // Leer todos los parámetros de URL posibles
     if (searchParams.get("brand")) {
       urlFilters.brand = searchParams.get("brand")!;

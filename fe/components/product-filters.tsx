@@ -7,7 +7,8 @@ import { Search, Filter } from "lucide-react";
 import { useState, useEffect } from "react";
 import { getCategories } from "@/services/productsService";
 import useFetchAndLoad from "@/hooks/useFetchAndLoad";
-
+import { getBrands } from "@/services/public";
+import { useToast } from "@/hooks/use-toast";
 interface Category {
   _id: string;
   name: string;
@@ -32,11 +33,29 @@ interface ProductFiltersProps {
     maxPrice?: number;
   }) => void;
 }
-
+interface Brand {
+  _id: string;
+  id: string;
+  name: string;
+  description?: string;
+  logo?: string;
+  slug: string;
+  country?: string;
+  foundedYear?: number;
+  isPremium: boolean;
+  categories?: Array<{
+    _id: string;
+    name: string;
+    slug: string;
+  }>;
+  createdAt: string;
+  updatedAt: string;
+}
 export function ProductFilters({
   initialFilters,
   onFiltersChange,
 }: ProductFiltersProps) {
+  const { toast } = useToast();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(
     initialFilters?.category || null
   );
@@ -52,15 +71,8 @@ export function ProductFilters({
   const [searchTerm, setSearchTerm] = useState(initialFilters?.search || "");
   const [categories, setCategories] = useState<Category[]>([]);
   const { loading, callEndpoint } = useFetchAndLoad();
+  const [brands, setBrands] = useState<Brand[]>([]);
 
-  const brands = [
-    "Chanel",
-    "Dior",
-    "Tom Ford",
-    "Creed",
-    "YSL",
-    "Maison Margiela",
-  ];
   const priceRanges = [
     { label: "$0 - $100", min: 0, max: 100 },
     { label: "$100 - $200", min: 100, max: 200 },
@@ -85,7 +97,7 @@ export function ProductFilters({
       setSelectedType(initialFilters.type || null);
       setSelectedBrand(initialFilters.brand || null);
       setSearchTerm(initialFilters.search || "");
-
+      loadBrands();
       // Manejar precio inicial si existe
       if (
         initialFilters.minPrice !== undefined ||
@@ -132,11 +144,26 @@ export function ProductFilters({
     try {
       const response = await callEndpoint(getCategories());
       if (response && response.data && response.data.categories) {
-        console.log("Categorías cargadas:", response.data.categories);
         setCategories(response.data.categories);
       }
     } catch (error) {
       console.error("Error loading categories:", error);
+    }
+  };
+
+  const loadBrands = async () => {
+    try {
+      const response = await callEndpoint(getBrands());
+      if (response && response.data && response.data.brands) {
+        setBrands(response.data.brands);
+      }
+    } catch (error) {
+      console.error("Error loading brands:", error);
+      toast({
+        title: "Error",
+        description: "No se pudieron cargar las marcas",
+        variant: "destructive",
+      });
     }
   };
 
@@ -214,14 +241,16 @@ export function ProductFilters({
         <div className="flex flex-wrap gap-2">
           {brands.map((brand) => (
             <Badge
-              key={brand}
-              variant={selectedBrand === brand ? "default" : "outline"}
+              key={brand._id}
+              variant={selectedBrand === brand.name ? "default" : "outline"}
               className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors"
               onClick={() =>
-                setSelectedBrand(selectedBrand === brand ? null : brand)
+                setSelectedBrand(
+                  selectedBrand === brand.name ? null : brand.name
+                )
               }
             >
-              {brand}
+              {brand.name}
             </Badge>
           ))}
         </div>

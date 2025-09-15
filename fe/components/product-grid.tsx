@@ -76,8 +76,9 @@ export function ProductGrid({
 
       // Filtrar por marca
       if (filters.brand) {
-        filtered = filtered.filter((product) =>
-          product.brand?.toLowerCase().includes(filters.brand!.toLowerCase())
+        filtered = filtered.filter(
+          (product) =>
+            product.brand?.toLowerCase() === filters.brand.toLowerCase()
         );
       }
 
