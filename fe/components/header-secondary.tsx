@@ -5,6 +5,7 @@ import { ShoppingBag, Menu } from "lucide-react";
 import { useCart } from "@/hooks/redux-hooks";
 import Link from "next/link";
 import Image from "next/image";
+import UserNav from "@/components/user-nav";
 
 export function HeaderSecondary() {
   const { cartCount, toggleCart } = useCart();
@@ -57,19 +58,8 @@ export function HeaderSecondary() {
               </span>
             )}
           </Button>
-          <Button
-            variant="outline"
-            className="hover:bg-primary hover:text-primary-foreground transition-all duration-300 text-sm font-medium px-4 py-2"
-          >
-            Iniciar sesión
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden hover:bg-primary/10 transition-all duration-300"
-          >
-            <Menu className="h-6 w-6" />
-          </Button>
+
+          <UserNav />
         </div>
       </div>
     </header>
