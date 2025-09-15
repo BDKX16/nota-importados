@@ -15,6 +15,14 @@ interface Category {
 }
 
 interface ProductFiltersProps {
+  initialFilters?: {
+    category?: string;
+    type?: string;
+    brand?: string;
+    search?: string;
+    minPrice?: number;
+    maxPrice?: number;
+  };
   onFiltersChange?: (filters: {
     category?: string;
     type?: string;
@@ -25,14 +33,23 @@ interface ProductFiltersProps {
   }) => void;
 }
 
-export function ProductFilters({ onFiltersChange }: ProductFiltersProps) {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedType, setSelectedType] = useState<string | null>(null);
-  const [selectedBrand, setSelectedBrand] = useState<string | null>(null);
+export function ProductFilters({
+  initialFilters,
+  onFiltersChange,
+}: ProductFiltersProps) {
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(
+    initialFilters?.category || null
+  );
+  const [selectedType, setSelectedType] = useState<string | null>(
+    initialFilters?.type || null
+  );
+  const [selectedBrand, setSelectedBrand] = useState<string | null>(
+    initialFilters?.brand || null
+  );
   const [selectedPriceRange, setSelectedPriceRange] = useState<string | null>(
     null
   );
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(initialFilters?.search || "");
   const [categories, setCategories] = useState<Category[]>([]);
   const { loading, callEndpoint } = useFetchAndLoad();
 
@@ -60,6 +77,31 @@ export function ProductFilters({ onFiltersChange }: ProductFiltersProps) {
   useEffect(() => {
     loadCategories();
   }, []);
+
+  // Efecto para manejar cambios en filtros iniciales
+  useEffect(() => {
+    if (initialFilters) {
+      setSelectedCategory(initialFilters.category || null);
+      setSelectedType(initialFilters.type || null);
+      setSelectedBrand(initialFilters.brand || null);
+      setSearchTerm(initialFilters.search || "");
+
+      // Manejar precio inicial si existe
+      if (
+        initialFilters.minPrice !== undefined ||
+        initialFilters.maxPrice !== undefined
+      ) {
+        const matchingRange = priceRanges.find(
+          (range) =>
+            range.min === initialFilters.minPrice &&
+            (range.max === initialFilters.maxPrice ||
+              (range.max === undefined &&
+                initialFilters.maxPrice === undefined))
+        );
+        setSelectedPriceRange(matchingRange?.label || null);
+      }
+    }
+  }, [initialFilters]);
 
   useEffect(() => {
     const filters: any = {};

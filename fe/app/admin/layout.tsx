@@ -12,6 +12,7 @@ import {
   LogOut,
   Menu,
   TicketPercent,
+  Star,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -27,6 +28,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const navItems = [
     { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
     { href: "/admin/productos", label: "Productos", icon: Package },
+    { href: "/admin/marcas", label: "Marcas", icon: Star },
     { href: "/admin/ventas", label: "Ventas y Pedidos", icon: ShoppingCart },
     { href: "/admin/promociones", label: "Promociones", icon: TicketPercent },
     { href: "/admin/configuracion", label: "Configuración", icon: Settings },

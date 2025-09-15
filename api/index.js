@@ -93,6 +93,12 @@ app.use(
   require("./routes/admin-products.js")
 );
 app.use(
+  "/api/admin/brands",
+  adminLimiter,
+  noCache,
+  require("./routes/admin-brands.js")
+);
+app.use(
   "/api/admin",
   adminLimiter,
   noCache,

@@ -307,6 +307,61 @@ export const createSubscription = (subscriptionId, beerType, beerName) => {
   };
 };
 
+// Marcas
+export const getBrands = (params = {}) => {
+  const controller = loadAbort();
+  const queryParams = new URLSearchParams();
+
+  if (params.category) queryParams.append("category", params.category);
+  if (params.premium) queryParams.append("premium", params.premium);
+  if (params.limit) queryParams.append("limit", params.limit);
+  if (params.page) queryParams.append("page", params.page);
+
+  const queryString = queryParams.toString();
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/brands${
+    queryString ? `?${queryString}` : ""
+  }`;
+
+  return {
+    call: axios
+      .get(url, {
+        signal: controller.signal,
+      })
+      .catch((error) => {
+        notifyError(error);
+      }),
+    controller,
+  };
+};
+
+export const getBrandBySlug = (slug) => {
+  const controller = loadAbort();
+  return {
+    call: axios
+      .get(process.env.NEXT_PUBLIC_API_URL + `/brands/${slug}`, {
+        signal: controller.signal,
+      })
+      .catch((error) => {
+        notifyError(error);
+      }),
+    controller,
+  };
+};
+
+export const getPremiumBrands = () => {
+  const controller = loadAbort();
+  return {
+    call: axios
+      .get(process.env.NEXT_PUBLIC_API_URL + "/brands/premium", {
+        signal: controller.signal,
+      })
+      .catch((error) => {
+        notifyError(error);
+      }),
+    controller,
+  };
+};
+
 // Recomendaciones (requiere autenticación)
 export const getTopProducts = () => {
   const controller = loadAbort();

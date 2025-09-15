@@ -2106,5 +2106,128 @@ export const createCashOrder = (orderData) => {
   };
 };
 
+/**********
+ * GESTIÓN DE MARCAS
+ ************/
+
+// Obtener todas las marcas
+export const getAdminBrands = () => {
+  const controller = loadAbort();
+  const headers = getAxiosHeaders();
+
+  if (!headers) {
+    return;
+  }
+
+  return {
+    call: axios
+      .get(process.env.NEXT_PUBLIC_API_URL + "/admin/brands", headers, {
+        signal: controller.signal,
+      })
+      .catch((error) => {
+        notifyError(error);
+      }),
+    controller,
+  };
+};
+
+// Obtener una marca por ID
+export const getAdminBrandById = (brandId) => {
+  const controller = loadAbort();
+  const headers = getAxiosHeaders();
+
+  if (!headers) {
+    return;
+  }
+
+  return {
+    call: axios
+      .get(
+        process.env.NEXT_PUBLIC_API_URL + `/admin/brands/${brandId}`,
+        headers,
+        {
+          signal: controller.signal,
+        }
+      )
+      .catch((error) => {
+        notifyError(error);
+      }),
+    controller,
+  };
+};
+
+// Crear una nueva marca
+export const createBrand = (brandData) => {
+  const controller = loadAbort();
+  const headers = getAxiosHeaders();
+
+  if (!headers) {
+    return;
+  }
+
+  return {
+    call: axios
+      .post(
+        process.env.NEXT_PUBLIC_API_URL + "/admin/brands",
+        brandData,
+        headers,
+        {
+          signal: controller.signal,
+        }
+      )
+      .catch((error) => {
+        notifyError(error);
+      }),
+    controller,
+  };
+};
+
+// Actualizar una marca
+export const updateBrand = (brandId, brandData) => {
+  const controller = loadAbort();
+  const headers = getAxiosHeaders();
+
+  if (!headers) {
+    return;
+  }
+
+  return {
+    call: axios
+      .put(
+        process.env.NEXT_PUBLIC_API_URL + `/admin/brands/${brandId}`,
+        brandData,
+        headers,
+        { signal: controller.signal }
+      )
+      .catch((error) => {
+        notifyError(error);
+      }),
+    controller,
+  };
+};
+
+// Eliminar una marca
+export const deleteBrand = (brandId) => {
+  const controller = loadAbort();
+  const headers = getAxiosHeaders();
+
+  if (!headers) {
+    return;
+  }
+
+  return {
+    call: axios
+      .delete(
+        process.env.NEXT_PUBLIC_API_URL + `/admin/brands/${brandId}`,
+        headers,
+        { signal: controller.signal }
+      )
+      .catch((error) => {
+        notifyError(error);
+      }),
+    controller,
+  };
+};
+
 // Exportar todas las funciones de imagen
 export * from "./imageService.js";
