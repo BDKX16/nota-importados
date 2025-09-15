@@ -37,6 +37,7 @@ import {
   X,
 } from "lucide-react";
 import Link from "next/link";
+import { OrderTrackingComponent } from "@/components/orders/OrderTrackingComponent";
 
 export default function UserOrdersPage() {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -158,63 +159,86 @@ export default function UserOrdersPage() {
     return null;
   }
 
-  const getStatusIcon = (status) => {
-    switch (status?.toLowerCase()) {
-      case "delivered":
-      case "entregado":
-        return <CheckCircle className="h-5 w-5 text-green-600" />;
-      case "shipped":
-      case "shipping":
-      case "en camino":
-      case "enviado":
-        return <Truck className="h-5 w-5 text-blue-600" />;
-      case "processing":
-      case "procesando":
-      case "en preparación":
-        return <Package className="h-5 w-5 text-yellow-600" />;
-      case "confirmed":
-      case "confirmado":
-        return <CheckCircle className="h-5 w-5 text-green-600" />;
-      case "ready_pickup":
-      case "listo para recoger":
-        return <Package className="h-5 w-5 text-orange-600" />;
-      case "waiting_schedule":
-      case "esperando horario":
-        return <Calendar className="h-5 w-5 text-cyan-600" />;
-      case "pending":
-      case "pendiente":
-        return <Clock className="h-5 w-5 text-gray-600" />;
-      default:
-        return <Package className="h-5 w-5 text-gray-600" />;
-    }
-  };
-
   const getStatusColor = (status) => {
     switch (status?.toLowerCase()) {
+      // Estados de la API
+      case "pending_payment":
+        return "bg-amber-50 border-amber-200 text-amber-800";
+      case "payment_confirmed":
+        return "bg-emerald-50 border-emerald-200 text-emerald-800";
+      case "preparing_order":
+        return "bg-blue-50 border-blue-200 text-blue-800";
+      case "stock_verification":
+        return "bg-blue-50 border-blue-200 text-blue-800";
+      case "awaiting_supplier":
+        return "bg-amber-50 border-amber-200 text-amber-800";
+      case "ordering_overseas":
+        return "bg-violet-50 border-violet-200 text-violet-800";
+      case "overseas_processing":
+        return "bg-violet-50 border-violet-200 text-violet-800";
+      case "international_shipping":
+        return "bg-cyan-50 border-cyan-200 text-cyan-800";
+      case "in_transit_international":
+        return "bg-cyan-50 border-cyan-200 text-cyan-800";
+      case "customs_clearance":
+        return "bg-amber-50 border-amber-200 text-amber-800";
+      case "customs_inspection":
+        return "bg-amber-50 border-amber-200 text-amber-800";
+      case "customs_approved":
+        return "bg-emerald-50 border-emerald-200 text-emerald-800";
+      case "paying_duties":
+        return "bg-amber-50 border-amber-200 text-amber-800";
+      case "arrived_local_warehouse":
+        return "bg-emerald-50 border-emerald-200 text-emerald-800";
+      case "quality_inspection":
+        return "bg-blue-50 border-blue-200 text-blue-800";
+      case "local_processing":
+        return "bg-blue-50 border-blue-200 text-blue-800";
+      case "ready_for_dispatch":
+        return "bg-emerald-50 border-emerald-200 text-emerald-800";
+      case "dispatched":
+        return "bg-cyan-50 border-cyan-200 text-cyan-800";
+      case "out_for_delivery":
+        return "bg-cyan-50 border-cyan-200 text-cyan-800";
+      case "delivery_attempted":
+        return "bg-amber-50 border-amber-200 text-amber-800";
       case "delivered":
+        return "bg-emerald-50 border-emerald-200 text-emerald-800";
+      case "on_hold":
+        return "bg-amber-50 border-amber-200 text-amber-800";
+      case "returned_to_sender":
+        return "bg-red-50 border-red-200 text-red-800";
+      case "cancelled":
+        return "bg-gray-50 border-gray-200 text-gray-800";
+      case "refunded":
+        return "bg-gray-50 border-gray-200 text-gray-800";
+      case "lost_in_transit":
+        return "bg-red-50 border-red-200 text-red-800";
+      case "damaged":
+        return "bg-red-50 border-red-200 text-red-800";
+      case "awaiting_customer_action":
+        return "bg-amber-50 border-amber-200 text-amber-800";
+
+      // Estados legacy para compatibilidad
+      case "shipped":
+      case "en_transito":
+        return "bg-indigo-50 border-indigo-200 text-indigo-800";
       case "entregado":
         return "bg-green-50 border-green-200 text-green-800";
-      case "shipped":
-      case "shipping":
-      case "en camino":
-      case "enviado":
-        return "bg-blue-50 border-blue-200 text-blue-800";
+      case "cancelado":
+        return "bg-red-50 border-red-200 text-red-800";
       case "processing":
       case "procesando":
       case "en preparación":
-        return "bg-yellow-50 border-yellow-200 text-yellow-800";
+        return "bg-orange-50 border-orange-200 text-orange-800";
       case "confirmed":
       case "confirmado":
-        return "bg-green-50 border-green-200 text-green-800";
-      case "ready_pickup":
-      case "listo para recoger":
-        return "bg-orange-50 border-orange-200 text-orange-800";
-      case "waiting_schedule":
-      case "esperando horario":
-        return "bg-cyan-50 border-cyan-200 text-cyan-800";
+        return "bg-blue-50 border-blue-200 text-blue-800";
       case "pending":
       case "pendiente":
-        return "bg-gray-50 border-gray-200 text-gray-800";
+        return "bg-yellow-50 border-yellow-200 text-yellow-800";
+      case "order_ready":
+        return "bg-purple-50 border-purple-200 text-purple-800";
       default:
         return "bg-gray-50 border-gray-200 text-gray-800";
     }
@@ -222,14 +246,72 @@ export default function UserOrdersPage() {
 
   const getStatusText = (status) => {
     switch (status?.toLowerCase()) {
+      // Estados de la API
+      case "pending_payment":
+        return "Pendiente de Pago";
+      case "payment_confirmed":
+        return "Pago Confirmado";
+      case "preparing_order":
+        return "Preparando Pedido";
+      case "stock_verification":
+        return "Verificando Stock";
+      case "awaiting_supplier":
+        return "Esperando Proveedor";
+      case "ordering_overseas":
+        return "Pedido Internacional";
+      case "overseas_processing":
+        return "Procesando en Origen";
+      case "international_shipping":
+        return "Enviado desde Origen";
+      case "in_transit_international":
+        return "En Tránsito Internacional";
+      case "customs_clearance":
+        return "En Proceso Aduanero";
+      case "customs_inspection":
+        return "Inspección Aduanera";
+      case "customs_approved":
+        return "Aprobado por Aduana";
+      case "paying_duties":
+        return "Pagando Aranceles";
+      case "arrived_local_warehouse":
+        return "En Depósito Local";
+      case "quality_inspection":
+        return "Inspección de Calidad";
+      case "local_processing":
+        return "Procesamiento Local";
+      case "ready_for_dispatch":
+        return "Listo para Despacho";
+      case "dispatched":
+        return "Despachado";
+      case "out_for_delivery":
+        return "En Reparto";
+      case "delivery_attempted":
+        return "Intento de Entrega";
       case "delivered":
+        return "Entregado";
+      case "on_hold":
+        return "En Espera";
+      case "returned_to_sender":
+        return "Devuelto al Remitente";
+      case "cancelled":
+        return "Cancelado";
+      case "refunded":
+        return "Reembolsado";
+      case "lost_in_transit":
+        return "Perdido en Tránsito";
+      case "damaged":
+        return "Dañado";
+      case "awaiting_customer_action":
+        return "Esperando tu Acción";
+
+      // Estados legacy para compatibilidad
+      case "shipped":
+      case "en_transito":
+        return "En Camino";
       case "entregado":
         return "Entregado";
-      case "shipped":
-      case "shipping":
-      case "en camino":
-      case "enviado":
-        return "En Camino";
+      case "cancelado":
+        return "Cancelado";
       case "processing":
       case "procesando":
       case "en preparación":
@@ -237,15 +319,17 @@ export default function UserOrdersPage() {
       case "confirmed":
       case "confirmado":
         return "Confirmado";
+      case "pending":
+      case "pendiente":
+        return "Pendiente";
       case "ready_pickup":
       case "listo para recoger":
         return "Listo para recoger";
       case "waiting_schedule":
       case "esperando horario":
         return "Esperando horario";
-      case "pending":
-      case "pendiente":
-        return "Pendiente";
+      case "order_ready":
+        return "Pedido Listo";
       default:
         return status || "Sin estado";
     }
@@ -253,21 +337,79 @@ export default function UserOrdersPage() {
 
   const getStatusBadgeColor = (status) => {
     switch (status?.toLowerCase()) {
+      // Estados de la API (usando colores de STATUS_COLORS pero en formato Tailwind)
+      case "pending_payment":
+        return "bg-amber-600";
+      case "payment_confirmed":
+        return "bg-emerald-600";
+      case "preparing_order":
+        return "bg-blue-600";
+      case "stock_verification":
+        return "bg-blue-600";
+      case "awaiting_supplier":
+        return "bg-amber-600";
+      case "ordering_overseas":
+        return "bg-violet-600";
+      case "overseas_processing":
+        return "bg-violet-600";
+      case "international_shipping":
+        return "bg-cyan-600";
+      case "in_transit_international":
+        return "bg-cyan-600";
+      case "customs_clearance":
+        return "bg-amber-600";
+      case "customs_inspection":
+        return "bg-amber-600";
+      case "customs_approved":
+        return "bg-emerald-600";
+      case "paying_duties":
+        return "bg-amber-600";
+      case "arrived_local_warehouse":
+        return "bg-emerald-600";
+      case "quality_inspection":
+        return "bg-blue-600";
+      case "local_processing":
+        return "bg-blue-600";
+      case "ready_for_dispatch":
+        return "bg-emerald-600";
+      case "dispatched":
+        return "bg-cyan-600";
+      case "out_for_delivery":
+        return "bg-cyan-600";
+      case "delivery_attempted":
+        return "bg-amber-600";
       case "delivered":
+        return "bg-emerald-600";
+      case "on_hold":
+        return "bg-amber-600";
+      case "returned_to_sender":
+        return "bg-red-600";
+      case "cancelled":
+        return "bg-gray-600";
+      case "refunded":
+        return "bg-gray-600";
+      case "lost_in_transit":
+        return "bg-red-600";
+      case "damaged":
+        return "bg-red-600";
+      case "awaiting_customer_action":
+        return "bg-amber-600";
+
+      // Estados legacy para compatibilidad
+      case "shipped":
+      case "en_transito":
+        return "bg-indigo-600";
       case "entregado":
         return "bg-green-600";
-      case "shipped":
-      case "shipping":
-      case "en camino":
-      case "enviado":
-        return "bg-blue-600";
+      case "cancelado":
+        return "bg-red-600";
       case "processing":
       case "procesando":
       case "en preparación":
-        return "bg-yellow-600";
+        return "bg-orange-600";
       case "confirmed":
       case "confirmado":
-        return "bg-green-600";
+        return "bg-blue-600";
       case "ready_pickup":
       case "listo para recoger":
         return "bg-orange-600";
@@ -276,9 +418,324 @@ export default function UserOrdersPage() {
         return "bg-cyan-600";
       case "pending":
       case "pendiente":
-        return "bg-gray-600";
+        return "bg-yellow-600";
+      case "order_ready":
+        return "bg-purple-600";
       default:
         return "bg-gray-600";
+    }
+  };
+
+  // Función para obtener el progreso del pedido (0-100) - Estados exactos de la API
+  const getOrderProgress = (status) => {
+    const progressMap = {
+      // Estados de la API (valores exactos de STATUS_PROGRESS)
+      pending_payment: 0,
+      payment_confirmed: 5,
+      preparing_order: 10,
+      stock_verification: 15,
+      awaiting_supplier: 20,
+      ordering_overseas: 25,
+      overseas_processing: 30,
+      international_shipping: 40,
+      in_transit_international: 50,
+      customs_clearance: 60,
+      customs_inspection: 65,
+      customs_approved: 70,
+      paying_duties: 75,
+      arrived_local_warehouse: 80,
+      quality_inspection: 85,
+      local_processing: 90,
+      ready_for_dispatch: 95,
+      dispatched: 97,
+      out_for_delivery: 99,
+      delivery_attempted: 99,
+      delivered: 100,
+
+      // Estados especiales (sin progreso específico)
+      on_hold: 50, // Progreso estimado
+      returned_to_sender: 0,
+      cancelled: 0,
+      refunded: 0,
+      lost_in_transit: 0,
+      damaged: 0,
+      awaiting_customer_action: 50, // Progreso estimado
+
+      // Estados legacy para compatibilidad
+      pending: 0,
+      pendiente: 0,
+      confirmed: 5,
+      confirmado: 5,
+      processing: 10,
+      procesando: 10,
+      shipped: 97,
+      enviado: 97,
+      entregado: 100,
+      order_ready: 95,
+    };
+
+    return progressMap[status?.toLowerCase()] || 0;
+  };
+
+  // Función para obtener el icono del estado
+  const getStatusIcon = (status) => {
+    switch (status?.toLowerCase()) {
+      // Estados iniciales
+      case "pending_payment":
+      case "pending":
+      case "pendiente":
+        return <Clock className="h-4 w-4" />;
+      case "payment_confirmed":
+      case "confirmed":
+      case "confirmado":
+        return <CheckCircle className="h-4 w-4" />;
+
+      // Estados de preparación y verificación
+      case "preparing_order":
+      case "processing":
+      case "procesando":
+      case "stock_verification":
+        return <Package className="h-4 w-4" />;
+      case "awaiting_supplier":
+        return <Clock className="h-4 w-4" />;
+
+      // Estados de importación
+      case "ordering_overseas":
+      case "overseas_processing":
+        return <Package className="h-4 w-4" />;
+      case "international_shipping":
+      case "in_transit_international":
+        return <Truck className="h-4 w-4" />;
+
+      // Estados aduaneros
+      case "customs_clearance":
+      case "customs_inspection":
+      case "paying_duties":
+        return <Clock className="h-4 w-4" />;
+      case "customs_approved":
+        return <CheckCircle className="h-4 w-4" />;
+
+      // Estados locales
+      case "arrived_local_warehouse":
+      case "local_processing":
+        return <Package className="h-4 w-4" />;
+      case "quality_inspection":
+        return <Clock className="h-4 w-4" />;
+      case "ready_for_dispatch":
+      case "order_ready":
+        return <Package className="h-4 w-4" />;
+
+      // Estados de entrega
+      case "dispatched":
+      case "out_for_delivery":
+      case "shipped":
+      case "en_transito":
+        return <Truck className="h-4 w-4" />;
+      case "delivery_attempted":
+        return <Clock className="h-4 w-4" />;
+      case "delivered":
+      case "entregado":
+        return <CheckCircle className="h-4 w-4" />;
+
+      // Estados especiales
+      case "on_hold":
+      case "awaiting_customer_action":
+        return <Clock className="h-4 w-4" />;
+      case "returned_to_sender":
+      case "lost_in_transit":
+      case "damaged":
+      case "cancelled":
+      case "cancelado":
+        return <X className="h-4 w-4" />;
+      case "refunded":
+        return <CheckCircle className="h-4 w-4" />;
+
+      default:
+        return <Clock className="h-4 w-4" />;
+    }
+  };
+
+  // Función para obtener los pasos del pedido - Estados de la API
+  const getOrderSteps = () => {
+    return [
+      {
+        key: "pending_payment",
+        label: "Pendiente Pago",
+        icon: <Clock className="h-4 w-4" />,
+      },
+      {
+        key: "payment_confirmed",
+        label: "Pago Confirmado",
+        icon: <CheckCircle className="h-4 w-4" />,
+      },
+      {
+        key: "awaiting_supplier",
+        label: "Esperando Proveedor",
+        icon: <Clock className="h-4 w-4" />,
+      },
+      {
+        key: "ordering_overseas",
+        label: "Pedido Internacional",
+        icon: <Package className="h-4 w-4" />,
+      },
+      {
+        key: "in_transit_international",
+        label: "En Tránsito",
+        icon: <Truck className="h-4 w-4" />,
+      },
+      {
+        key: "customs_approved",
+        label: "Aprobado Aduana",
+        icon: <CheckCircle className="h-4 w-4" />,
+      },
+      {
+        key: "arrived_local_warehouse",
+        label: "Almacén Local",
+        icon: <Package className="h-4 w-4" />,
+      },
+      {
+        key: "out_for_delivery",
+        label: "En Reparto",
+        icon: <Truck className="h-4 w-4" />,
+      },
+      {
+        key: "delivered",
+        label: "Entregado",
+        icon: <CheckCircle className="h-4 w-4" />,
+      },
+    ];
+  };
+
+  // Función para obtener el estado de cada paso - Estados de la API
+  const getStepStatus = (stepKey, currentStatus, order = null) => {
+    // Si tenemos trackingSteps del backend, usar esa información primero
+    if (order?.trackingSteps && Array.isArray(order.trackingSteps)) {
+      const trackingStep = order.trackingSteps.find(
+        (step) => step.status === stepKey
+      );
+      if (trackingStep) {
+        if (trackingStep.current) return "current";
+        if (trackingStep.completed) return "completed";
+        return "pending";
+      }
+    }
+
+    // Orden de los estados de la API
+    const statusOrder = [
+      "pending_payment",
+      "payment_confirmed",
+      "preparing_order",
+      "stock_verification",
+      "awaiting_supplier",
+      "ordering_overseas",
+      "overseas_processing",
+      "international_shipping",
+      "in_transit_international",
+      "customs_clearance",
+      "customs_inspection",
+      "customs_approved",
+      "paying_duties",
+      "arrived_local_warehouse",
+      "quality_inspection",
+      "local_processing",
+      "ready_for_dispatch",
+      "dispatched",
+      "out_for_delivery",
+      "delivery_attempted",
+      "delivered",
+    ];
+
+    const currentIndex = statusOrder.indexOf(currentStatus?.toLowerCase());
+    const stepIndex = statusOrder.indexOf(stepKey);
+
+    // Estados especiales
+    if (
+      [
+        "cancelled",
+        "refunded",
+        "lost_in_transit",
+        "damaged",
+        "returned_to_sender",
+      ].includes(currentStatus?.toLowerCase())
+    ) {
+      return "cancelled";
+    }
+
+    if (
+      currentStatus?.toLowerCase() === "on_hold" ||
+      currentStatus?.toLowerCase() === "awaiting_customer_action"
+    ) {
+      // Para estados en espera, mostrar progreso hasta donde llegó
+      if (stepIndex <= currentIndex) {
+        return "completed";
+      } else {
+        return "pending";
+      }
+    }
+
+    // Lógica especial para preparing_order - no debe completar pasos futuros
+    if (
+      currentStatus?.toLowerCase() === "preparing_order" ||
+      currentStatus?.toLowerCase() === "stock_verification"
+    ) {
+      // Si está en preparación, solo mostrar como completado pending_payment y payment_confirmed
+      if (stepKey === "pending_payment" || stepKey === "payment_confirmed") {
+        return "completed";
+      } else if (stepKey === "awaiting_supplier") {
+        return "current"; // El siguiente paso lógico
+      } else {
+        return "pending";
+      }
+    }
+
+    // Lógica especial para overseas_processing - mostrar progreso correcto
+    if (currentStatus?.toLowerCase() === "overseas_processing") {
+      // Estados completados hasta overseas_processing
+      const completedSteps = [
+        "pending_payment",
+        "payment_confirmed",
+        "preparing_order",
+        "stock_verification",
+        "awaiting_supplier",
+        "ordering_overseas",
+      ];
+
+      if (completedSteps.includes(stepKey)) {
+        return "completed";
+      } else if (stepKey === "overseas_processing") {
+        return "current";
+      } else {
+        return "pending";
+      }
+    }
+
+    // Mapeo para estados legacy
+    const statusMapping = {
+      pending: "pending_payment",
+      pendiente: "pending_payment",
+      confirmed: "payment_confirmed",
+      confirmado: "payment_confirmed",
+      processing: "preparing_order",
+      procesando: "preparing_order",
+      shipped: "dispatched",
+      enviado: "dispatched",
+      entregado: "delivered",
+      order_ready: "ready_for_dispatch",
+    };
+
+    const mappedStatus =
+      statusMapping[currentStatus?.toLowerCase()] ||
+      currentStatus?.toLowerCase();
+    const mappedCurrentIndex = statusOrder.indexOf(mappedStatus);
+    const finalCurrentIndex =
+      mappedCurrentIndex !== -1 ? mappedCurrentIndex : currentIndex;
+
+    if (stepIndex < finalCurrentIndex) {
+      return "completed";
+    } else if (stepIndex === finalCurrentIndex) {
+      return "current";
+    } else {
+      return "pending";
     }
   };
 
@@ -300,140 +757,6 @@ export default function UserOrdersPage() {
       month: "long",
       year: "numeric",
     });
-  };
-
-  // Funciones para la barra de progreso
-  const getOrderSteps = (orderType, paymentMethod) => {
-    // Para pedidos con recoger en tienda (cash)
-    if (
-      paymentMethod?.toLowerCase() === "cash" ||
-      paymentMethod?.toLowerCase() === "efectivo"
-    ) {
-      return [
-        {
-          key: "pending",
-          label: "Pedido realizado",
-          icon: <Clock className="h-4 w-4" />,
-        },
-        {
-          key: "confirmed",
-          label: "Confirmado",
-          icon: <CheckCircle className="h-4 w-4" />,
-        },
-        {
-          key: "processing",
-          label: "En preparación",
-          icon: <Package className="h-4 w-4" />,
-        },
-        {
-          key: "ready_pickup",
-          label: "Listo para recoger",
-          icon: <Package className="h-4 w-4" />,
-        },
-      ];
-    }
-
-    // Para pedidos con entrega programada
-    if (orderType?.includes("programado") || orderType?.includes("horario")) {
-      return [
-        {
-          key: "pending",
-          label: "Pedido realizado",
-          icon: <Clock className="h-4 w-4" />,
-        },
-        {
-          key: "confirmed",
-          label: "Pago confirmado",
-          icon: <CheckCircle className="h-4 w-4" />,
-        },
-        {
-          key: "waiting_schedule",
-          label: "Esperando horario",
-          icon: <Calendar className="h-4 w-4" />,
-        },
-        {
-          key: "processing",
-          label: "En preparación",
-          icon: <Package className="h-4 w-4" />,
-        },
-        {
-          key: "shipped",
-          label: "En camino",
-          icon: <Truck className="h-4 w-4" />,
-        },
-        {
-          key: "delivered",
-          label: "Entregado",
-          icon: <CheckCircle className="h-4 w-4" />,
-        },
-      ];
-    }
-
-    // Para pedidos normales con entrega
-    return [
-      {
-        key: "pending",
-        label: "Pedido realizado",
-        icon: <Clock className="h-4 w-4" />,
-      },
-      {
-        key: "confirmed",
-        label: "Pago confirmado",
-        icon: <CheckCircle className="h-4 w-4" />,
-      },
-      {
-        key: "processing",
-        label: "En preparación",
-        icon: <Package className="h-4 w-4" />,
-      },
-      {
-        key: "shipped",
-        label: "En camino",
-        icon: <Truck className="h-4 w-4" />,
-      },
-      {
-        key: "delivered",
-        label: "Entregado",
-        icon: <CheckCircle className="h-4 w-4" />,
-      },
-    ];
-  };
-
-  const getStepStatus = (stepKey, currentStatus) => {
-    const statusOrder = {
-      pending: 0,
-      confirmed: 1,
-      waiting_schedule: 2,
-      processing: 3,
-      shipped: 4,
-      delivered: 5,
-      ready_pickup: 4, // Para recoger en tienda
-      cancelled: -1,
-    };
-
-    const currentOrder = statusOrder[currentStatus?.toLowerCase()] || 0;
-    const stepOrder = statusOrder[stepKey] || 0;
-
-    if (currentStatus?.toLowerCase() === "cancelled") {
-      return stepOrder <= 0 ? "completed" : "cancelled";
-    }
-
-    if (stepOrder < currentOrder) return "completed";
-    if (stepOrder === currentOrder) return "current";
-    return "pending";
-  };
-
-  const getStepDescriptions = () => {
-    return {
-      pending:
-        "Tu pedido ha sido recibido y está siendo procesado, te avisaremos cuando se haya acreditado el pago, no te preocupes",
-      confirmed: "El pago ha sido confirmado y tu pedido está en cola",
-      waiting_schedule: "Esperando el horario de entrega programado",
-      processing: "Estamos preparando tu pedido con cuidado",
-      shipped: "Tu pedido está en camino hacia tu dirección",
-      delivered: "Tu pedido ha sido entregado exitosamente",
-      ready_pickup: "Tu pedido está listo para ser recogido en nuestra tienda",
-    };
   };
 
   const handleReorderProducts = (order) => {
@@ -524,75 +847,30 @@ export default function UserOrdersPage() {
     if (
       status === "delivered" ||
       status === "cancelled" ||
-      status === "entregado"
+      status === "entregado" ||
+      status === "cancelado"
     ) {
       return null;
     }
 
-    const steps = getOrderSteps(order.orderType, order.paymentMethod);
+    const progress = getOrderProgress(order.status);
 
     return (
       <div className="w-full">
-        <div className="flex justify-between mb-2">
-          {steps.map((step, index) => {
-            const stepStatus = getStepStatus(step.key, order.status);
-            const isCompleted = stepStatus === "completed";
-            const isCurrent = stepStatus === "current";
-            const isCancelled = stepStatus === "cancelled";
-
-            return (
-              <div key={step.key} className="flex flex-col items-center flex-1">
-                <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-colors duration-300 ${
-                    isCancelled
-                      ? "bg-red-100 border-red-300 text-red-600"
-                      : isCompleted
-                      ? "bg-green-100 border-green-500 text-green-600"
-                      : isCurrent
-                      ? "bg-amber-100 border-amber-500 text-amber-600"
-                      : "bg-gray-100 border-gray-300 text-gray-400"
-                  }`}
-                >
-                  {step.icon}
-                </div>
-                <span
-                  className={`text-xs mt-1 text-center leading-tight ${
-                    isCancelled
-                      ? "text-red-600"
-                      : isCompleted || isCurrent
-                      ? "text-gray-900 font-medium"
-                      : "text-gray-500"
-                  }`}
-                >
-                  {step.label}
-                </span>
-              </div>
-            );
-          })}
+        <div className="flex justify-between text-xs text-gray-500 mb-1">
+          <span>Progreso del pedido</span>
+          <span>{progress}%</span>
         </div>
-
-        {/* Línea de progreso */}
-        <div className="relative mt-4">
-          <div className="absolute top-4 left-0 w-full h-0.5 bg-gray-200 -translate-y-1/2"></div>
+        <div className="w-full bg-gray-200 rounded-full h-2">
           <div
-            className={`absolute top-4 left-0 h-0.5 transition-all duration-500 -translate-y-1/2 ${
-              order.status?.toLowerCase() === "cancelled"
+            className={`h-2 rounded-full transition-all duration-500 ${
+              status === "cancelled" || status === "cancelado"
                 ? "bg-red-400"
-                : "bg-green-400"
+                : status === "delivered" || status === "entregado"
+                ? "bg-green-500"
+                : "bg-amber-500"
             }`}
-            style={{
-              width: `${
-                order.status?.toLowerCase() === "cancelled"
-                  ? 0
-                  : ((steps.findIndex(
-                      (step) =>
-                        getStepStatus(step.key, order.status) === "current"
-                    ) +
-                      1) /
-                      steps.length) *
-                    100
-              }%`,
-            }}
+            style={{ width: `${progress}%` }}
           ></div>
         </div>
       </div>
@@ -872,7 +1150,7 @@ export default function UserOrdersPage() {
                         {getStatusIcon(order.status)}
                         <div>
                           <h3 className="font-semibold text-lg">
-                            Pedido {formatOrderId(order._id)}
+                            Pedido {order.id}
                           </h3>
                           <p className="text-sm text-gray-600">
                             Realizado el{" "}
@@ -888,62 +1166,8 @@ export default function UserOrdersPage() {
                         </Badge>
                       </div>
 
-                      {/* Mini barra de progreso */}
-                      <div className="mb-3">
-                        <div className="flex justify-between text-xs text-gray-500 mb-1">
-                          <span>Progreso del pedido</span>
-                          <span>
-                            {(() => {
-                              const steps = getOrderSteps(
-                                order.orderType,
-                                order.paymentMethod
-                              );
-                              const currentIndex = steps.findIndex(
-                                (step) =>
-                                  getStepStatus(step.key, order.status) ===
-                                  "current"
-                              );
-                              const completedSteps =
-                                currentIndex === -1
-                                  ? steps.length
-                                  : currentIndex + 1;
-                              return `${completedSteps}/${steps.length}`;
-                            })()}
-                          </span>
-                        </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2">
-                          <div
-                            className={`h-2 rounded-full transition-all duration-500 ${
-                              order.status?.toLowerCase() === "cancelled"
-                                ? "bg-red-400"
-                                : order.status?.toLowerCase() === "delivered" ||
-                                  order.status?.toLowerCase() === "entregado"
-                                ? "bg-green-500"
-                                : "bg-amber-500"
-                            }`}
-                            style={{
-                              width: `${(() => {
-                                if (order.status?.toLowerCase() === "cancelled")
-                                  return 0;
-                                const steps = getOrderSteps(
-                                  order.orderType,
-                                  order.paymentMethod
-                                );
-                                const currentIndex = steps.findIndex(
-                                  (step) =>
-                                    getStepStatus(step.key, order.status) ===
-                                    "current"
-                                );
-                                const completedSteps =
-                                  currentIndex === -1
-                                    ? steps.length
-                                    : currentIndex + 1;
-                                return (completedSteps / steps.length) * 100;
-                              })()}%`,
-                            }}
-                          ></div>
-                        </div>
-                      </div>
+                      {/* Barra de progreso */}
+                      <div className="mb-3">{renderProgressBar(order)}</div>
 
                       {/* Order Details */}
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
@@ -1079,231 +1303,10 @@ export default function UserOrdersPage() {
 
           {selectedOrder && (
             <div className="space-y-6">
-              {/* Estado y Fecha */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Card>
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-sm font-medium flex items-center gap-2">
-                      <Clock className="h-4 w-4" />
-                      Estado del Pedido
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center gap-2">
-                      {getStatusIcon(selectedOrder.status)}
-                      <Badge className={getStatusColor(selectedOrder.status)}>
-                        {getStatusText(selectedOrder.status)}
-                      </Badge>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-sm font-medium flex items-center gap-2">
-                      <Calendar className="h-4 w-4" />
-                      Fecha del Pedido
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="font-medium">
-                      {formatDate(selectedOrder.date)}
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      {new Date(selectedOrder.date).toLocaleTimeString("es-ES")}
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* Barra de Progreso del Pedido */}
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-medium flex items-center gap-2">
-                    <Package className="h-4 w-4" />
-                    Progreso del Pedido
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {renderProgressBar(selectedOrder)}
-
-                  {/* Descripción del estado actual */}
-                  {selectedOrder.status && (
-                    <div className="mt-14 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-                      <h4 className="font-medium text-amber-800 mb-1">
-                        Estado actual:
-                      </h4>
-                      <p className="text-sm text-amber-700">
-                        {getStepDescriptions()[
-                          selectedOrder.status?.toLowerCase()
-                        ] || "Estado del pedido en proceso"}
-                      </p>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-
-              {/* Información de Entrega */}
-              {selectedOrder.shippingInfo && (
-                <Card>
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-sm font-medium flex items-center gap-2">
-                      <MapPin className="h-4 w-4" />
-                      Información de Entrega
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <p className="font-medium">
-                          {selectedOrder.shippingInfo.fullName}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          {selectedOrder.shippingInfo.email}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          {selectedOrder.shippingInfo.phone}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-sm">
-                          {selectedOrder.shippingInfo.address},{" "}
-                          {selectedOrder.shippingInfo.city}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          {selectedOrder.shippingInfo.province} -{" "}
-                          {selectedOrder.shippingInfo.postalCode}
-                        </p>
-                        {selectedOrder.shippingInfo.notes && (
-                          <p className="text-sm text-gray-600 mt-2">
-                            <span className="font-medium">Notas:</span>{" "}
-                            {selectedOrder.shippingInfo.notes}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-
-              {/* Productos del Pedido */}
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-medium flex items-center gap-2">
-                    <Package className="h-4 w-4" />
-                    Productos ({selectedOrder.items?.length || 0})
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    {selectedOrder.items?.map((item, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center">
-                            <Package className="h-6 w-6 text-amber-600" />
-                          </div>
-                          <div>
-                            <p className="font-medium">
-                              {item.name || item.title}
-                            </p>
-                            <p className="text-sm text-gray-600">
-                              {item.type === "product"
-                                ? "Producto"
-                                : "Suscripción"}{" "}
-                              - Cantidad: {item.quantity || 1}
-                            </p>
-                            {item.description && (
-                              <p className="text-xs text-gray-500 mt-1">
-                                {item.description}
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-medium">
-                            {formatPrice(item.price * (item.quantity || 1))}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            {formatPrice(item.price)} c/u
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Resumen de Pago */}
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-medium flex items-center gap-2">
-                    <CreditCard className="h-4 w-4" />
-                    Resumen de Pago
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span>Subtotal:</span>
-                      <span>{formatPrice(selectedOrder.subtotal || 0)}</span>
-                    </div>
-                    {selectedOrder.discount > 0 && (
-                      <div className="flex justify-between text-green-600">
-                        <span>Descuento:</span>
-                        <span>-{formatPrice(selectedOrder.discount)}</span>
-                      </div>
-                    )}
-                    <div className="flex justify-between">
-                      <span>Envío:</span>
-                      <span>
-                        {selectedOrder.shippingCost > 0
-                          ? formatPrice(selectedOrder.shippingCost)
-                          : "Gratis"}
-                      </span>
-                    </div>
-                    <hr className="my-2" />
-                    <div className="flex justify-between font-bold text-lg">
-                      <span>Total:</span>
-                      <span className="text-amber-600">
-                        {formatPrice(selectedOrder.total)}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Estado de Pago */}
-                  <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">
-                        Estado de Pago:
-                      </span>
-                      <Badge
-                        className={
-                          selectedOrder.paymentStatus === "completed"
-                            ? "bg-green-100 text-green-800 border-green-200"
-                            : selectedOrder.paymentStatus === "pending"
-                            ? "bg-yellow-100 text-yellow-800 border-yellow-200"
-                            : "bg-red-100 text-red-800 border-red-200"
-                        }
-                      >
-                        {selectedOrder.paymentStatus === "completed" &&
-                          "Pagado"}
-                        {selectedOrder.paymentStatus === "pending" &&
-                          "Pendiente"}
-                        {selectedOrder.paymentStatus === "failed" && "Falló"}
-                        {!selectedOrder.paymentStatus && "No especificado"}
-                      </Badge>
-                    </div>
-                    {selectedOrder.paymentMethod && (
-                      <p className="text-sm text-gray-600 mt-1">
-                        Método: {selectedOrder.paymentMethod}
-                      </p>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
+              {/* Usar el componente OrderTrackingComponent */}
+              <OrderTrackingComponent
+                orderId={selectedOrder.id || selectedOrder._id}
+              />
 
               {/* Acciones del Modal */}
               <div className="flex justify-between gap-3">

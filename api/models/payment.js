@@ -43,7 +43,7 @@ const paymentSchema = new mongoose.Schema({
       name: String,
       type: {
         type: String,
-        enum: ["beer", "subscription", "shipping"],
+        enum: ["product", "perfume", "shipping"],
         required: true,
       },
       quantity: Number,

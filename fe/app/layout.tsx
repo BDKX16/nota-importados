@@ -2,7 +2,6 @@ import type React from "react";
 import type { Metadata } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
-import { StoreProvider } from "@/lib/store";
 import { ReduxProvider } from "@/redux/ReduxProvider";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CartSidebar } from "@/components/cart-sidebar";
@@ -37,12 +36,10 @@ export default function RootLayout({
       <body className={`font-sans ${playfair.variable} ${inter.variable}`}>
         <Suspense fallback={null}>
           <ReduxProvider>
-            <StoreProvider>
-              <AuthProvider>
-                {children}
-                <CartSidebar />
-              </AuthProvider>
-            </StoreProvider>
+            <AuthProvider>
+              {children}
+              <CartSidebar />
+            </AuthProvider>
           </ReduxProvider>
         </Suspense>
       </body>

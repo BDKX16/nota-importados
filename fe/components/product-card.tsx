@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ShoppingBag, Heart } from "lucide-react";
-import type { Product } from "@/lib/store";
-import { useStore } from "@/lib/store";
+import type { Product } from "@/redux/slices/productSlice";
+import { useCart } from "@/hooks/redux-hooks";
 import { useState, memo, useCallback } from "react";
 import CachedImage from "@/components/ui/cached-image";
 
@@ -16,12 +16,12 @@ interface ProductCardProps {
 export const ProductCard = memo(function ProductCard({
   product,
 }: ProductCardProps) {
-  const { dispatch } = useStore();
+  const { addToCart } = useCart();
   const [isLiked, setIsLiked] = useState(false);
 
   const handleAddToCart = useCallback(() => {
-    dispatch({ type: "ADD_TO_CART", product });
-  }, [dispatch, product]);
+    addToCart(product);
+  }, [addToCart, product]);
 
   const handleToggleLike = useCallback(() => {
     setIsLiked((prev) => !prev);

@@ -2,16 +2,12 @@
 
 import { Button } from "@/components/ui/button";
 import { ShoppingBag, Menu } from "lucide-react";
-import { useStore } from "@/lib/store";
+import { useCart } from "@/hooks/redux-hooks";
 import Link from "next/link";
 import Image from "next/image";
 
 export function HeaderSecondary() {
-  const { state, dispatch } = useStore();
-  const cartItemsCount = state.cart.reduce(
-    (sum, item) => sum + item.quantity,
-    0
-  );
+  const { cartCount, toggleCart } = useCart();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/95 backdrop-blur-md supports-[backdrop-filter]:bg-background/80 shadow-sm">
@@ -51,13 +47,13 @@ export function HeaderSecondary() {
         <div className="flex items-center space-x-4">
           <Button
             variant="ghost"
-            onClick={() => dispatch({ type: "TOGGLE_CART" })}
+            onClick={toggleCart}
             className="relative hover:bg-primary/10 transition-all duration-300 text-sm font-medium px-4 py-2"
           >
             Carrito
-            {cartItemsCount > 0 && (
+            {cartCount > 0 && (
               <span className="ml-2 h-5 w-5 rounded-full bg-gradient-to-br from-primary to-accent text-xs text-primary-foreground flex items-center justify-center font-medium shadow-lg">
-                {cartItemsCount}
+                {cartCount}
               </span>
             )}
           </Button>

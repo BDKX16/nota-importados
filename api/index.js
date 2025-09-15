@@ -8,7 +8,7 @@ const {
   generalLimiter,
   authLimiter,
   productsLimiter,
-  uploadLimiter,
+  userGetLimiter,
   adminLimiter,
 } = require("./middlewares/rateLimiter");
 const {
@@ -44,17 +44,40 @@ app.use(compressionMiddleware);
 app.use(generalLimiter);
 
 //express routes
-app.use("/api/users", authLimiter, noCache, require("./routes/users.js"));
+app.use(
+  "/api/users",
+  authLimiter,
+  userGetLimiter,
+  noCache,
+  require("./routes/users.js")
+);
 app.use(
   "/api/products",
+  userGetLimiter,
   productsLimiter,
   cacheProducts,
   require("./routes/products.js")
 );
-app.use("/api/categories", cacheStaticData, require("./routes/categories.js"));
-app.use("/api/brands", cacheStaticData, require("./routes/brands.js"));
+app.use(
+  "/api/categories",
+  userGetLimiter,
+  cacheStaticData,
+  require("./routes/categories.js")
+);
+app.use(
+  "/api/brands",
+  userGetLimiter,
+  cacheStaticData,
+  require("./routes/brands.js")
+);
 app.use("/api/payments", noCache, require("./routes/payments.js"));
-app.use("/api/landing", cacheStaticData, require("./routes/landing-config.js"));
+app.use("/api/orders", userGetLimiter, noCache, require("./routes/orders.js"));
+app.use(
+  "/api/landing",
+  userGetLimiter,
+  cacheStaticData,
+  require("./routes/landing-config.js")
+);
 app.use(
   "/api/admin/payments",
   adminLimiter,
@@ -64,7 +87,6 @@ app.use(
 app.use(
   "/api/admin/products",
   adminLimiter,
-  uploadLimiter,
   noCache,
   validateFileSize(10 * 1024 * 1024),
   validateFileTypes(["image/jpeg", "image/png", "image/webp"]),

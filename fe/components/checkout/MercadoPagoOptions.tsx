@@ -9,7 +9,10 @@ import { Separator } from "@/components/ui/separator";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import { useToast } from "@/hooks/use-toast";
 import useFetchAndLoad from "@/hooks/useFetchAndLoad";
-import { createMercadoPagoPreference } from "@/services/private";
+import {
+  createMercadoPagoPreference,
+  createCashOrder,
+} from "@/services/private";
 import { createCheckoutPro, createCardForm } from "@/lib/mercadopago";
 import {
   CreditCard,
@@ -81,23 +84,29 @@ export default function MercadoPagoOptions({
 
   // Función para calcular el costo de envío
   const calculateShippingCost = () => {
-    const totalBeers = cart
-      .filter((item) => item.type === "beer")
-      .reduce((total, item) => total + item.quantity, 0);
+    const subtotal = calculateSubtotal();
     const hasSubscription = cart.some((item) => item.type === "subscription");
-    // Envío gratis a partir de 3 cervezas o si hay una suscripción
-    return totalBeers >= 3 || hasSubscription ? 0 : 1500; // $1500 pesos de envío si es menos de 3 cervezas y no hay suscripción
+
+    // Envío gratis para suscripciones o compras mayores a $100
+    if (hasSubscription || subtotal >= 100) {
+      return 0;
+    }
+
+    // Costo base de envío
+    return 15; // $15 de envío si es menos de $100 y no hay suscripción
   };
 
   // Preparar datos para la preferencia
   const preparePreferenceData = () => {
     const cartItems = cart.map((item) => ({
       id: item.id,
-      name: item.type === "beer" ? item.product.name : item.product.name,
-      type: item.type,
+      name: item.name, // Directamente desde item, no item.product
+      type: item.type || "product", // Usar "product" como tipo por defecto
       quantity: item.quantity,
-      price: item.type === "beer" ? item.product.price : item.product.price,
-      beerType: item.type === "subscription" ? item.beerType : undefined, // Incluir beerType para suscripciones
+      price: item.price, // Directamente desde item, no item.product
+      brand: item.brand || "", // Información adicional del perfume
+      volume: item.volume || "",
+      concentration: item.concentration || "",
     }));
 
     const shippingCost = calculateShippingCost();
@@ -330,17 +339,15 @@ export default function MercadoPagoOptions({
       const orderData = {
         cartItems: cart.map((item) => ({
           id: item.id,
-          name: item.type === "beer" ? item.product.name : item.product.name,
-          type: item.type,
+          name: item.name, // Directamente desde item
+          type: item.type || "product",
           quantity: item.quantity,
-          price: item.type === "beer" ? item.product.price : item.product.price,
+          price: item.price, // Directamente desde item
+          brand: item.brand || "",
+          volume: item.volume || "",
         })),
-        total: calculateTotal(),
-        subtotal: calculateSubtotal(),
-        discountAmount: calculateDiscountAmount(),
+        deliveryMethod: "pickup", // Retiro en local para pago en efectivo
         discountCode,
-        paymentMethod: "cash",
-        deliveryMethod: "pickup", // Retiro en local
         shippingInfo: {
           firstName: user?.name?.split(" ")[0] || "Usuario",
           lastName: user?.name?.split(" ").slice(1).join(" ") || "Cliente",
@@ -353,24 +360,32 @@ export default function MercadoPagoOptions({
         },
       };
 
-      // Simular creación de orden para pago en efectivo
-      // Aquí podrías llamar a un endpoint específico para órdenes de efectivo
-      console.log("Orden de pago en efectivo:", orderData);
+      // Usar el servicio para crear orden de pago en efectivo
+      const response = await callEndpoint(createCashOrder(orderData));
+
+      if (!response || !response.success) {
+        throw new Error(response?.message || "Error al crear la orden");
+      }
 
       toast({
         title: "¡Orden registrada!",
-        description:
-          "Tu pedido ha sido registrado para pago en efectivo al retirar.",
+        description: response.data.message,
       });
 
       onPaymentSuccess({
         paymentMethod: "cash",
-        orderData,
-        message: "Orden registrada para pago en efectivo",
+        orderId: response.data.orderId,
+        orderNumber: response.data.orderNumber,
+        totalAmount: response.data.totalAmount,
+        message: response.data.message,
       });
     } catch (error) {
       console.error("Error creating cash order:", error);
-      onPaymentError("Error al registrar la orden de pago en efectivo");
+      onPaymentError(
+        error instanceof Error
+          ? error.message
+          : "Error al registrar la orden de pago en efectivo"
+      );
     } finally {
       setIsLoading(false);
       setLoadingMethod(null);
@@ -507,8 +522,8 @@ export default function MercadoPagoOptions({
                       Pago en Efectivo
                     </h3>
                     <p className="text-xs sm:text-sm text-gray-600 mb-2 sm:mb-3">
-                      Pagá en efectivo al momento de retirar tu pedido en Av.
-                      Pedro Luro 2514.
+                      Pagá en efectivo al momento de retirar tu pedido en
+                      nuestro local.
                     </p>
                     <div className="space-y-1">
                       <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600">

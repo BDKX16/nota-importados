@@ -76,15 +76,41 @@ interface Order {
     userId?: string;
   };
   date: string;
-  status:
-    | "pending"
-    | "confirmed"
-    | "processing"
-    | "shipped"
-    | "delivered"
-    | "cancelled"
-    | "ready_pickup"
-    | "waiting_schedule";
+  status: // Estados iniciales
+  | "pending_payment" // Pendiente de pago
+    | "payment_confirmed" // Pago confirmado, pedido en procesamiento
+    // Estados de preparación
+    | "preparing_order" // Preparando el pedido
+    | "stock_verification" // Verificando stock disponible
+    | "awaiting_supplier" // Esperando proveedor/importador
+    // Estados de importación
+    | "ordering_overseas" // Pedido realizado al exterior
+    | "overseas_processing" // Procesando en origen
+    | "international_shipping" // Enviado desde origen
+    | "in_transit_international" // En tránsito internacional
+    // Estados aduaneros
+    | "customs_clearance" // En proceso aduanero
+    | "customs_inspection" // Inspección aduanera
+    | "customs_approved" // Aprobado por aduana
+    | "paying_duties" // Pagando impuestos/aranceles
+    // Estados locales
+    | "arrived_local_warehouse" // Llegó al depósito local
+    | "quality_inspection" // Inspección de calidad
+    | "local_processing" // Procesamiento local
+    | "ready_for_dispatch" // Listo para despacho
+    // Estados de entrega
+    | "dispatched" // Despachado
+    | "out_for_delivery" // En reparto
+    | "delivery_attempted" // Intento de entrega
+    | "delivered" // Entregado
+    // Estados especiales
+    | "on_hold" // En espera (problema temporal)
+    | "returned_to_sender" // Devuelto al remitente
+    | "cancelled" // Cancelado
+    | "refunded" // Reembolsado
+    | "lost_in_transit" // Perdido en tránsito
+    | "damaged" // Dañado
+    | "awaiting_customer_action"; // Esperando acción del cliente
   total: number;
   items: OrderItem[];
   paymentMethod: string;
@@ -314,24 +340,49 @@ export default function VentasPage() {
         await fetchOrders(); // Recargar pedidos
         await fetchStats(); // Actualizar estadísticas
 
+        // Mapeo de estados a descripciones legibles
+        const statusDescriptions: Record<Order["status"], string> = {
+          // Estados iniciales
+          pending_payment: "Pendiente de pago",
+          payment_confirmed: "Pago confirmado",
+          // Estados de preparación
+          preparing_order: "Preparando pedido",
+          stock_verification: "Verificando stock",
+          awaiting_supplier: "Esperando proveedor",
+          // Estados de importación
+          ordering_overseas: "Pedido al exterior",
+          overseas_processing: "Procesando en origen",
+          international_shipping: "Enviado desde origen",
+          in_transit_international: "En tránsito internacional",
+          // Estados aduaneros
+          customs_clearance: "Proceso aduanero",
+          customs_inspection: "Inspección aduanera",
+          customs_approved: "Aprobado por aduana",
+          paying_duties: "Pagando aranceles",
+          // Estados locales
+          arrived_local_warehouse: "En depósito local",
+          quality_inspection: "Inspección de calidad",
+          local_processing: "Procesamiento local",
+          ready_for_dispatch: "Listo para despacho",
+          // Estados de entrega
+          dispatched: "Despachado",
+          out_for_delivery: "En reparto",
+          delivery_attempted: "Intento de entrega",
+          delivered: "Entregado",
+          // Estados especiales
+          on_hold: "En espera",
+          returned_to_sender: "Devuelto al remitente",
+          cancelled: "Cancelado",
+          refunded: "Reembolsado",
+          lost_in_transit: "Perdido en tránsito",
+          damaged: "Dañado",
+          awaiting_customer_action: "Esperando acción del cliente",
+        };
+
         toast({
           title: "Estado actualizado",
           description: `El pedido ${orderId} ha sido actualizado a "${
-            newStatus === "pending"
-              ? "Pendiente"
-              : newStatus === "confirmed"
-              ? "Confirmado"
-              : newStatus === "processing"
-              ? "En preparación"
-              : newStatus === "shipped"
-              ? "En camino"
-              : newStatus === "delivered"
-              ? "Entregado"
-              : newStatus === "ready_pickup"
-              ? "Listo para recoger"
-              : newStatus === "waiting_schedule"
-              ? "Esperando horario"
-              : "Cancelado"
+            statusDescriptions[newStatus] || "Estado desconocido"
           }"`,
         });
       }
@@ -374,40 +425,195 @@ export default function VentasPage() {
   // Función para renderizar el badge de estado
   const renderStatusBadge = (status: Order["status"]) => {
     switch (status) {
-      case "pending":
+      // Estados iniciales
+      case "pending_payment":
         return (
           <Badge
             variant="outline"
             className="bg-yellow-50 text-yellow-700 hover:bg-yellow-50"
           >
-            Pendiente
+            Pendiente de pago
           </Badge>
         );
-      case "confirmed":
+      case "payment_confirmed":
         return (
           <Badge
             variant="outline"
             className="bg-green-50 text-green-700 hover:bg-green-50"
           >
-            Confirmado
+            Pago confirmado
           </Badge>
         );
-      case "processing":
+
+      // Estados de preparación
+      case "preparing_order":
         return (
           <Badge
             variant="outline"
             className="bg-blue-50 text-blue-700 hover:bg-blue-50"
           >
-            En preparación
+            Preparando pedido
           </Badge>
         );
-      case "shipped":
+      case "stock_verification":
+        return (
+          <Badge
+            variant="outline"
+            className="bg-indigo-50 text-indigo-700 hover:bg-indigo-50"
+          >
+            Verificando stock
+          </Badge>
+        );
+      case "awaiting_supplier":
+        return (
+          <Badge
+            variant="outline"
+            className="bg-orange-50 text-orange-700 hover:bg-orange-50"
+          >
+            Esperando proveedor
+          </Badge>
+        );
+
+      // Estados de importación
+      case "ordering_overseas":
         return (
           <Badge
             variant="outline"
             className="bg-purple-50 text-purple-700 hover:bg-purple-50"
           >
-            En camino
+            Pedido al exterior
+          </Badge>
+        );
+      case "overseas_processing":
+        return (
+          <Badge
+            variant="outline"
+            className="bg-violet-50 text-violet-700 hover:bg-violet-50"
+          >
+            Procesando en origen
+          </Badge>
+        );
+      case "international_shipping":
+        return (
+          <Badge
+            variant="outline"
+            className="bg-cyan-50 text-cyan-700 hover:bg-cyan-50"
+          >
+            Enviado desde origen
+          </Badge>
+        );
+      case "in_transit_international":
+        return (
+          <Badge
+            variant="outline"
+            className="bg-sky-50 text-sky-700 hover:bg-sky-50"
+          >
+            En tránsito internacional
+          </Badge>
+        );
+
+      // Estados aduaneros
+      case "customs_clearance":
+        return (
+          <Badge
+            variant="outline"
+            className="bg-amber-50 text-amber-700 hover:bg-amber-50"
+          >
+            Proceso aduanero
+          </Badge>
+        );
+      case "customs_inspection":
+        return (
+          <Badge
+            variant="outline"
+            className="bg-yellow-50 text-yellow-700 hover:bg-yellow-50"
+          >
+            Inspección aduanera
+          </Badge>
+        );
+      case "customs_approved":
+        return (
+          <Badge
+            variant="outline"
+            className="bg-emerald-50 text-emerald-700 hover:bg-emerald-50"
+          >
+            Aprobado por aduana
+          </Badge>
+        );
+      case "paying_duties":
+        return (
+          <Badge
+            variant="outline"
+            className="bg-orange-50 text-orange-700 hover:bg-orange-50"
+          >
+            Pagando aranceles
+          </Badge>
+        );
+
+      // Estados locales
+      case "arrived_local_warehouse":
+        return (
+          <Badge
+            variant="outline"
+            className="bg-teal-50 text-teal-700 hover:bg-teal-50"
+          >
+            En depósito local
+          </Badge>
+        );
+      case "quality_inspection":
+        return (
+          <Badge
+            variant="outline"
+            className="bg-indigo-50 text-indigo-700 hover:bg-indigo-50"
+          >
+            Inspección de calidad
+          </Badge>
+        );
+      case "local_processing":
+        return (
+          <Badge
+            variant="outline"
+            className="bg-blue-50 text-blue-700 hover:bg-blue-50"
+          >
+            Procesamiento local
+          </Badge>
+        );
+      case "ready_for_dispatch":
+        return (
+          <Badge
+            variant="outline"
+            className="bg-green-50 text-green-700 hover:bg-green-50"
+          >
+            Listo para despacho
+          </Badge>
+        );
+
+      // Estados de entrega
+      case "dispatched":
+        return (
+          <Badge
+            variant="outline"
+            className="bg-purple-50 text-purple-700 hover:bg-purple-50"
+          >
+            Despachado
+          </Badge>
+        );
+      case "out_for_delivery":
+        return (
+          <Badge
+            variant="outline"
+            className="bg-blue-50 text-blue-700 hover:bg-blue-50"
+          >
+            En reparto
+          </Badge>
+        );
+      case "delivery_attempted":
+        return (
+          <Badge
+            variant="outline"
+            className="bg-yellow-50 text-yellow-700 hover:bg-yellow-50"
+          >
+            Intento de entrega
           </Badge>
         );
       case "delivered":
@@ -419,22 +625,24 @@ export default function VentasPage() {
             Entregado
           </Badge>
         );
-      case "ready_pickup":
+
+      // Estados especiales
+      case "on_hold":
+        return (
+          <Badge
+            variant="outline"
+            className="bg-gray-50 text-gray-700 hover:bg-gray-50"
+          >
+            En espera
+          </Badge>
+        );
+      case "returned_to_sender":
         return (
           <Badge
             variant="outline"
             className="bg-orange-50 text-orange-700 hover:bg-orange-50"
           >
-            Listo para recoger
-          </Badge>
-        );
-      case "waiting_schedule":
-        return (
-          <Badge
-            variant="outline"
-            className="bg-cyan-50 text-cyan-700 hover:bg-cyan-50"
-          >
-            Esperando horario
+            Devuelto al remitente
           </Badge>
         );
       case "cancelled":
@@ -446,6 +654,43 @@ export default function VentasPage() {
             Cancelado
           </Badge>
         );
+      case "refunded":
+        return (
+          <Badge
+            variant="outline"
+            className="bg-red-50 text-red-700 hover:bg-red-50"
+          >
+            Reembolsado
+          </Badge>
+        );
+      case "lost_in_transit":
+        return (
+          <Badge
+            variant="outline"
+            className="bg-red-50 text-red-700 hover:bg-red-50"
+          >
+            Perdido en tránsito
+          </Badge>
+        );
+      case "damaged":
+        return (
+          <Badge
+            variant="outline"
+            className="bg-red-50 text-red-700 hover:bg-red-50"
+          >
+            Dañado
+          </Badge>
+        );
+      case "awaiting_customer_action":
+        return (
+          <Badge
+            variant="outline"
+            className="bg-orange-50 text-orange-700 hover:bg-orange-50"
+          >
+            Esperando acción del cliente
+          </Badge>
+        );
+
       default:
         return <Badge variant="outline">Desconocido</Badge>;
     }
@@ -699,18 +944,101 @@ export default function VentasPage() {
                 <span>Estado</span>
               </div>
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="max-h-[400px] overflow-y-auto">
               <SelectItem value="all">Todos los estados</SelectItem>
-              <SelectItem value="pending">Pendiente</SelectItem>
-              <SelectItem value="confirmed">Confirmado</SelectItem>
-              <SelectItem value="processing">En preparación</SelectItem>
-              <SelectItem value="shipped">En camino</SelectItem>
-              <SelectItem value="delivered">Entregado</SelectItem>
-              <SelectItem value="ready_pickup">Listo para recoger</SelectItem>
-              <SelectItem value="waiting_schedule">
-                Esperando horario
+
+              {/* === PROCESO LINEAL === */}
+              {/* 1. Estados iniciales */}
+              <SelectItem value="pending_payment">
+                1. Pendiente de pago
               </SelectItem>
-              <SelectItem value="cancelled">Cancelado</SelectItem>
+              <SelectItem value="payment_confirmed">
+                2. Pago confirmado
+              </SelectItem>
+
+              {/* 2. Preparación */}
+              <SelectItem value="preparing_order">
+                3. Preparando pedido
+              </SelectItem>
+              <SelectItem value="stock_verification">
+                4. Verificando stock
+              </SelectItem>
+              <SelectItem value="awaiting_supplier">
+                5. Esperando proveedor
+              </SelectItem>
+
+              {/* 3. Importación */}
+              <SelectItem value="ordering_overseas">
+                6. Pedido al exterior
+              </SelectItem>
+              <SelectItem value="overseas_processing">
+                7. Procesando en origen
+              </SelectItem>
+              <SelectItem value="international_shipping">
+                8. Enviado desde origen
+              </SelectItem>
+              <SelectItem value="in_transit_international">
+                9. En tránsito internacional
+              </SelectItem>
+
+              {/* 4. Proceso aduanero */}
+              <SelectItem value="customs_clearance">
+                10. Proceso aduanero
+              </SelectItem>
+              <SelectItem value="customs_inspection">
+                11. Inspección aduanera
+              </SelectItem>
+              <SelectItem value="customs_approved">
+                12. Aprobado por aduana
+              </SelectItem>
+              <SelectItem value="paying_duties">
+                13. Pagando aranceles
+              </SelectItem>
+
+              {/* 5. Proceso local */}
+              <SelectItem value="arrived_local_warehouse">
+                14. En depósito local
+              </SelectItem>
+              <SelectItem value="quality_inspection">
+                15. Inspección de calidad
+              </SelectItem>
+              <SelectItem value="local_processing">
+                16. Procesamiento local
+              </SelectItem>
+              <SelectItem value="ready_for_dispatch">
+                17. Listo para despacho
+              </SelectItem>
+
+              {/* 6. Entrega */}
+              <SelectItem value="dispatched">18. Despachado</SelectItem>
+              <SelectItem value="out_for_delivery">19. En reparto</SelectItem>
+              <SelectItem value="delivery_attempted">
+                20. Intento de entrega
+              </SelectItem>
+              <SelectItem value="delivered">21. ✅ Entregado</SelectItem>
+
+              {/* Separador visual */}
+              <div className="border-t my-2 mx-2"></div>
+
+              {/* === ESTADOS ESPECIALES === */}
+              <SelectItem value="on_hold">⏸️ En espera</SelectItem>
+              <SelectItem value="returned_to_sender">
+                ↩️ Devuelto al remitente
+              </SelectItem>
+              <SelectItem value="awaiting_customer_action">
+                👤 Esperando acción del cliente
+              </SelectItem>
+
+              {/* Separador para estados finales */}
+              <div className="border-t my-2 mx-2"></div>
+
+              {/* === ESTADOS FINALES === */}
+              <SelectItem value="cancelled">❌ Cancelado</SelectItem>
+              <SelectItem value="refunded">💰 Reembolsado</SelectItem>
+              <SelectItem value="lost_in_transit">
+                📦❌ Perdido en tránsito
+              </SelectItem>
+              <SelectItem value="damaged">💥 Dañado</SelectItem>
             </SelectContent>
           </Select>
           <Button
@@ -805,7 +1133,10 @@ export default function VentasPage() {
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
                       {order.status !== "delivered" &&
-                        order.status !== "cancelled" && (
+                        order.status !== "cancelled" &&
+                        order.status !== "refunded" &&
+                        order.status !== "lost_in_transit" &&
+                        order.status !== "damaged" && (
                           <Button
                             variant="outline"
                             size="sm"
@@ -823,7 +1154,10 @@ export default function VentasPage() {
                       <Select
                         disabled={
                           order.status === "cancelled" ||
-                          order.status === "delivered"
+                          order.status === "delivered" ||
+                          order.status === "refunded" ||
+                          order.status === "lost_in_transit" ||
+                          order.status === "damaged"
                         }
                         onValueChange={(value) =>
                           handleChangeStatus(order.id, value as Order["status"])
@@ -833,21 +1167,109 @@ export default function VentasPage() {
                         <SelectTrigger className="w-[130px] h-8 text-xs">
                           <span>Cambiar estado</span>
                         </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="pending">Pendiente</SelectItem>
-                          <SelectItem value="confirmed">Confirmado</SelectItem>
-                          <SelectItem value="processing">
-                            En preparación
+                        <SelectContent className="max-h-[400px] overflow-y-auto">
+                          {/* === PROCESO LINEAL === */}
+                          {/* 1. Estados iniciales */}
+                          <SelectItem value="pending_payment">
+                            1. Pendiente de pago
                           </SelectItem>
-                          <SelectItem value="shipped">En camino</SelectItem>
-                          <SelectItem value="delivered">Entregado</SelectItem>
-                          <SelectItem value="ready_pickup">
-                            Listo para recoger
+                          <SelectItem value="payment_confirmed">
+                            2. Pago confirmado
                           </SelectItem>
-                          <SelectItem value="waiting_schedule">
-                            Esperando horario
+
+                          {/* 2. Preparación */}
+                          <SelectItem value="preparing_order">
+                            3. Preparando pedido
                           </SelectItem>
-                          <SelectItem value="cancelled">Cancelado</SelectItem>
+                          <SelectItem value="stock_verification">
+                            4. Verificando stock
+                          </SelectItem>
+                          <SelectItem value="awaiting_supplier">
+                            5. Esperando proveedor
+                          </SelectItem>
+
+                          {/* 3. Importación */}
+                          <SelectItem value="ordering_overseas">
+                            6. Pedido al exterior
+                          </SelectItem>
+                          <SelectItem value="overseas_processing">
+                            7. Procesando en origen
+                          </SelectItem>
+                          <SelectItem value="international_shipping">
+                            8. Enviado desde origen
+                          </SelectItem>
+                          <SelectItem value="in_transit_international">
+                            9. En tránsito internacional
+                          </SelectItem>
+
+                          {/* 4. Proceso aduanero */}
+                          <SelectItem value="customs_clearance">
+                            10. Proceso aduanero
+                          </SelectItem>
+                          <SelectItem value="customs_inspection">
+                            11. Inspección aduanera
+                          </SelectItem>
+                          <SelectItem value="customs_approved">
+                            12. Aprobado por aduana
+                          </SelectItem>
+                          <SelectItem value="paying_duties">
+                            13. Pagando aranceles
+                          </SelectItem>
+
+                          {/* 5. Proceso local */}
+                          <SelectItem value="arrived_local_warehouse">
+                            14. En depósito local
+                          </SelectItem>
+                          <SelectItem value="quality_inspection">
+                            15. Inspección de calidad
+                          </SelectItem>
+                          <SelectItem value="local_processing">
+                            16. Procesamiento local
+                          </SelectItem>
+                          <SelectItem value="ready_for_dispatch">
+                            17. Listo para despacho
+                          </SelectItem>
+
+                          {/* 6. Entrega */}
+                          <SelectItem value="dispatched">
+                            18. Despachado
+                          </SelectItem>
+                          <SelectItem value="out_for_delivery">
+                            19. En reparto
+                          </SelectItem>
+                          <SelectItem value="delivery_attempted">
+                            20. Intento de entrega
+                          </SelectItem>
+                          <SelectItem value="delivered">
+                            21. ✅ Entregado
+                          </SelectItem>
+
+                          {/* Separador visual */}
+                          <div className="border-t my-2 mx-2"></div>
+
+                          {/* === ESTADOS ESPECIALES === */}
+                          <SelectItem value="on_hold">⏸️ En espera</SelectItem>
+                          <SelectItem value="returned_to_sender">
+                            ↩️ Devuelto al remitente
+                          </SelectItem>
+                          <SelectItem value="awaiting_customer_action">
+                            👤 Esperando acción del cliente
+                          </SelectItem>
+
+                          {/* Separador para estados finales */}
+                          <div className="border-t my-2 mx-2"></div>
+
+                          {/* === ESTADOS FINALES === */}
+                          <SelectItem value="cancelled">
+                            ❌ Cancelado
+                          </SelectItem>
+                          <SelectItem value="refunded">
+                            💰 Reembolsado
+                          </SelectItem>
+                          <SelectItem value="lost_in_transit">
+                            📦❌ Perdido en tránsito
+                          </SelectItem>
+                          <SelectItem value="damaged">💥 Dañado</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>

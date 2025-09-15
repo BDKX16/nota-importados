@@ -157,20 +157,57 @@ router.patch(
       if (
         !status ||
         ![
-          "pending",
-          "confirmed",
-          "processing",
-          "shipped",
+          // Estados iniciales
+          "pending_payment",
+          "payment_confirmed",
+          // Estados de preparación
+          "preparing_order",
+          "stock_verification",
+          "awaiting_supplier",
+          // Estados de importación
+          "ordering_overseas",
+          "overseas_processing",
+          "international_shipping",
+          "in_transit_international",
+          // Estados aduaneros
+          "customs_clearance",
+          "customs_inspection",
+          "customs_approved",
+          "paying_duties",
+          // Estados locales
+          "arrived_local_warehouse",
+          "quality_inspection",
+          "local_processing",
+          "ready_for_dispatch",
+          // Estados de entrega
+          "dispatched",
+          "out_for_delivery",
+          "delivery_attempted",
           "delivered",
+          // Estados especiales
+          "on_hold",
+          "returned_to_sender",
           "cancelled",
-          "ready_pickup",
-          "waiting_schedule",
+          "refunded",
+          "lost_in_transit",
+          "damaged",
+          "awaiting_customer_action",
         ].includes(status)
       ) {
         return res.status(400).json({ error: "Estado no válido" });
       }
 
-      const order = await Order.findOne({ id: req.params.id, nullDate: null });
+      // Buscar orden por id (string) o _id (ObjectId)
+      let order = await Order.findOne({ id: req.params.id, nullDate: null });
+
+      // Si no se encuentra por id, intentar buscar por _id
+      if (!order) {
+        try {
+          order = await Order.findOne({ _id: req.params.id, nullDate: null });
+        } catch (error) {
+          // Si falla la búsqueda por _id, continuar
+        }
+      }
 
       if (!order) {
         return res.status(404).json({ error: "Orden no encontrada" });
@@ -190,8 +227,10 @@ router.patch(
       // Verificar si ya existe un paso con el mismo estado
       const existingStepIndex = order.trackingSteps.findIndex(
         (step) =>
-          step.status.toLowerCase() ===
-          getTrackingStatusText(status).toLowerCase()
+          step.status === status ||
+          (step.statusDisplayName &&
+            step.statusDisplayName.toLowerCase() ===
+              getTrackingStatusText(status).toLowerCase())
       );
 
       if (existingStepIndex >= 0) {
@@ -199,14 +238,21 @@ router.patch(
         order.trackingSteps[existingStepIndex].completed = true;
         order.trackingSteps[existingStepIndex].current = true;
         order.trackingSteps[existingStepIndex].date = new Date();
+        // Asegurar que tenga statusDisplayName
+        if (!order.trackingSteps[existingStepIndex].statusDisplayName) {
+          order.trackingSteps[existingStepIndex].statusDisplayName =
+            getTrackingStatusText(status);
+        }
         trackingUpdated = true;
       } else {
         // Crear un nuevo paso de tracking
         order.trackingSteps.push({
-          status: getTrackingStatusText(status),
+          status: status, // Usar el status interno
+          statusDisplayName: getTrackingStatusText(status), // Texto legible
           date: new Date(),
           completed: true,
           current: true,
+          description: `Estado actualizado a: ${getTrackingStatusText(status)}`,
         });
         trackingUpdated = true;
       }
@@ -902,40 +948,105 @@ function translateStatus(status) {
 // Funciones auxiliares para tracking
 function getTrackingStatusText(status) {
   const statusMap = {
-    pending: "Pendiente",
-    confirmed: "Confirmado",
-    processing: "En preparación",
-    shipped: "En camino",
+    // Estados iniciales
+    pending_payment: "Pendiente de pago",
+    payment_confirmed: "Pago confirmado",
+    // Estados de preparación
+    preparing_order: "Preparando pedido",
+    stock_verification: "Verificando stock",
+    awaiting_supplier: "Esperando proveedor",
+    // Estados de importación
+    ordering_overseas: "Pedido al exterior",
+    overseas_processing: "Procesando en origen",
+    international_shipping: "Enviado desde origen",
+    in_transit_international: "En tránsito internacional",
+    // Estados aduaneros
+    customs_clearance: "Proceso aduanero",
+    customs_inspection: "Inspección aduanera",
+    customs_approved: "Aprobado por aduana",
+    paying_duties: "Pagando aranceles",
+    // Estados locales
+    arrived_local_warehouse: "En depósito local",
+    quality_inspection: "Inspección de calidad",
+    local_processing: "Procesamiento local",
+    ready_for_dispatch: "Listo para despacho",
+    // Estados de entrega
+    dispatched: "Despachado",
+    out_for_delivery: "En reparto",
+    delivery_attempted: "Intento de entrega",
     delivered: "Entregado",
+    // Estados especiales
+    on_hold: "En espera",
+    returned_to_sender: "Devuelto al remitente",
     cancelled: "Cancelado",
-    ready_pickup: "Listo para recoger",
-    waiting_schedule: "Esperando horario",
+    refunded: "Reembolsado",
+    lost_in_transit: "Perdido en tránsito",
+    damaged: "Dañado",
+    awaiting_customer_action: "Esperando acción del cliente",
   };
 
   return statusMap[status] || status;
 }
 
 function updateTrackingStepsBasedOnStatus(trackingSteps, currentStatus) {
+  // Orden lineal de estados del proceso de importación de perfumes
   const statusOrder = [
-    "pending",
-    "confirmed",
-    "processing",
-    "shipped",
+    // Estados iniciales
+    "pending_payment",
+    "payment_confirmed",
+    // Estados de preparación
+    "preparing_order",
+    "stock_verification",
+    "awaiting_supplier",
+    // Estados de importación
+    "ordering_overseas",
+    "overseas_processing",
+    "international_shipping",
+    "in_transit_international",
+    // Estados aduaneros
+    "customs_clearance",
+    "customs_inspection",
+    "customs_approved",
+    "paying_duties",
+    // Estados locales
+    "arrived_local_warehouse",
+    "quality_inspection",
+    "local_processing",
+    "ready_for_dispatch",
+    // Estados de entrega
+    "dispatched",
+    "out_for_delivery",
+    "delivery_attempted",
     "delivered",
   ];
+
   const currentIndex = statusOrder.indexOf(currentStatus);
 
-  if (currentIndex === -1) return; // Status no válido o cancelado
+  if (currentIndex === -1) return; // Status no válido, cancelado o estado especial
 
   // Mapear nombres de estado del tracking a estados internos
   const trackingStatusMap = {
-    Pendiente: "pending",
-    Confirmado: "confirmed",
-    "En preparación": "processing",
-    "En camino": "shipped",
+    "Pendiente de pago": "pending_payment",
+    "Pago confirmado": "payment_confirmed",
+    "Preparando pedido": "preparing_order",
+    "Verificando stock": "stock_verification",
+    "Esperando proveedor": "awaiting_supplier",
+    "Pedido al exterior": "ordering_overseas",
+    "Procesando en origen": "overseas_processing",
+    "Enviado desde origen": "international_shipping",
+    "En tránsito internacional": "in_transit_international",
+    "Proceso aduanero": "customs_clearance",
+    "Inspección aduanera": "customs_inspection",
+    "Aprobado por aduana": "customs_approved",
+    "Pagando aranceles": "paying_duties",
+    "En depósito local": "arrived_local_warehouse",
+    "Inspección de calidad": "quality_inspection",
+    "Procesamiento local": "local_processing",
+    "Listo para despacho": "ready_for_dispatch",
+    Despachado: "dispatched",
+    "En reparto": "out_for_delivery",
+    "Intento de entrega": "delivery_attempted",
     Entregado: "delivered",
-    "Listo para recoger": "ready_pickup",
-    "Esperando horario": "waiting_schedule",
   };
 
   // Actualizar los pasos anteriores como completados

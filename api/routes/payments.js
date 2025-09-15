@@ -7,9 +7,10 @@ const { checkAuth, checkRole } = require("../middlewares/authentication");
 const trackInteraction = require("../middlewares/interaction-tracker");
 
 const Payments = require("../models/payment.js");
-const { Product, Discount } = require("../models/products");
+const { Product, Discount, PerfumeProduct } = require("../models/products");
 const Order = require("../models/order");
 const User = require("../models/user");
+const { generateOrderId } = require("../models/counter");
 
 // Email service import
 const emailService = require("../infraestructure/services/emailService");
@@ -45,7 +46,7 @@ if (!isTestEnvironment && process.env.NODE_ENV !== "production") {
  */
 
 // Crear preferencia para checkout
-router.post("/payments/create-preference", checkAuth, async (req, res) => {
+router.post("/create-preference", checkAuth, async (req, res) => {
   try {
     const { cartItems, shippingInfo, discountInfo, shippingCost } = req.body;
     const userId = req.userData._id;
@@ -63,10 +64,20 @@ router.post("/payments/create-preference", checkAuth, async (req, res) => {
     let totalAmount = 0;
 
     for (const cartItem of cartItems) {
-      if (cartItem.type === "product") {
-        const product = await Product.findOne({
-          _id: cartItem.id,
-          isActive: true,
+      // Buscar en PerfumeProduct por cualquier tipo de perfume
+      const perfumeTypes = [
+        "perfume",
+        "cologne",
+        "body-spray",
+        "gift-set",
+        "aftershave",
+        "eau-de-toilette",
+        "eau-de-parfum",
+      ];
+
+      if (perfumeTypes.includes(cartItem.type)) {
+        const product = await PerfumeProduct.findOne({
+          id: cartItem.id,
         });
         if (!product) {
           return res.status(400).json({
@@ -83,38 +94,13 @@ router.post("/payments/create-preference", checkAuth, async (req, res) => {
           title: product.name,
           description: `${product.name} - ${product.description || "Producto"}`,
           picture_url: product.images?.[0] || "https://via.placeholder.com/150",
-          category_id: "product",
+          category_id: "perfume",
           quantity: cartItem.quantity,
           currency_id: "ARS",
           unit_price: itemPrice,
         });
 
         totalAmount += itemTotal;
-        // TODO: Implementar lógica de suscripciones más adelante
-        /*} else if (cartItem.type === "subscription") {
-        const subscription = await Subscription.findOne({
-          id: cartItem.id,
-          nullDate: null,
-        });
-        if (!subscription) {
-          return res.status(400).json({
-            success: false,
-            message: `Plan de suscripción no encontrado: ${cartItem.id}`,
-          });
-        }*/
-
-        items.push({
-          id: subscription.id,
-          title: subscription.name,
-          description: `Suscripción ${subscription.liters}L`,
-          picture_url: "https://via.placeholder.com/150",
-          category_id: "subscription",
-          quantity: 1,
-          currency_id: "ARS",
-          unit_price: subscription.price,
-        });
-
-        totalAmount += subscription.price;
       }
     }
 
@@ -146,7 +132,7 @@ router.post("/payments/create-preference", checkAuth, async (req, res) => {
     }
 
     // Crear orden en la base de datos
-    const orderId = `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+    const orderId = await generateOrderId();
 
     // Preparar items para la orden (incluir envío si aplica)
     const orderItems = cartItems.map((item) => ({
@@ -180,7 +166,7 @@ router.post("/payments/create-preference", checkAuth, async (req, res) => {
         userId,
       },
       date: new Date(),
-      status: "pending",
+      status: "pending_payment",
       total: totalAmount,
       items: orderItems,
       paymentMethod: "mercadopago",
@@ -196,10 +182,13 @@ router.post("/payments/create-preference", checkAuth, async (req, res) => {
       shippingCost: shippingCost || 0, // Agregar campo específico para costo de envío
       trackingSteps: [
         {
-          status: "Pedido recibido",
+          status: "pending_payment",
+          statusDisplayName: "Pedido recibido",
           date: new Date(),
           description:
             "Tu pedido ha sido recibido y está siendo procesado, te avisaremos cuando se haya acreditado el pago, no te preocupes",
+          completed: false,
+          current: true,
         },
       ],
       nullDate: null,
@@ -277,7 +266,7 @@ router.post("/payments/create-preference", checkAuth, async (req, res) => {
 
     const initialPayment = new Payments({
       userId,
-      orderId: newOrder._id.toString(),
+      orderId: orderId,
       amount: totalAmount,
       currency: "ARS",
       paymentMethod: "mercadopago",
@@ -293,7 +282,8 @@ router.post("/payments/create-preference", checkAuth, async (req, res) => {
       success: true,
       data: {
         preferenceId: result.id,
-        orderId: newOrder._id,
+        orderId: orderId,
+        mongoOrderId: newOrder._id,
         totalAmount,
         init_point: result.init_point,
         sandbox_init_point: result.sandbox_init_point,
@@ -312,7 +302,7 @@ router.post("/payments/create-preference", checkAuth, async (req, res) => {
 });
 
 // Procesar pago directo con tarjeta (Checkout API)
-router.post("/payments/process-payment", checkAuth, async (req, res) => {
+router.post("/process-payment", checkAuth, async (req, res) => {
   try {
     const {
       token,
@@ -370,6 +360,7 @@ router.post("/payments/process-payment", checkAuth, async (req, res) => {
       },
       external_reference: order._id.toString(),
       statement_descriptor: "LUNA BREW HOUSE",
+      statement_descriptor: "LUNA BREW HOUSE",
       notification_url: `${
         process.env.API_URL || "http://localhost:3001"
       }/api/payments/webhook`,
@@ -379,7 +370,7 @@ router.post("/payments/process-payment", checkAuth, async (req, res) => {
 
     // Crear registro de pago
     const paymentRecord = new Payments({
-      orderId: order.id,
+      orderId: order._id.toString(),
       userId,
       amount: order.total,
       currency: "ARS",
@@ -409,11 +400,14 @@ router.post("/payments/process-payment", checkAuth, async (req, res) => {
       });
     } else if (result.status === "pending") {
       order.paymentStatus = "pending";
-      order.status = "pending";
+      order.status = "pending_payment";
       order.trackingSteps.push({
-        status: "Pago pendiente",
+        status: "pending_payment",
+        statusDisplayName: "Pago pendiente",
         date: new Date(),
         description: "Tu pago está siendo procesado",
+        completed: false,
+        current: true,
       });
     } else {
       order.paymentStatus = "failed";
@@ -454,7 +448,7 @@ router.post("/payments/process-payment", checkAuth, async (req, res) => {
  */
 
 // Verificar estado de una orden
-router.get("/payments/order-status/:orderId", checkAuth, async (req, res) => {
+router.get("/order-status/:orderId", checkAuth, async (req, res) => {
   try {
     const { orderId } = req.params;
     const userId = req.userData._id;
@@ -501,7 +495,7 @@ router.get("/payments/order-status/:orderId", checkAuth, async (req, res) => {
 });
 
 // Obtener pedidos del usuario autenticado
-router.get("/payments/my-orders", checkAuth, async (req, res) => {
+router.get("/my-orders", checkAuth, async (req, res) => {
   try {
     const userId = req.userData._id;
     const { status } = req.query;
@@ -538,7 +532,7 @@ router.get("/payments/my-orders", checkAuth, async (req, res) => {
 });
 
 // Webhook para recibir notificaciones de pago de MercadoPago
-router.post("/payments/webhook", async (req, res) => {
+router.post("/webhook", async (req, res) => {
   try {
     const { type } = req.query;
     const paymentId = req.query["data.id"]; // Obtener el ID del pago de los query params
@@ -674,24 +668,36 @@ router.post("/payments/webhook", async (req, res) => {
       ) {
         order.paymentStatus = "completed";
 
-        // Si la orden estaba pendiente, actualizarla a processing
-        if (order.status === "pending") {
-          order.status = "processing";
+        // Si la orden estaba pendiente, actualizarla a payment_confirmed
+        if (order.status === "pending_payment") {
+          order.status = "payment_confirmed";
 
           // Actualizar tracking steps
           order.trackingSteps.forEach((step) => (step.current = false));
           order.trackingSteps.push({
-            status: "Pago confirmado",
+            status: "payment_confirmed",
+            statusDisplayName: "Pago confirmado",
             date: new Date(),
+            description: "Tu pago ha sido confirmado exitosamente",
             completed: true,
             current: true,
           });
 
           // Reducir stock de productos
           for (const item of order.items) {
-            if (item.type === "product") {
-              await Product.findOneAndUpdate(
-                { _id: item.id },
+            const perfumeTypes = [
+              "perfume",
+              "cologne",
+              "body-spray",
+              "gift-set",
+              "aftershave",
+              "eau-de-toilette",
+              "eau-de-parfum",
+            ];
+
+            if (perfumeTypes.includes(item.type)) {
+              await PerfumeProduct.findOneAndUpdate(
+                { id: item.id },
                 { $inc: { stock: -item.quantity } }
               );
             }
@@ -760,52 +766,18 @@ router.post("/payments/webhook", async (req, res) => {
               total: order.total,
               items: order.items.map((item) => ({
                 name: item.name,
-                beerType: item.beerType,
+                brand: item.brand,
                 price: item.price,
                 quantity: item.quantity || 1,
               })),
               shippingAddress: user.address,
             };
 
-            // Verificar si hay suscripciones en el pedido
-            const hasSubscriptions = order.items.some(
-              (item) => item.type === "subscription"
+            // Enviar email de confirmación de pedido de perfumes
+            await emailService.sendOrderConfirmation(user.email, orderData);
+            console.log(
+              `✅ Email de confirmación de pedido enviado a ${user.email}`
             );
-
-            if (hasSubscriptions) {
-              // Enviar email de confirmación de suscripción para cada suscripción
-              const subscriptionItems = order.items.filter(
-                (item) => item.type === "subscription"
-              );
-
-              for (const subItem of subscriptionItems) {
-                const subscriptionData = {
-                  customerName: user.name,
-                  subscriptionId: `sub_${Date.now()}_${order.customer.userId}`,
-                  planName: subItem.name,
-                  beerType: subItem.beerType || "golden",
-                  beerName: getBeerNameFromType(subItem.beerType || "golden"),
-                  liters: subItem.liters || 1,
-                  price: subItem.price,
-                  nextDelivery: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-                  shippingAddress: user.address,
-                };
-
-                await emailService.sendSubscriptionConfirmation(
-                  user.email,
-                  subscriptionData
-                );
-                console.log(
-                  `✅ Email de confirmación de suscripción enviado a ${user.email}`
-                );
-              }
-            } else {
-              // Enviar email de confirmación de pedido regular
-              await emailService.sendOrderConfirmation(user.email, orderData);
-              console.log(
-                `✅ Email de confirmación de pedido enviado a ${user.email}`
-              );
-            }
           }
         } catch (emailError) {
           console.error(
@@ -819,42 +791,11 @@ router.post("/payments/webhook", async (req, res) => {
         try {
           const user = await User.findById(order.customer.userId);
           if (user) {
-            // Verificar si hay suscripciones en el pedido
-            const hasSubscriptions = order.items.some(
-              (item) => item.type === "subscription"
+            // Notificar nuevo pedido de perfumes a administradores
+            await adminNotificationService.notifyNewOrder(order, user);
+            console.log(
+              `✅ Notificación de nuevo pedido enviada a administradores`
             );
-
-            if (hasSubscriptions) {
-              // Notificar nueva suscripción a administradores
-              const subscriptionItems = order.items.filter(
-                (item) => item.type === "subscription"
-              );
-              for (const subItem of subscriptionItems) {
-                const subscriptionNotificationData = {
-                  id: `sub_${Date.now()}_${order.customer.userId}`,
-                  name: subItem.name,
-                  beerType: subItem.beerType || "golden",
-                  beerName: getBeerNameFromType(subItem.beerType || "golden"),
-                  liters: subItem.liters || 1,
-                  price: subItem.price,
-                  nextDelivery: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-                };
-
-                await adminNotificationService.notifyNewSubscription(
-                  subscriptionNotificationData,
-                  user
-                );
-                console.log(
-                  `✅ Notificación de nueva suscripción enviada a administradores`
-                );
-              }
-            } else {
-              // Notificar nuevo pedido a administradores
-              await adminNotificationService.notifyNewOrder(order, user);
-              console.log(
-                `✅ Notificación de nuevo pedido enviada a administradores`
-              );
-            }
           }
         } catch (adminNotificationError) {
           console.error(
@@ -877,20 +818,25 @@ router.post("/payments/webhook", async (req, res) => {
           orderByField.paymentStatus = "completed";
 
           // Si la orden estaba pendiente, procesarla
-          if (orderByField.status === "pending") {
-            orderByField.status = "processing";
+          if (orderByField.status === "pending_payment") {
+            orderByField.status = "payment_confirmed";
 
-            // Procesar items y crear suscripciones si es necesario
+            // Procesar items y reducir stock de perfumes
             for (const item of orderByField.items) {
-              if (item.type === "beer") {
-                await Beer.findOneAndUpdate(
+              const perfumeTypes = [
+                "perfume",
+                "cologne",
+                "body-spray",
+                "gift-set",
+                "aftershave",
+                "eau-de-toilette",
+                "eau-de-parfum",
+              ];
+
+              if (perfumeTypes.includes(item.type)) {
+                await PerfumeProduct.findOneAndUpdate(
                   { id: item.id },
                   { $inc: { stock: -item.quantity } }
-                );
-              } else if (item.type === "subscription") {
-                // COMENTADO: Lógica de suscripciones no necesaria para productos de lujo
-                console.log(
-                  "Suscripciones deshabilitadas para productos de lujo"
                 );
               }
             }
@@ -930,30 +876,18 @@ router.post("/payments/webhook", async (req, res) => {
                 total: orderByField.total,
                 items: orderByField.items.map((item) => ({
                   name: item.name,
-                  beerType: item.beerType,
+                  brand: item.brand,
                   price: item.price,
                   quantity: item.quantity || 1,
                 })),
                 shippingAddress: user.address,
               };
 
-              // Verificar si hay suscripciones en el pedido
-              const hasSubscriptions = orderByField.items.some(
-                (item) => item.type === "subscription"
+              // Enviar email de confirmación de pedido de perfumes
+              await emailService.sendOrderConfirmation(user.email, orderData);
+              console.log(
+                `✅ Email de confirmación de pedido enviado a ${user.email} (búsqueda alt)`
               );
-
-              if (hasSubscriptions) {
-                // Las suscripciones han sido eliminadas para productos de lujo
-                console.log(
-                  "Email de suscripción omitido - característica deshabilitada"
-                );
-              } else {
-                // Enviar email de confirmación de pedido regular
-                await emailService.sendOrderConfirmation(user.email, orderData);
-                console.log(
-                  `✅ Email de confirmación de pedido enviado a ${user.email} (búsqueda alt)`
-                );
-              }
             }
           } catch (emailError) {
             console.error(
@@ -992,101 +926,224 @@ const processMercadopagoPayment = async (preference) => {
   }
 };
 
-// Obtener nombre de cerveza según tipo
-function getBeerNameFromType(type) {
-  const beerNames = {
-    golden: "Luna Dorada (Golden Ale)",
-    red: "Luna Roja (Irish Red Ale)",
-    ipa: "Luna Brillante (IPA)",
-  };
-  return beerNames[type] || "Cerveza Luna";
-}
-
-// Obtener información de suscripción desde un pago
-async function getSubscriptionInfoFromPayment(payment) {
+// Endpoint para crear órdenes de pago en efectivo
+router.post("/create-cash-order", checkAuth, async (req, res) => {
   try {
-    console.log(
-      "🔍 Recuperando información de suscripción del pago:",
-      payment.orderId
-    );
+    const { cartItems, shippingInfo, discountCode, deliveryMethod } = req.body;
+    const userId = req.userData._id;
 
-    // Método 1: Obtener información desde los items del pago
-    if (payment.items && payment.items.length > 0) {
-      const subscriptionItem = payment.items.find(
-        (item) => item.type === "subscription"
-      );
-      if (subscriptionItem) {
-        console.log("✅ Información encontrada en items del pago");
+    if (!cartItems || cartItems.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "El carrito está vacío",
+      });
+    }
 
-        // Obtener la suscripción desde la base de datos
-        const subscription = await Subscription.findOne({
-          id: subscriptionItem.id,
+    // Generar ID único para la orden
+    const orderId = await generateOrderId();
+
+    // Validar productos y calcular total
+    const orderItems = [];
+    let totalAmount = 0;
+
+    for (const cartItem of cartItems) {
+      const perfumeTypes = [
+        "perfume",
+        "cologne",
+        "body-spray",
+        "gift-set",
+        "aftershave",
+        "eau-de-toilette",
+        "eau-de-parfum",
+      ];
+
+      if (perfumeTypes.includes(cartItem.type)) {
+        const product = await PerfumeProduct.findOne({
+          id: cartItem.id,
         });
-        if (!subscription) {
-          console.error(
-            "❌ Suscripción no encontrada en base de datos:",
-            subscriptionItem.id
-          );
-          return null;
+
+        if (!product) {
+          return res.status(400).json({
+            success: false,
+            message: `Producto no encontrado: ${cartItem.id}`,
+          });
         }
 
-        // Obtener beerType desde el item si existe, sino desde metadata
-        let beerType = "golden"; // valor por defecto
-        if (subscriptionItem.beerType) {
-          beerType = subscriptionItem.beerType;
-        } else if (payment.metadata && payment.metadata.beerType) {
-          beerType = payment.metadata.beerType;
+        if (product.stock < cartItem.quantity) {
+          return res.status(400).json({
+            success: false,
+            message: `Stock insuficiente para ${product.name}. Stock disponible: ${product.stock}`,
+          });
         }
 
-        return {
-          subscriptionId: subscription.id,
-          name: subscription.name,
-          beerType,
-          beerName: getBeerNameFromType(beerType),
-          liters: subscription.liters,
-          price: subscription.price,
+        const itemPrice = product.price;
+        const itemTotal = itemPrice * cartItem.quantity;
+        totalAmount += itemTotal;
+
+        orderItems.push({
+          id: cartItem.id,
+          name: product.name,
+          type: cartItem.type,
+          price: itemPrice,
+          quantity: cartItem.quantity,
+        });
+      }
+    }
+
+    // Aplicar descuento si existe
+    let discountAmount = 0;
+    if (discountCode) {
+      const discount = await Discount.findOne({
+        code: discountCode,
+        isActive: true,
+        expirationDate: { $gte: new Date() },
+      });
+
+      if (discount) {
+        if (discount.type === "percentage") {
+          discountAmount = totalAmount * (discount.value / 100);
+        } else if (discount.type === "fixed") {
+          discountAmount = Math.min(discount.value, totalAmount);
+        }
+      }
+    }
+
+    // Calcular costo de envío (0 para retiro en local)
+    const shippingCost = deliveryMethod === "pickup" ? 0 : 1500;
+
+    const finalTotal = totalAmount - discountAmount + shippingCost;
+
+    // Crear orden
+    const newOrder = new Order({
+      id: orderId,
+      customer: {
+        name: `${shippingInfo.firstName} ${shippingInfo.lastName}`,
+        email: shippingInfo.email,
+        phone: shippingInfo.phone,
+        address:
+          deliveryMethod === "pickup"
+            ? "Retiro en local"
+            : `${shippingInfo.address}, ${shippingInfo.city}, ${shippingInfo.postalCode}`,
+        userId,
+      },
+      date: new Date(),
+      status: "pending_payment",
+      total: finalTotal,
+      items: orderItems,
+      paymentMethod: "cash",
+      paymentStatus: "pending",
+      deliveryTime: shippingInfo.deliveryTime || null,
+      customerSelectedTime: !!shippingInfo.deliveryTime,
+      discountCode: discountCode || null,
+      discountAmount: discountAmount,
+      shippingCost: shippingCost,
+      trackingSteps: [
+        {
+          status: "pending_payment",
+          statusDisplayName: "Pedido recibido",
+          date: new Date(),
+          description:
+            deliveryMethod === "pickup"
+              ? "Tu pedido ha sido recibido. Puedes retirarlo y pagar en efectivo en nuestro local."
+              : "Tu pedido ha sido recibido. Se entregará contra pago en efectivo.",
+          completed: false,
+          current: true,
+        },
+      ],
+      nullDate: null,
+    });
+
+    await newOrder.save();
+
+    // Reducir stock de productos
+    for (const item of orderItems) {
+      await PerfumeProduct.findOneAndUpdate(
+        { id: item.id },
+        { $inc: { stock: -item.quantity } }
+      );
+    }
+
+    // Crear registro de pago pendiente
+    const paymentRecord = new Payments({
+      userId,
+      orderId: newOrder._id.toString(),
+      amount: finalTotal,
+      currency: "ARS",
+      paymentMethod: "cash",
+      status: "pending",
+      items: orderItems.map((item) => ({
+        id: item.id,
+        name: item.name,
+        type: item.type,
+        quantity: item.quantity,
+        price: item.price,
+      })),
+      customerInfo: {
+        firstName: shippingInfo.firstName,
+        lastName: shippingInfo.lastName,
+        email: shippingInfo.email,
+        phone: shippingInfo.phone,
+        address: shippingInfo.address,
+        city: shippingInfo.city,
+        postalCode: shippingInfo.postalCode,
+      },
+      createdAt: new Date(),
+    });
+
+    await paymentRecord.save();
+
+    // Enviar email de confirmación
+    const user = await User.findById(userId);
+    if (user && user.email) {
+      try {
+        const orderData = {
+          customerName: user.name,
+          orderId: orderId,
+          orderDate: newOrder.date,
+          total: finalTotal,
+          items: orderItems.map((item) => ({
+            name: item.name,
+            brand: item.brand || "",
+            price: item.price,
+            quantity: item.quantity,
+          })),
+          shippingAddress:
+            deliveryMethod === "pickup"
+              ? "Retiro en local"
+              : user.address || "Dirección no especificada",
+          paymentMethod: "Pago en efectivo",
+          deliveryMethod:
+            deliveryMethod === "pickup"
+              ? "Retiro en local"
+              : "Entrega a domicilio",
         };
+
+        await emailService.sendOrderConfirmation(user.email, orderData);
+      } catch (emailError) {
+        console.error("Error enviando email de confirmación:", emailError);
+        // No fallar la orden por error de email
       }
     }
 
-    // Método 2: Buscar por ID extraído del orderId (método de respaldo)
-    console.log("🔄 Intentando método de respaldo con orderId");
-    const orderIdParts = payment.orderId.replace("SUB-", "").split("-");
-    if (orderIdParts.length === 0) {
-      console.error("❌ Formato de orderId inválido:", payment.orderId);
-      return null;
-    }
-
-    // Intentar encontrar suscripción por los primeros dígitos del timestamp
-    const subscriptions = await Subscription.find({ nullDate: null });
-
-    // Si solo hay una suscripción activa, usar esa
-    if (subscriptions.length === 1) {
-      console.log("✅ Usando única suscripción activa disponible");
-      const subscription = subscriptions[0];
-
-      // Obtener beerType desde metadata si existe
-      let beerType = "golden"; // valor por defecto
-      if (payment.metadata && payment.metadata.beerType) {
-        beerType = payment.metadata.beerType;
-      }
-
-      return {
-        subscriptionId: subscription.id,
-        name: subscription.name,
-        beerType,
-        beerName: getBeerNameFromType(beerType),
-        liters: subscription.liters,
-        price: subscription.price,
-      };
-    }
-
-    console.error("❌ No se pudo determinar la suscripción desde el pago");
-    return null;
+    return res.status(200).json({
+      success: true,
+      data: {
+        orderId: orderId,
+        orderNumber: newOrder._id,
+        totalAmount: finalTotal,
+        message:
+          deliveryMethod === "pickup"
+            ? "Orden creada exitosamente. Puedes retirar y pagar en nuestro local."
+            : "Orden creada exitosamente. Se entregará contra pago en efectivo.",
+      },
+    });
   } catch (error) {
-    console.error("❌ Error al recuperar información de suscripción:", error);
-    return null;
+    console.error("Error creando orden de pago en efectivo:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Error interno del servidor al crear la orden",
+    });
   }
-}
+});
 
 module.exports = router;

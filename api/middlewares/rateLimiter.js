@@ -39,10 +39,10 @@ const authLimiter = rateLimit({
   },
 });
 
-// Rate limiter para endpoints de productos (más permisivo)
+// Rate limiter para endpoints de productos y contenido público (más permisivo)
 const productsLimiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minuto
-  max: 30, // máximo 30 requests por IP por minuto
+  max: 50, // máximo 50 requests por IP por minuto (aumentado para usuarios)
   message: {
     error: "Demasiadas solicitudes de productos, intenta de nuevo más tarde.",
     code: "PRODUCTS_RATE_LIMIT_EXCEEDED",
@@ -56,27 +56,31 @@ const productsLimiter = rateLimit({
   },
 });
 
-// Rate limiter para subida de archivos (muy estricto)
-const uploadLimiter = rateLimit({
-  windowMs: 10 * 60 * 1000, // 10 minutos
-  max: 10, // máximo 10 uploads por IP por 10 minutos
+// Rate limiter específico para usuarios autenticados y no autenticados en GET
+const userGetLimiter = rateLimit({
+  windowMs: 5 * 60 * 1000, // 5 minutos
+  max: 100, // máximo 100 GET requests por IP por 5 minutos
   message: {
-    error: "Demasiadas subidas de archivos, intenta de nuevo más tarde.",
-    code: "UPLOAD_RATE_LIMIT_EXCEEDED",
+    error: "Demasiadas consultas desde esta IP, intenta de nuevo más tarde.",
+    code: "USER_GET_RATE_LIMIT_EXCEEDED",
+  },
+  skip: (req) => {
+    // Solo aplicar rate limit a métodos GET
+    return req.method !== "GET";
   },
   handler: (req, res) => {
     res.status(429).json({
-      error: "Demasiadas subidas de archivos, intenta de nuevo más tarde.",
-      code: "UPLOAD_RATE_LIMIT_EXCEEDED",
+      error: "Demasiadas consultas desde esta IP, intenta de nuevo más tarde.",
+      code: "USER_GET_RATE_LIMIT_EXCEEDED",
       retryAfter: Math.round(req.rateLimit.resetTime / 1000),
     });
   },
 });
 
-// Rate limiter para APIs de administración
+// Rate limiter para APIs de administración (más permisivo para uploads de admin)
 const adminLimiter = rateLimit({
   windowMs: 5 * 60 * 1000, // 5 minutos
-  max: 20, // máximo 20 requests por IP por 5 minutos
+  max: 50, // máximo 50 requests por IP por 5 minutos (aumentado para admin)
   message: {
     error:
       "Demasiadas solicitudes de administración, intenta de nuevo más tarde.",
@@ -96,6 +100,6 @@ module.exports = {
   generalLimiter,
   authLimiter,
   productsLimiter,
-  uploadLimiter,
+  userGetLimiter,
   adminLimiter,
 };

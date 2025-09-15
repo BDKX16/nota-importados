@@ -2007,6 +2007,32 @@ export const getMyOrders = () => {
   };
 };
 
+// Obtener estado de una orden específica
+export const getOrderStatus = (orderId) => {
+  const controller = loadAbort();
+  const headers = getAxiosHeaders();
+
+  if (!headers) {
+    return Promise.reject(new Error("No authenticated"));
+  }
+
+  return {
+    call: axios
+      .get(`${baseUrl}/payments/order-status/${orderId}`, {
+        ...headers,
+        signal: controller.signal,
+      })
+      .catch((error) => {
+        // Solo loggear errores que no sean de cancelación
+        if (error.name !== "CanceledError" && error.name !== "AbortError") {
+          console.error("Error fetching order status:", error);
+        }
+        throw error;
+      }),
+    controller,
+  };
+};
+
 /**********
  * CHECKOUT Y PAGOS
  ************/
@@ -2051,6 +2077,29 @@ export const processDirectPayment = (paymentData) => {
       })
       .catch((error) => {
         console.error("Error processing direct payment:", error);
+        throw error;
+      }),
+    controller,
+  };
+};
+
+// Crear orden de pago en efectivo
+export const createCashOrder = (orderData) => {
+  const controller = loadAbort();
+  const headers = getAxiosHeaders();
+
+  if (!headers) {
+    return Promise.reject(new Error("No authenticated"));
+  }
+
+  return {
+    call: axios
+      .post(`${baseUrl}/payments/create-cash-order`, orderData, {
+        ...headers,
+        signal: controller.signal,
+      })
+      .catch((error) => {
+        console.error("Error creating cash order:", error);
         throw error;
       }),
     controller,

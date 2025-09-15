@@ -298,7 +298,7 @@ class EmailService {
     <body>
       <div class="email-container">
         <div class="header">
-          <div class="logo">🍺</div>
+          <div class="logo">🌹</div>
           <h1>Nota Importados</h1>
           <p>Productos importados de calidad premium</p>
         </div>
