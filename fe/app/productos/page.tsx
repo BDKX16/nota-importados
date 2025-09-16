@@ -5,6 +5,14 @@ import { Footer } from "@/components/footer";
 import { ProductGrid } from "@/components/product-grid";
 import { ProductFilters } from "@/components/product-filters";
 import { ImageCacheDebug } from "@/components/debug/ImageCacheDebug";
+import { Button } from "@/components/ui/button";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Filter } from "lucide-react";
 import { useState, useCallback, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 interface Filters {
@@ -100,15 +108,35 @@ export default function ProductsPage() {
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-4 gap-8">
-          {/* Filters Sidebar */}
-          <div className="lg:col-span-1">
+        <div className="lg:grid lg:grid-cols-4 lg:gap-8">
+          {/* Filters Sidebar - Desktop */}
+          <div className="lg:col-span-1 hidden lg:block">
             <div className="sticky top-24">
               <ProductFilters
                 initialFilters={initialFiltersLoaded ? filters : undefined}
                 onFiltersChange={handleFiltersChange}
               />
             </div>
+          </div>
+
+          {/* Filters Accordion - Mobile */}
+          <div className="lg:hidden mb-6">
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="filters" className="border rounded-lg">
+                <AccordionTrigger className="px-4 hover:no-underline">
+                  <div className="flex items-center gap-2">
+                    <Filter className="h-4 w-4" />
+                    <span className="font-medium">Filtros</span>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="px-4 pb-4">
+                  <ProductFilters
+                    initialFilters={initialFiltersLoaded ? filters : undefined}
+                    onFiltersChange={handleFiltersChange}
+                  />
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
           </div>
 
           {/* Products Grid */}

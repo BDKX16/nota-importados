@@ -57,7 +57,10 @@ export function Footer() {
                     className="w-10 h-10 p-0 bg-background/50 hover:bg-primary hover:text-primary-foreground border-primary/20"
                     asChild
                   >
-                    <Link href="#" aria-label="Instagram">
+                    <Link
+                      href="https://www.instagram.com/notaimportados?igsh=c3E0OTRuMzJ1cDJj"
+                      aria-label="Instagram"
+                    >
                       <Instagram className="h-4 w-4" />
                     </Link>
                   </Button>
@@ -66,6 +69,7 @@ export function Footer() {
                     size="sm"
                     className="w-10 h-10 p-0 bg-background/50 hover:bg-primary hover:text-primary-foreground border-primary/20"
                     asChild
+                    disabled
                   >
                     <Link href="#" aria-label="Facebook">
                       <Facebook className="h-4 w-4" />
@@ -78,7 +82,7 @@ export function Footer() {
                     asChild
                   >
                     <Link
-                      href="mailto:info@notaimportados.com"
+                      href="mailto:notaimportados@gmail.com"
                       aria-label="Email"
                     >
                       <Mail className="h-4 w-4" />
@@ -107,18 +111,18 @@ export function Footer() {
                   Marcas
                 </Link>
                 <Link
-                  href="/ofertas"
+                  href="/perfil"
                   className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors group"
                 >
                   <Star className="h-4 w-4 group-hover:text-primary" />
-                  Ofertas
+                  Mi perfil
                 </Link>
                 <Link
-                  href="/wishlist"
+                  href="/perfil/pedidos"
                   className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors group"
                 >
                   <Heart className="h-4 w-4 group-hover:text-primary" />
-                  Lista de Deseos
+                  Pedidos
                 </Link>
               </nav>
             </div>
@@ -136,7 +140,7 @@ export function Footer() {
                   Centro de Ayuda
                 </Link>
                 <Link
-                  href="/envios"
+                  href="/perfil/pedidos"
                   className="block text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
                   Envíos y Devoluciones
@@ -170,7 +174,7 @@ export function Footer() {
                   <Phone className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                   <div className="space-y-1">
                     <p className="text-sm font-medium text-foreground">
-                      +598 2345 6789
+                      +54 9 11 2706 0002
                     </p>
                     <p className="text-xs text-muted-foreground">
                       Lun - Vie: 9:00 - 18:00
@@ -182,7 +186,7 @@ export function Footer() {
                   <Mail className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                   <div>
                     <p className="text-sm font-medium text-foreground">
-                      info@notaimportados.com
+                      notaimportados@gmail.com
                     </p>
                     <p className="text-xs text-muted-foreground">
                       Respuesta en 24hs
@@ -194,7 +198,7 @@ export function Footer() {
                   <MapPin className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                   <div>
                     <p className="text-sm font-medium text-foreground">
-                      Montevideo, Uruguay
+                      Buenos Aires, Argentina
                     </p>
                     <p className="text-xs text-muted-foreground">
                       Envíos a todo el país
