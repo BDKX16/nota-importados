@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { Footer } from "@/components/footer";
 import { updateUserProfile, getMyOrders } from "@/services/private";
 import {
   getSubscriptionPlans,
@@ -117,20 +118,8 @@ export default function ProfilePage() {
           const response = await callEndpoint(getMyOrders());
           if (response && response.data && response.data.data) {
             // Filtrar pedidos generales (excluir suscripciones) y ordenar por fecha
-            const allOrders =
+            const regularOrders =
               response.data.data.data || response.data.data || [];
-            const regularOrders = allOrders.filter((order) => {
-              const isSubscription =
-                order.orderType?.toLowerCase().includes("suscripción") ||
-                order.orderType?.toLowerCase().includes("subscription") ||
-                (order.items &&
-                  order.items.some(
-                    (item) =>
-                      item.type?.toLowerCase().includes("suscripción") ||
-                      item.type?.toLowerCase().includes("subscription")
-                  ));
-              return !isSubscription;
-            });
 
             // Ordenar por fecha (más reciente primero)
             const sortedOrders = regularOrders.sort(
@@ -152,46 +141,6 @@ export default function ProfilePage() {
 
     loadOrders();
   }, [user, isAuthenticated, ordersLoaded, ordersLoading]); // Removido callEndpoint de las dependencias
-
-  useEffect(() => {
-    // Load user subscriptions when user is authenticated
-    const loadUserSubscriptions = async () => {
-      if (
-        user &&
-        isAuthenticated &&
-        !userSubscriptionsLoaded &&
-        !userSubscriptionsLoading
-      ) {
-        try {
-          setUserSubscriptionsLoading(true);
-          const response = await callEndpoint(getUserSubscriptions());
-          console.log(response);
-          if (response && response.data && response.data.subscriptions) {
-            setUserSubscriptions(response.data.subscriptions);
-            console.log(
-              "Suscripciones del usuario cargadas:",
-              response.data.subscriptions
-            );
-          }
-          setUserSubscriptionsLoaded(true);
-        } catch (error) {
-          // Solo loggear errores que no sean de cancelación
-          if (error.name !== "CanceledError" && error.name !== "AbortError") {
-            console.error("Error loading user subscriptions:", error);
-          }
-        } finally {
-          setUserSubscriptionsLoading(false);
-        }
-      }
-    };
-
-    loadUserSubscriptions();
-  }, [
-    user,
-    isAuthenticated,
-    userSubscriptionsLoaded,
-    userSubscriptionsLoading,
-  ]);
 
   useEffect(() => {
     // Load promotional content for non-admin users
@@ -1189,6 +1138,8 @@ export default function ProfilePage() {
           )}
         </div>
       </div>
+
+      <Footer />
     </div>
   );
 }

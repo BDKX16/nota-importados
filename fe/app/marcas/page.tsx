@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { HeaderSecondary } from "@/components/header-secondary";
+import { Footer } from "@/components/footer";
 import { getBrands } from "@/services/public";
 import useFetchAndLoad from "@/hooks/useFetchAndLoad";
 import { useToast } from "@/hooks/use-toast";
@@ -335,6 +336,8 @@ export default function BrandsPage() {
           </CardContent>
         </Card>
       </main>
+
+      <Footer />
     </div>
   );
 }

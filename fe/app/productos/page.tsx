@@ -1,6 +1,7 @@
 "use client";
 
 import { HeaderSecondary } from "@/components/header-secondary";
+import { Footer } from "@/components/footer";
 import { ProductGrid } from "@/components/product-grid";
 import { ProductFilters } from "@/components/product-filters";
 import { ImageCacheDebug } from "@/components/debug/ImageCacheDebug";
@@ -137,6 +138,8 @@ export default function ProductsPage() {
 
       {/* Debug component - solo en desarrollo */}
       <ImageCacheDebug />
+
+      <Footer />
     </div>
   );
 }

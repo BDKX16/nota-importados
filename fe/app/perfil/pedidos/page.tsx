@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { Footer } from "@/components/footer";
 import { getMyOrders } from "@/services/private";
 import useFetchAndLoad from "@/hooks/useFetchAndLoad";
 import { useToast } from "@/hooks/use-toast";
@@ -1331,6 +1332,8 @@ export default function UserOrdersPage() {
           )}
         </DialogContent>
       </Dialog>
+
+      <Footer />
     </div>
   );
 }
