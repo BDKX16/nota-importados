@@ -12,15 +12,39 @@ export function HeroSection() {
           <div className="space-y-8">
             <div className="space-y-6">
               <h1 className="text-5xl md:text-7xl font-serif font-light text-balance leading-tight tracking-tight">
-                Perfumes
+                Las Mejores
                 <span className="text-primary block font-normal">
-                  Exclusivos
+                  Fragancias
+                </span>
+                <span className="text-3xl md:text-4xl font-light block mt-2">
+                  a tu puerta
                 </span>
               </h1>
-              <p className="text-xl text-white font-light max-w-md text-pretty leading-relaxed">
-                Descubre fragancias únicas de las mejores casas de perfumería
-                del mundo.
+              <p className="text-xl text-white font-light max-w-lg text-pretty leading-relaxed">
+                Con pasión y dedicación, selecciono personalmente cada fragancia
+                original de las casas más prestigiosas del mundo para llevarte
+                <strong className="font-medium text-primary">
+                  {" "}
+                  la exquisitez que mereces
+                </strong>
+                .
               </p>
+              <div className="flex items-center gap-4 text-white/80">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-primary rounded-full"></div>
+                  <span className="text-sm font-medium">100% Originales</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-primary rounded-full"></div>
+                  <span className="text-sm font-medium">
+                    Entrega a Domicilio
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-primary rounded-full"></div>
+                  <span className="text-sm font-medium">Tendencias 2025</span>
+                </div>
+              </div>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
@@ -30,16 +54,16 @@ export function HeroSection() {
                 className="text-lg px-8 py-6 bg-primary hover:bg-primary/90 shadow-lg rounded-full"
               >
                 <Link href="/productos">
-                  Explorar Colección
+                  Ver Fragancias Exclusivas
                   <ArrowRight className="ml-2 h-5 w-5 mt-1" />
                 </Link>
               </Button>
               <Button
                 variant="outline"
                 size="lg"
-                className="text-lg px-8 py-6 bg-transparent border-2 border-white text-white hover:bg-secondary rounded-full"
+                className="text-lg px-8 py-6 bg-transparent border-2 border-white text-white hover:bg-white hover:text-foreground transition-all duration-300 rounded-full"
               >
-                Ver Ofertas
+                Tendencias 2025
               </Button>
             </div>
           </div>
