@@ -29,7 +29,14 @@ const app = express();
 // Trust proxy configuration for production environments
 // This enables Express to trust the X-Forwarded-* headers
 if (process.env.NODE_ENV === "production") {
-  app.set("trust proxy", true);
+  // Configuración específica para nginx como proxy reverso
+  // Confía en proxies de redes privadas (típico setup con nginx)
+  app.set("trust proxy", [
+    "loopback",
+    "linklocal",
+    "uniquelocal",
+    "172.18.0.0/16",
+  ]);
 } else {
   // In development, only trust localhost proxies
   app.set("trust proxy", "loopback");
@@ -37,6 +44,26 @@ if (process.env.NODE_ENV === "production") {
 
 //express config
 app.use(morgan("tiny"));
+
+// Middleware de debug para headers de proxy (solo en producción con debug)
+if (
+  process.env.NODE_ENV === "production" &&
+  process.env.DEBUG_PROXY === "true"
+) {
+  app.use((req, res, next) => {
+    console.log("Proxy Debug Headers:", {
+      "x-forwarded-for": req.headers["x-forwarded-for"],
+      "x-real-ip": req.headers["x-real-ip"],
+      "x-forwarded-proto": req.headers["x-forwarded-proto"],
+      "x-forwarded-host": req.headers["x-forwarded-host"],
+      "req.ip": req.ip,
+      "req.ips": req.ips,
+      "remote-address": req.connection?.remoteAddress,
+    });
+    next();
+  });
+}
+
 app.use(express.json());
 app.use(
   express.urlencoded({
