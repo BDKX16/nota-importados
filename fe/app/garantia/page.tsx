@@ -205,10 +205,6 @@ export default function GarantiaPage() {
           </h2>
 
           <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-border" />
-            </div>
-
             <div className="relative grid grid-cols-1 md:grid-cols-4 gap-8">
               {proceso.map((step, index) => (
                 <div key={index} className="text-center">

@@ -26,6 +26,15 @@ require("dotenv").config();
 //instances
 const app = express();
 
+// Trust proxy configuration for production environments
+// This enables Express to trust the X-Forwarded-* headers
+if (process.env.NODE_ENV === "production") {
+  app.set("trust proxy", true);
+} else {
+  // In development, only trust localhost proxies
+  app.set("trust proxy", "loopback");
+}
+
 //express config
 app.use(morgan("tiny"));
 app.use(express.json());
