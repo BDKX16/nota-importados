@@ -3,13 +3,14 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { Footer } from "@/components/footer";
 import { XCircle, RotateCcw, Home, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function OrderErrorPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 via-orange-50 to-red-100">
+    <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 items-center justify-between py-4">
           <Link href="/" className="flex items-center gap-2">
@@ -22,14 +23,14 @@ export default function OrderErrorPage() {
                 className="object-cover"
               />
             </div>
-            <span className="text-xl font-bold">Luna Brew House</span>
+            <span className="text-xl font-bold">Nota Importados</span>
           </Link>
         </div>
       </header>
 
-      <main className="container py-10">
+      <main className="container mx-auto px-4 py-10">
         <div className="max-w-2xl mx-auto">
-          <Card className="bg-white/70 backdrop-blur-sm border-red-200 shadow-lg">
+          <Card className="bg-card border-border shadow-sm border-red-200">
             <CardHeader className="text-center pb-6">
               <div className="mx-auto mb-4 h-16 w-16 rounded-full bg-red-100 flex items-center justify-center">
                 <XCircle className="h-8 w-8 text-red-600" />
@@ -42,10 +43,10 @@ export default function OrderErrorPage() {
 
             <CardContent className="space-y-6">
               <div className="text-center space-y-2">
-                <p className="text-gray-600">
+                <p className="text-muted-foreground">
                   Hubo un problema al procesar tu pago. Esto puede deberse a:
                 </p>
-                <ul className="text-sm text-gray-500 space-y-1 text-left max-w-md mx-auto">
+                <ul className="text-sm text-muted-foreground space-y-1 text-left max-w-md mx-auto">
                   <li>• Fondos insuficientes</li>
                   <li>• Datos de tarjeta incorrectos</li>
                   <li>• Problemas temporales del proveedor de pagos</li>
@@ -56,7 +57,7 @@ export default function OrderErrorPage() {
               <div className="flex flex-col gap-3">
                 <Button
                   asChild
-                  className="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700"
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
                 >
                   <Link href="/checkout">
                     <RotateCcw className="h-4 w-4 mr-2" />
@@ -82,6 +83,8 @@ export default function OrderErrorPage() {
           </Card>
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 }

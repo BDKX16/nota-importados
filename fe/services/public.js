@@ -404,3 +404,37 @@ const notifyError = (error) => {
     // );
   }
 };
+
+// Contacto
+export const sendContactForm = (contactData) => {
+  const controller = loadAbort();
+  return {
+    call: axios
+      .post(
+        process.env.NEXT_PUBLIC_API_URL + "/contact",
+        contactData,
+        { signal: controller.signal }
+      )
+      .catch((error) => {
+        if (error.name === "AbortError") {
+          throw error;
+        }
+        
+        // Manejar errores específicos de validación
+        if (error.response?.status === 400) {
+          throw new Error(error.response.data.error || "Datos del formulario inválidos");
+        }
+        
+        if (error.response?.status === 500) {
+          throw new Error("Error del servidor. Inténtalo de nuevo más tarde.");
+        }
+        
+        throw new Error(
+          error.response?.data?.error || 
+          error.message || 
+          "Error al enviar el formulario de contacto"
+        );
+      }),
+    controller,
+  };
+};

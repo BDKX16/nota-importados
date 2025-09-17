@@ -6,7 +6,7 @@ const landingConfigSchema = new mongoose.Schema(
     siteName: {
       type: String,
       required: true,
-      default: "Luna Brew House",
+      default: "Nota Importados",
     },
     tagline: {
       type: String,
@@ -29,7 +29,7 @@ const landingConfigSchema = new mongoose.Schema(
     seoTitle: {
       type: String,
       required: true,
-      default: "Luna Brew House - Cervezas Artesanales Premium",
+      default: "Nota Importados - Cervezas Artesanales Premium",
     },
     seoDescription: {
       type: String,
@@ -149,7 +149,7 @@ landingConfigSchema.statics.getActiveConfig = async function () {
       } else {
         // Si no existe ninguna configuración, crear una nueva
         config = new this({
-          siteName: "Luna Brew House",
+          siteName: "Nota Importados",
           tagline: "Cervezas Artesanales Premium",
           isActive: true,
         });

@@ -292,13 +292,13 @@ router.post("/admin/reset", checkAuth, async (req, res) => {
     let config = await LandingConfig.getActiveConfig();
 
     // Restablecer a valores por defecto
-    config.siteName = "Luna Brew House";
+    config.siteName = "Nota Importados";
     config.tagline = "Cervezas Artesanales Premium";
     config.description = "Descubre nuestras cervezas artesanales únicas";
     config.logo = "";
     config.favicon = "";
 
-    config.seoTitle = "Luna Brew House - Cervezas Artesanales Premium";
+    config.seoTitle = "Nota Importados - Cervezas Artesanales Premium";
     config.seoDescription =
       "Disfruta de las mejores cervezas artesanales con entrega a domicilio y planes de suscripción personalizados.";
     config.seoKeywords =

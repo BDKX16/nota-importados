@@ -127,7 +127,7 @@ function generateTestEmailData() {
     },
     passwordReset: {
       name: "Luis Rodríguez",
-      resetLink: "https://lunabrewhouse.com/reset-password?token=abc123xyz789",
+      resetLink: "https://notaimport.com/reset-password?token=abc123xyz789",
     },
   };
 }
@@ -136,16 +136,16 @@ function generateTestEmailData() {
  * Templates de asunto para diferentes tipos de email
  */
 const emailSubjects = {
-  welcome: "¡Bienvenido a Luna Brew House! 🍺",
+  welcome: "¡Bienvenido a Nota Importados! 🍺",
   orderConfirmation: (orderId) =>
-    `Confirmación de Pedido #${orderId} - Luna Brew House`,
-  subscriptionConfirmation: "¡Tu Suscripción está Activa! 🎉 - Luna Brew House",
+    `Confirmación de Pedido #${orderId} - Nota Importados`,
+  subscriptionConfirmation: "¡Tu Suscripción está Activa! 🎉 - Nota Importados",
   orderStatusUpdate: (orderId) =>
-    `Actualización de Pedido #${orderId} - Luna Brew House`,
-  subscriptionReminder: "Tu Próxima Entrega se Acerca 📦 - Luna Brew House",
-  passwordReset: "Restablecimiento de Contraseña - Luna Brew House",
-  newsletter: "Novedades Luna Brew House 🍻",
-  promotion: "Oferta Especial Luna Brew House 🎁",
+    `Actualización de Pedido #${orderId} - Nota Importados`,
+  subscriptionReminder: "Tu Próxima Entrega se Acerca 📦 - Nota Importados",
+  passwordReset: "Restablecimiento de Contraseña - Nota Importados",
+  newsletter: "Novedades Nota Importados 🍻",
+  promotion: "Oferta Especial Nota Importados 🎁",
 };
 
 /**

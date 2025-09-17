@@ -1,4 +1,4 @@
-# Sistema de SEO Dinámico - Luna Brew House
+# Sistema de SEO Dinámico - Nota Importados
 
 Este documento describe el sistema de SEO dinámico implementado para permitir la configuración de meta tags y títulos desde el panel de administración.
 

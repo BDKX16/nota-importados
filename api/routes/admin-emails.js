@@ -333,7 +333,7 @@ router.post(
         <p>Si tienes alguna pregunta, no dudes en contactarnos.</p>
         
         <p>¡Salud! 🍺<br>
-        <strong>El equipo de Luna Brew House</strong></p>
+        <strong>El equipo de Nota Importados</strong></p>
       `;
 
       const customTemplate = req.emailService
@@ -389,7 +389,7 @@ router.post(
         
         <div class="beer-info">
           <div class="beer-emoji">📧</div>
-          <h3 style="color: #d97706; margin-bottom: 10px;">Newsletter Luna Brew House</h3>
+          <h3 style="color: #d97706; margin-bottom: 10px;">Newsletter Nota Importados</h3>
           <p style="margin: 0;">Mantente al día con nuestras novedades y ofertas especiales</p>
         </div>
         
@@ -402,16 +402,16 @@ router.post(
         
         <div style="text-align: center;">
           <a href="${
-            process.env.FRONT_URL || "https://lunabrewhouse.com"
+            process.env.FRONT_URL || "https://notaimport.com"
           }" class="button">
-            Visitar Luna Brew House
+            Visitar Nota Importados
           </a>
         </div>
         
-        <p>¡Gracias por ser parte de la comunidad Luna Brew House!</p>
+        <p>¡Gracias por ser parte de la comunidad Nota Importados!</p>
         
         <p>¡Salud! 🍺<br>
-        <strong>El equipo de Luna Brew House</strong></p>
+        <strong>El equipo de Nota Importados</strong></p>
       `;
 
       const newsletterTemplate = req.emailService

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { Footer } from "@/components/footer";
 import {
   ChevronLeft,
   Calendar,
@@ -329,7 +330,7 @@ export default function DeliveryTimePage() {
                     className="object-cover"
                   />
                 </div>
-                <span className="text-xl font-bold">Luna Brew House</span>
+                <span className="text-xl font-bold">Nota Importados</span>
               </Link>
             </div>
           </div>
@@ -367,7 +368,7 @@ export default function DeliveryTimePage() {
                     className="object-cover"
                   />
                 </div>
-                <span className="text-xl font-bold">Luna Brew House</span>
+                <span className="text-xl font-bold">Nota Importados</span>
               </Link>
             </div>
           </div>
@@ -430,7 +431,7 @@ export default function DeliveryTimePage() {
 
               <Button
                 asChild
-                className="mt-4 rounded-full bg-amber-600 hover:bg-amber-700"
+                className="mt-4 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground"
               >
                 <Link href="/">Volver al inicio</Link>
               </Button>
@@ -438,29 +439,7 @@ export default function DeliveryTimePage() {
           </div>
         </main>
 
-        <footer className="border-t bg-amber-900/5 mt-16">
-          <div className="container py-8">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-              <div className="flex items-center gap-2">
-                <div className="relative h-8 w-8 overflow-hidden rounded-full">
-                  <Image
-                    src="/placeholder-logo.png"
-                    alt="Luna logo"
-                    width={32}
-                    height={32}
-                    className="object-cover"
-                  />
-                </div>
-                <span className="text-lg font-bold">Luna Brew House</span>
-              </div>
-
-              <p className="text-sm text-muted-foreground">
-                &copy; {new Date().getFullYear()} Luna Brew House. Todos los
-                derechos reservados.
-              </p>
-            </div>
-          </div>
-        </footer>
+        <Footer />
       </div>
     );
   }
@@ -480,7 +459,7 @@ export default function DeliveryTimePage() {
                   className="object-cover"
                 />
               </div>
-              <span className="text-xl font-bold">Luna Brew House</span>
+              <span className="text-xl font-bold">Nota Importados</span>
             </Link>
           </div>
           <div className="flex items-center gap-4">
@@ -754,29 +733,7 @@ export default function DeliveryTimePage() {
         </div>
       </main>
 
-      <footer className="border-t bg-amber-900/5 mt-16">
-        <div className="container py-8">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="flex items-center gap-2">
-              <div className="relative h-8 w-8 overflow-hidden rounded-full">
-                <Image
-                  src="/placeholder-logo.png"
-                  alt="Luna logo"
-                  width={32}
-                  height={32}
-                  className="object-cover"
-                />
-              </div>
-              <span className="text-lg font-bold">Luna Brew House</span>
-            </div>
-
-            <p className="text-sm text-muted-foreground">
-              &copy; {new Date().getFullYear()} Luna Brew House. Todos los
-              derechos reservados.
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

@@ -1,8 +1,8 @@
-# Sistema de Notificaciones Luna Brew House 📧
+# Sistema de Notificaciones Nota Importados 📧
 
 ## Descripción General
 
-Sistema completo de notificaciones por email para Luna Brew House que incluye:
+Sistema completo de notificaciones por email para Nota Importados que incluye:
 
 - ✅ Emails de bienvenida y confirmación para clientes
 - ✅ Notificaciones automáticas para administradores
@@ -20,7 +20,7 @@ EMAIL_SERVICE=gmail
 EMAIL_USER=tu_email@gmail.com
 EMAIL_PASSWORD=tu_app_password
 ADMIN_EMAIL=admin@lunabrew.com
-EMAIL_FROM_NAME=Luna Brew House
+EMAIL_FROM_NAME=Nota Importados
 ```
 
 ### Configuración Gmail (Recomendado)
@@ -136,7 +136,7 @@ await emailService.sendWelcomeEmail(userData);
 ### Diseño Base
 
 - **Responsive**: Compatible con móviles y desktop
-- **Branding**: Logo y colores de Luna Brew House
+- **Branding**: Logo y colores de Nota Importados
 - **Profesional**: Diseño limpio y moderno
 
 ### Tipos de Email

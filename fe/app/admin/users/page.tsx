@@ -1191,7 +1191,7 @@ export default function UsersManagementPage() {
                       className="w-full justify-start"
                       onClick={() => {
                         // Aquí se podría abrir un modal de contacto o redirigir a email
-                        window.location.href = `mailto:${attentionUser?.email}?subject=Atención requerida en Luna Brew House`;
+                        window.location.href = `mailto:${attentionUser?.email}?subject=Atención requerida en Nota Importados`;
                       }}
                     >
                       <Mail className="mr-2 h-4 w-4" />

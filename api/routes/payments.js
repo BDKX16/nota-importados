@@ -233,7 +233,7 @@ router.post("/create-preference", checkAuth, async (req, res) => {
         }/pedido/pendiente`,
       },
       external_reference: newOrder._id.toString(),
-      statement_descriptor: "LUNA BREW HOUSE",
+      statement_descriptor: "Nota Importados",
       expires: true,
       expiration_date_from: new Date().toISOString(),
       expiration_date_to: new Date(Date.now() + 30 * 60 * 1000).toISOString(), // 30 minutos
@@ -347,7 +347,7 @@ router.post("/process-payment", checkAuth, async (req, res) => {
     const paymentData = {
       transaction_amount: order.total,
       token,
-      description: `Pedido Luna Brew House - ${order.id}`,
+      description: `Pedido Nota Importados - ${order.id}`,
       installments: parseInt(installments),
       payment_method_id,
       issuer_id,
@@ -359,8 +359,8 @@ router.post("/process-payment", checkAuth, async (req, res) => {
         },
       },
       external_reference: order._id.toString(),
-      statement_descriptor: "LUNA BREW HOUSE",
-      statement_descriptor: "LUNA BREW HOUSE",
+      statement_descriptor: "Nota Importados",
+      statement_descriptor: "Nota Importados",
       notification_url: `${
         process.env.API_URL || "http://localhost:3001"
       }/api/payments/webhook`,

@@ -273,7 +273,7 @@ export default function ProductView({ product }: ProductViewProps) {
               <div className="flex items-center gap-3">
                 <Shield className="h-5 w-5 text-blue-600" />
                 <span className="text-sm">
-                  Garantía de calidad Luna Brew House
+                  Garantía de calidad Nota Importados
                 </span>
               </div>
               <div className="flex items-center gap-3">

@@ -958,7 +958,7 @@ export default function UserOrdersPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50">
+    <div className="min-h-screen bg-background">
       {/* Header */}
       <ProfileHeader
         title="Mis Pedidos"
@@ -968,9 +968,9 @@ export default function UserOrdersPage() {
       />
 
       {/* Content */}
-      <div className="container py-8">
+      <div className="container mx-auto px-4 py-8">
         {/* Filters */}
-        <Card className="mb-6 bg-white/70 backdrop-blur-sm border-amber-200">
+        <Card className="mb-6 bg-card border-border shadow-sm">
           <CardHeader className="pb-4">
             <CardTitle className="text-lg">Filtrar pedidos</CardTitle>
             <CardDescription>
@@ -989,15 +989,15 @@ export default function UserOrdersPage() {
                   onClick={() => setStatusFilter(option.value)}
                   className={
                     statusFilter === option.value
-                      ? "bg-amber-600 hover:bg-amber-700 text-white"
-                      : "border-amber-300 hover:bg-amber-50"
+                      ? "bg-primary hover:bg-primary/90 text-primary-foreground"
+                      : "border-border hover:bg-accent"
                   }
                 >
                   {option.label}
                   {option.count > 0 && (
                     <Badge
                       variant="secondary"
-                      className="ml-2 bg-white/20 text-current"
+                      className="ml-2 bg-secondary text-secondary-foreground"
                     >
                       {option.count}
                     </Badge>
@@ -1141,7 +1141,7 @@ export default function UserOrdersPage() {
             {(filteredOrders ?? []).map((order) => (
               <Card
                 key={order._id}
-                className="bg-white/70 backdrop-blur-sm border-amber-200 hover:shadow-lg transition-all duration-300"
+                className="bg-card border-border shadow-sm hover:shadow-md transition-all duration-300"
               >
                 <CardContent className="p-6">
                   <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
@@ -1153,7 +1153,7 @@ export default function UserOrdersPage() {
                           <h3 className="font-semibold text-lg">
                             Pedido {order.id}
                           </h3>
-                          <p className="text-sm text-gray-600">
+                          <p className="text-sm text-muted-foreground">
                             Realizado el{" "}
                             {formatDate(order.createdAt || new Date())}
                           </p>
@@ -1173,21 +1173,21 @@ export default function UserOrdersPage() {
                       {/* Order Details */}
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                         <div className="flex items-center gap-2">
-                          <Package className="h-4 w-4 text-gray-500" />
-                          <span className="text-gray-600">
+                          <Package className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-muted-foreground">
                             {order.items?.length || 0} artículo(s)
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <CreditCard className="h-4 w-4 text-gray-500" />
-                          <span className="font-medium text-gray-900">
+                          <CreditCard className="h-4 w-4 text-muted-foreground" />
+                          <span className="font-medium text-foreground">
                             {formatPrice(order.total || 0)}
                           </span>
                         </div>
                         {order.shippingAddress && (
                           <div className="flex items-center gap-2">
-                            <MapPin className="h-4 w-4 text-gray-500" />
-                            <span className="text-gray-600 truncate">
+                            <MapPin className="h-4 w-4 text-muted-foreground" />
+                            <span className="text-muted-foreground truncate">
                               {order.shippingAddress}
                             </span>
                           </div>
@@ -1196,8 +1196,8 @@ export default function UserOrdersPage() {
 
                       {/* Items Preview */}
                       {order.items && order.items.length > 0 && (
-                        <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-                          <p className="text-sm font-medium text-gray-700 mb-2">
+                        <div className="mt-4 p-3 bg-muted/50 rounded-lg">
+                          <p className="text-sm font-medium text-foreground mb-2">
                             Artículos del pedido:
                           </p>
                           <div className="space-y-1">
@@ -1206,7 +1206,7 @@ export default function UserOrdersPage() {
                                 key={index}
                                 className="flex justify-between text-sm"
                               >
-                                <span className="text-gray-600">
+                                <span className="text-muted-foreground">
                                   {item.quantity}x {item.name}
                                 </span>
                                 <span className="font-medium">
@@ -1215,7 +1215,7 @@ export default function UserOrdersPage() {
                               </div>
                             ))}
                             {order.items.length > 3 && (
-                              <p className="text-xs text-gray-500">
+                              <p className="text-xs text-muted-foreground">
                                 +{order.items.length - 3} artículo(s) más
                               </p>
                             )}
@@ -1229,7 +1229,7 @@ export default function UserOrdersPage() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="border-amber-300 hover:bg-amber-50"
+                        className="border-border hover:bg-accent"
                         onClick={() => openOrderDetails(order)}
                       >
                         <Eye className="h-4 w-4 mr-2" />
@@ -1253,17 +1253,17 @@ export default function UserOrdersPage() {
             ))}
           </div>
         ) : (
-          <Card className="bg-white/70 backdrop-blur-sm border-amber-200">
+          <Card className="bg-card border-border shadow-sm">
             <CardContent className="text-center py-12">
-              <Package className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <Package className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-foreground mb-2">
                 {statusFilter === "all"
                   ? "No tienes pedidos aún"
                   : `No tienes pedidos ${statusOptions
                       .find((o) => o.value === statusFilter)
                       ?.label.toLowerCase()}`}
               </h3>
-              <p className="text-gray-600 mb-6">
+              <p className="text-muted-foreground mb-6">
                 {statusFilter === "all"
                   ? "¡Explora nuestros productos y haz tu primer pedido!"
                   : "Prueba con un filtro diferente o explora nuestros productos."}
@@ -1273,13 +1273,13 @@ export default function UserOrdersPage() {
                   <Button
                     variant="outline"
                     onClick={() => setStatusFilter("all")}
-                    className="border-amber-300 hover:bg-amber-50"
+                    className="border-border hover:bg-accent"
                   >
                     Ver todos los pedidos
                   </Button>
                 )}
                 <Link href="/productos">
-                  <Button className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white">
+                  <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
                     Explorar Productos
                   </Button>
                 </Link>
@@ -1321,7 +1321,7 @@ export default function UserOrdersPage() {
                 {(selectedOrder.status?.toLowerCase() === "delivered" ||
                   selectedOrder.status?.toLowerCase() === "entregado") && (
                   <Button
-                    className="flex-1 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white"
+                    className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground"
                     onClick={() => handleReorderProducts(selectedOrder)}
                   >
                     Volver a Pedir

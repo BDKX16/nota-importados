@@ -21,10 +21,10 @@ interface SEOConfig {
 }
 
 const defaultSEOConfig: SEOConfig = {
-  siteName: "Luna Brew House",
+  siteName: "Nota Importados",
   tagline: "Cervezas Artesanales Premium",
   description: "Descubre nuestras cervezas artesanales únicas",
-  seoTitle: "Luna Brew House - Cervezas Artesanales Premium",
+  seoTitle: "Nota Importados - Cervezas Artesanales Premium",
   seoDescription:
     "Disfruta de las mejores cervezas artesanales con entrega a domicilio y planes de suscripción personalizados.",
   seoKeywords:

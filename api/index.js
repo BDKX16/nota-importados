@@ -72,6 +72,7 @@ app.use(
 );
 app.use("/api/payments", noCache, require("./routes/payments.js"));
 app.use("/api/orders", userGetLimiter, noCache, require("./routes/orders.js"));
+app.use("/api/contact", userGetLimiter, noCache, require("./routes/contact.js"));
 app.use(
   "/api/landing",
   userGetLimiter,

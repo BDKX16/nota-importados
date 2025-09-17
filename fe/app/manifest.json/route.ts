@@ -4,7 +4,7 @@ export async function GET(request: NextRequest) {
   try {
     // Por ahora usamos valores estáticos, más adelante se puede integrar con la configuración
     const manifest = {
-      name: "Luna Brew House",
+      name: "Nota Importados",
       short_name: "Luna Brew",
       description:
         "Cervezas Artesanales Premium con entrega a domicilio y planes de suscripción",
@@ -93,7 +93,7 @@ export async function GET(request: NextRequest) {
 
     // Fallback manifest básico
     const fallbackManifest = {
-      name: "Luna Brew House",
+      name: "Nota Importados",
       short_name: "Luna Brew",
       description: "Cervezas Artesanales Premium",
       start_url: "/",

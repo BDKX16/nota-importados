@@ -98,13 +98,13 @@ export default function ConfiguracionPage() {
 
   const [config, setConfig] = useState<LandingConfig>({
     // Valores por defecto
-    siteName: "Luna Brew House",
+    siteName: "Nota Importados",
     tagline: "Cervezas Artesanales Premium",
     description: "Descubre nuestras cervezas artesanales únicas",
     logo: "",
     favicon: "",
 
-    seoTitle: "Luna Brew House - Cervezas Artesanales Premium",
+    seoTitle: "Nota Importados - Cervezas Artesanales Premium",
     seoDescription:
       "Disfruta de las mejores cervezas artesanales con entrega a domicilio y planes de suscripción personalizados.",
     seoKeywords:
@@ -468,7 +468,7 @@ export default function ConfiguracionPage() {
                       id="siteName"
                       value={config.siteName}
                       onChange={(e) => updateConfig("siteName", e.target.value)}
-                      placeholder="Luna Brew House"
+                      placeholder="Nota Importados"
                     />
                   </div>
 
@@ -594,7 +594,7 @@ export default function ConfiguracionPage() {
                       onChange={(e) =>
                         updateConfig("canonicalUrl", e.target.value)
                       }
-                      placeholder="https://lunabrewhouse.com"
+                      placeholder="https://notaimport.com"
                     />
                   </div>
                 </div>

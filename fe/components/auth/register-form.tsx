@@ -83,7 +83,7 @@ export default function RegisterForm() {
       <CardHeader>
         <CardTitle className="text-2xl">Crear cuenta</CardTitle>
         <CardDescription>
-          Únete a Luna Brew House y disfruta de beneficios exclusivos
+          Únete a Nota Importados y disfruta de beneficios exclusivos
         </CardDescription>
       </CardHeader>
       <CardContent>

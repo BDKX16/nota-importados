@@ -833,7 +833,7 @@ export default function CheckoutPage() {
                     className="object-cover"
                   />
                 </div>
-                <span className="text-xl font-bold">Luna Brew House</span>
+                <span className="text-xl font-bold">Nota Importados</span>
               </Link>
             </div>
           </div>
@@ -866,7 +866,7 @@ export default function CheckoutPage() {
                     className="object-cover"
                   />
                 </div>
-                <span className="text-xl font-bold">Luna Brew House</span>
+                <span className="text-xl font-bold">Nota Importados</span>
               </Link>
             </div>
           </div>
@@ -904,7 +904,7 @@ export default function CheckoutPage() {
                   className="object-cover"
                 />
               </div>
-              <span className="text-xl font-bold">Luna Brew House</span>
+              <span className="text-xl font-bold">Nota Importados</span>
             </Link>
           </div>
           <div className="flex items-center gap-4">
@@ -2152,11 +2152,11 @@ export default function CheckoutPage() {
                   className="object-cover"
                 />
               </div>
-              <span className="text-lg font-bold">Luna Brew House</span>
+              <span className="text-lg font-bold">Nota Importados</span>
             </div>
 
             <p className="text-sm text-muted-foreground">
-              &copy; {new Date().getFullYear()} Luna Brew House. Todos los
+              &copy; {new Date().getFullYear()} Nota Importados. Todos los
               derechos reservados.
             </p>
           </div>

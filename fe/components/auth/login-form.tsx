@@ -1,57 +1,66 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { Eye, EyeOff, LogIn } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { useToast } from "@/hooks/use-toast"
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Eye, EyeOff, LogIn } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { useToast } from "@/hooks/use-toast";
 
 export default function LoginForm() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [showPassword, setShowPassword] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const { toast } = useToast()
-  const router = useRouter()
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
+    e.preventDefault();
+    setIsLoading(true);
 
     try {
       // Simulación de login exitoso
       // En una implementación real, aquí iría la llamada a la API de autenticación
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       toast({
         title: "Inicio de sesión exitoso",
-        description: "Bienvenido de nuevo a Luna Brew House",
-      })
+        description: "Bienvenido de nuevo a Nota Importados",
+      });
 
       // Redirigir al usuario a la página principal
-      router.push("/")
+      router.push("/");
     } catch (error) {
       toast({
         title: "Error al iniciar sesión",
         description: "Por favor verifica tus credenciales e intenta nuevamente",
         variant: "destructive",
-      })
+      });
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
         <CardTitle className="text-2xl">Iniciar sesión</CardTitle>
-        <CardDescription>Ingresa a tu cuenta de Luna Brew House</CardDescription>
+        <CardDescription>
+          Ingresa a tu cuenta de Nota Importados
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -69,7 +78,10 @@ export default function LoginForm() {
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <Label htmlFor="password">Contraseña</Label>
-              <Link href="/auth/recuperar" className="text-xs text-amber-600 hover:text-amber-700">
+              <Link
+                href="/auth/recuperar"
+                className="text-xs text-amber-600 hover:text-amber-700"
+              >
                 ¿Olvidaste tu contraseña?
               </Link>
             </div>
@@ -89,12 +101,22 @@ export default function LoginForm() {
                 className="absolute right-0 top-0 h-full px-3 py-2 text-muted-foreground"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                <span className="sr-only">{showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}</span>
+                {showPassword ? (
+                  <EyeOff className="h-4 w-4" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}
+                <span className="sr-only">
+                  {showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                </span>
               </Button>
             </div>
           </div>
-          <Button type="submit" className="w-full bg-amber-600 hover:bg-amber-700" disabled={isLoading}>
+          <Button
+            type="submit"
+            className="w-full bg-amber-600 hover:bg-amber-700"
+            disabled={isLoading}
+          >
             {isLoading ? (
               <span className="flex items-center gap-2">
                 <svg
@@ -103,7 +125,14 @@ export default function LoginForm() {
                   fill="none"
                   viewBox="0 0 24 24"
                 >
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
                   <path
                     className="opacity-75"
                     fill="currentColor"
@@ -132,11 +161,14 @@ export default function LoginForm() {
         </div>
         <div className="text-center text-sm">
           ¿No tienes una cuenta?{" "}
-          <Link href="/auth/registro" className="font-medium text-amber-600 hover:text-amber-700">
+          <Link
+            href="/auth/registro"
+            className="font-medium text-amber-600 hover:text-amber-700"
+          >
             Regístrate
           </Link>
         </div>
       </CardFooter>
     </Card>
-  )
+  );
 }

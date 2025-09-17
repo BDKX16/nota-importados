@@ -10,7 +10,7 @@ class EmailService {
   constructor() {
     this.transporter = null;
     this.from =
-      process.env.EMAIL_FROM || "Nota Importados <noreply@notaimportados.com>";
+      process.env.EMAIL_FROM || "Nota Importados <noreply@notaimport.com>";
     this.initializeTransporter();
   }
 
@@ -310,7 +310,7 @@ class EmailService {
         <div class="footer">
           <p><strong>Nota Importados</strong></p>
           <p>📍 Buenos Aires, Argentina</p>
-          <p>📞 +54 (11) 1234-5678 | ✉️ info@notaimportados.com</p>
+          <p>📞 +54 (11) 1234-5678 | ✉️ info@notaimport.com</p>
           
           <div class="social-links">
             <a href="#" target="_blank">Instagram</a>
@@ -357,7 +357,7 @@ class EmailService {
       
       <div style="text-align: center;">
         <a href="${
-          process.env.FRONT_URL || "https://notaimportados.com"
+          process.env.FRONT_URL || "https://notaimport.com"
         }" class="button">
           Explorar Productos
         </a>
@@ -434,7 +434,7 @@ class EmailService {
       
       <div style="text-align: center;">
         <a href="${
-          process.env.FRONT_URL || "https://lunabrewhouse.com"
+          process.env.FRONT_URL || "https://notaimport.com"
         }/perfil/pedidos" class="button">
           Seguir mi Pedido
         </a>
@@ -516,7 +516,7 @@ class EmailService {
       
       <div style="text-align: center;">
         <a href="${
-          process.env.FRONT_URL || "https://lunabrewhouse.com"
+          process.env.FRONT_URL || "https://notaimport.com"
         }/perfil/suscripciones" class="button">
           Gestionar mi Suscripción
         </a>
@@ -606,7 +606,7 @@ class EmailService {
       
       <div style="text-align: center;">
         <a href="${
-          process.env.FRONT_URL || "https://lunabrewhouse.com"
+          process.env.FRONT_URL || "https://notaimport.com"
         }/perfil/pedidos" class="button">
           Ver Detalles del Pedido
         </a>
@@ -653,7 +653,7 @@ class EmailService {
       
       <div style="text-align: center;">
         <a href="${
-          process.env.FRONT_URL || "https://lunabrewhouse.com"
+          process.env.FRONT_URL || "https://notaimport.com"
         }/perfil/suscripciones/${
       subscriptionData.subscriptionId
     }" class="button">
@@ -778,7 +778,7 @@ class EmailService {
         
         <div style="text-align: center; margin: 20px 0;">
           <a href="${
-            process.env.FRONT_URL || "https://lunabrewhouse.com"
+            process.env.FRONT_URL || "https://notaimport.com"
           }/pedidos/horario/${orderData.orderId}" class="button">
             📅 Seleccionar Horario de Entrega
           </a>
@@ -802,7 +802,7 @@ class EmailService {
       
       <div style="text-align: center;">
         <p><strong>📞 ¿Necesitas ayuda?</strong></p>
-        <p>Contáctanos: <a href="mailto:contacto@lunabrewhouse.com" style="color: #d97706;">contacto@lunabrewhouse.com</a></p>
+        <p>Contáctanos: <a href="mailto:contacto@notaimport.com" style="color: #d97706;">contacto@notaimport.com</a></p>
       </div>
       
       <p>¡Esperamos que disfrutes mucho tu producto importado! 🍺<br>
@@ -905,7 +905,7 @@ class EmailService {
       
       <div style="text-align: center; margin: 30px 0;">
         <a href="${
-          process.env.FRONTEND_URL || "https://lunabrewhouse.com"
+          process.env.FRONTEND_URL || "https://notaimport.com"
         }/admin/pedidos/${orderData.orderId}" class="button">
           🔍 Ver Pedido en Admin
         </a>
@@ -1000,7 +1000,7 @@ class EmailService {
       
       <div style="text-align: center; margin: 30px 0;">
         <a href="${
-          process.env.FRONTEND_URL || "https://lunabrewhouse.com"
+          process.env.FRONTEND_URL || "https://notaimport.com"
         }/admin/suscripciones/${
       subscriptionData.subscriptionId
     }" class="button">
@@ -1129,7 +1129,7 @@ class EmailService {
           requestData.orderId
             ? `
         <a href="${
-          process.env.FRONTEND_URL || "https://lunabrewhouse.com"
+          process.env.FRONTEND_URL || "https://notaimport.com"
         }/admin/pedidos/${requestData.orderId}" class="button">
           🔍 Ver Pedido
         </a>
@@ -1214,7 +1214,7 @@ class EmailService {
       
       <div style="text-align: center; margin: 30px 0;">
         <a href="${
-          process.env.FRONTEND_URL || "https://lunabrewhouse.com"
+          process.env.FRONTEND_URL || "https://notaimport.com"
         }/admin/productos" class="button">
           📦 Gestionar Inventario
         </a>
