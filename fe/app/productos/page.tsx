@@ -96,22 +96,15 @@ export default function ProductsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen flex flex-col">
       <HeaderSecondary />
-      <main className="container mx-auto px-4 py-8 bg-white">
-        <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4 text-balance">
-            {getPageTitle()}
-          </h1>
-          <p className="text-lg text-muted-foreground text-pretty">
-            {getPageSubtitle()}
-          </p>
-        </div>
 
-        <div className="lg:grid lg:grid-cols-4 lg:gap-8">
+      <main className="flex-1 container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Filters Sidebar - Desktop */}
-          <div className="lg:col-span-1 hidden lg:block">
-            <div className="sticky top-24">
+          <div className="hidden lg:block">
+            <div className="sticky top-8">
+              <h3 className="font-semibold mb-4">Filtros</h3>
               <ProductFilters
                 initialFilters={initialFiltersLoaded ? filters : undefined}
                 onFiltersChange={handleFiltersChange}

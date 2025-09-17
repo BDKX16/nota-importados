@@ -376,9 +376,9 @@ export default function CheckoutPage() {
                   <div className="space-y-6">
                     {cart.map((item) => (
                       <Card key={item.id} className="overflow-hidden">
-                        <CardContent className="p-6">
-                          <div className="flex items-start gap-4">
-                            <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-muted">
+                        <CardContent className="p-4 sm:p-6">
+                          <div className="flex items-start gap-4 w-full">
+                            <div className="relative h-16 w-16 sm:h-20 sm:w-20 flex-shrink-0 overflow-hidden rounded-lg bg-muted">
                               <Image
                                 src={item.images?.[0] || "/placeholder.svg"}
                                 alt={item.name}
@@ -388,70 +388,110 @@ export default function CheckoutPage() {
                             </div>
 
                             <div className="flex-1 min-w-0">
-                              <h3 className="font-semibold text-lg">
+                              <h3 className="font-semibold text-sm sm:text-lg truncate">
                                 {item.name}
                               </h3>
-                              <p className="text-sm text-muted-foreground">
+                              <p className="text-xs sm:text-sm text-muted-foreground truncate">
                                 {item.brand}
                               </p>
                               {item.volume && (
-                                <p className="text-sm text-muted-foreground">
+                                <p className="text-xs sm:text-sm text-muted-foreground">
                                   {item.volume}
                                 </p>
                               )}
-                              <div className="mt-2 flex items-center gap-4">
-                                <div className="flex items-center gap-2">
-                                  <Button
-                                    variant="outline"
-                                    size="icon"
-                                    className="h-8 w-8"
-                                    onClick={() => {
-                                      if (item.quantity > 1) {
-                                        updateQuantity(
-                                          item.id,
-                                          item.quantity - 1
-                                        );
-                                      } else {
-                                        removeFromCart(item.id);
-                                      }
-                                    }}
-                                  >
-                                    <Minus className="h-3 w-3" />
-                                  </Button>
-                                  <span className="w-12 text-center text-sm font-medium">
-                                    {item.quantity}
-                                  </span>
-                                  <Button
-                                    variant="outline"
-                                    size="icon"
-                                    className="h-8 w-8"
-                                    onClick={() =>
-                                      updateQuantity(item.id, item.quantity + 1)
-                                    }
-                                    disabled={item.quantity >= item.stock}
-                                  >
-                                    <Plus className="h-3 w-3" />
-                                  </Button>
-                                </div>
+
+                              {/* Controles de cantidad - solo en móvil */}
+                              <div className="mt-2 flex items-center gap-2 sm:hidden">
                                 <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => removeFromCart(item.id)}
-                                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                  variant="outline"
+                                  size="icon"
+                                  className="h-7 w-7"
+                                  onClick={() => {
+                                    if (item.quantity > 1) {
+                                      updateQuantity(
+                                        item.id,
+                                        item.quantity - 1
+                                      );
+                                    } else {
+                                      removeFromCart(item.id);
+                                    }
+                                  }}
                                 >
-                                  <Trash2 className="h-4 w-4 mr-1" />
-                                  Eliminar
+                                  <Minus className="h-3 w-3" />
+                                </Button>
+                                <span className="w-8 text-center text-sm font-medium">
+                                  {item.quantity}
+                                </span>
+                                <Button
+                                  variant="outline"
+                                  size="icon"
+                                  className="h-7 w-7"
+                                  onClick={() =>
+                                    updateQuantity(item.id, item.quantity + 1)
+                                  }
+                                  disabled={item.quantity >= item.stock}
+                                >
+                                  <Plus className="h-3 w-3" />
                                 </Button>
                               </div>
                             </div>
 
-                            <div className="text-right">
-                              <p className="text-lg font-semibold">
-                                ${(item.price * item.quantity).toFixed(2)}
-                              </p>
-                              <p className="text-sm text-muted-foreground">
-                                ${item.price.toFixed(2)} c/u
-                              </p>
+                            {/* Precio y controles - lado derecho */}
+                            <div className="flex flex-col items-end gap-2">
+                              <div className="text-right">
+                                <p className="text-sm sm:text-lg font-semibold">
+                                  ${(item.price * item.quantity).toFixed(2)}
+                                </p>
+                                <p className="text-xs sm:text-sm text-muted-foreground">
+                                  ${item.price.toFixed(2)} c/u
+                                </p>
+                              </div>
+
+                              {/* Controles de cantidad - solo en desktop */}
+                              <div className="hidden sm:flex items-center gap-2">
+                                <Button
+                                  variant="outline"
+                                  size="icon"
+                                  className="h-8 w-8"
+                                  onClick={() => {
+                                    if (item.quantity > 1) {
+                                      updateQuantity(
+                                        item.id,
+                                        item.quantity - 1
+                                      );
+                                    } else {
+                                      removeFromCart(item.id);
+                                    }
+                                  }}
+                                >
+                                  <Minus className="h-3 w-3" />
+                                </Button>
+                                <span className="w-12 text-center text-sm font-medium">
+                                  {item.quantity}
+                                </span>
+                                <Button
+                                  variant="outline"
+                                  size="icon"
+                                  className="h-8 w-8"
+                                  onClick={() =>
+                                    updateQuantity(item.id, item.quantity + 1)
+                                  }
+                                  disabled={item.quantity >= item.stock}
+                                >
+                                  <Plus className="h-3 w-3" />
+                                </Button>
+                              </div>
+
+                              {/* Botón eliminar */}
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => removeFromCart(item.id)}
+                                className="text-red-600 hover:text-red-700 hover:bg-red-50 text-xs sm:text-sm"
+                              >
+                                <Trash2 className="h-4 w-4 mr-1" />
+                                <span className="sm:inline">Eliminar</span>
+                              </Button>
                             </div>
                           </div>
                         </CardContent>
@@ -465,7 +505,7 @@ export default function CheckoutPage() {
               {cart.length > 0 && (
                 <div className="space-y-6">
                   <Card>
-                    <CardContent className="p-6">
+                    <CardContent className="p-4 sm:p-6">
                       <h3 className="text-lg font-semibold mb-4">
                         Resumen del pedido
                       </h3>
@@ -596,55 +636,9 @@ export default function CheckoutPage() {
                 </p>
               </div>
 
-              <div className="grid gap-8 lg:grid-cols-3">
-                {/* Columna izquierda - Opciones de pago (2/3 del ancho) */}
-                <div className="lg:col-span-2 space-y-6">
-                  <Card>
-                    <CardContent className="p-6">
-                      <h3 className="font-semibold mb-4">Método de pago</h3>
-                      <MercadoPagoOptions
-                        cart={cart}
-                        user={user}
-                        deliveryAddress={deliveryAddress}
-                        appliedDiscount={appliedDiscount}
-                        discountCode={discountCode}
-                        calculateTotal={calculateTotal}
-                        calculateSubtotal={calculateSubtotal}
-                        calculateDiscountAmount={calculateDiscountAmount}
-                        onPaymentSuccess={() => {
-                          clearCart();
-                          toast({
-                            title: "¡Pago exitoso!",
-                            description:
-                              "Tu pedido ha sido procesado correctamente",
-                          });
-                          router.push("/pedidos");
-                        }}
-                        onPaymentError={(error) => {
-                          toast({
-                            title: "Error en el pago",
-                            description: error,
-                            variant: "destructive",
-                          });
-                        }}
-                      />
-                    </CardContent>
-                  </Card>
-
-                  {/* Botón de navegación */}
-                  <div>
-                    <Button
-                      variant="outline"
-                      onClick={() => setCheckoutStep("cart")}
-                      className="w-full"
-                    >
-                      Volver al carrito
-                    </Button>
-                  </div>
-                </div>
-
-                {/* Columna derecha - Información de entrega y resumen (1/3 del ancho) */}
-                <div className="lg:col-span-1 space-y-6">
+              <div className="flex flex-col gap-8 lg:grid lg:grid-cols-3">
+                {/* Información de entrega y resumen - Móvil primero, Desktop segundo */}
+                <div className="order-1 lg:order-2 lg:col-span-1 space-y-6">
                   {/* Dirección de entrega */}
                   <Card>
                     <CardContent className="p-6">
@@ -711,6 +705,52 @@ export default function CheckoutPage() {
                       </div>
                     </CardContent>
                   </Card>
+                </div>
+
+                {/* Opciones de pago - Móvil segundo, Desktop primero */}
+                <div className="order-2 lg:order-1 lg:col-span-2 space-y-6">
+                  <Card>
+                    <CardContent className="p-6">
+                      <h3 className="font-semibold mb-4">Método de pago</h3>
+                      <MercadoPagoOptions
+                        cart={cart}
+                        user={user}
+                        deliveryAddress={deliveryAddress}
+                        appliedDiscount={appliedDiscount}
+                        discountCode={discountCode}
+                        calculateTotal={calculateTotal}
+                        calculateSubtotal={calculateSubtotal}
+                        calculateDiscountAmount={calculateDiscountAmount}
+                        onPaymentSuccess={() => {
+                          clearCart();
+                          toast({
+                            title: "¡Pago exitoso!",
+                            description:
+                              "Tu pedido ha sido procesado correctamente",
+                          });
+                          router.push("/pedidos");
+                        }}
+                        onPaymentError={(error) => {
+                          toast({
+                            title: "Error en el pago",
+                            description: error,
+                            variant: "destructive",
+                          });
+                        }}
+                      />
+                    </CardContent>
+                  </Card>
+
+                  {/* Botón de navegación */}
+                  <div>
+                    <Button
+                      variant="outline"
+                      onClick={() => setCheckoutStep("cart")}
+                      className="w-full"
+                    >
+                      Volver al carrito
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
