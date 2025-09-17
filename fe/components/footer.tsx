@@ -64,7 +64,7 @@ export function Footer() {
                       <Instagram className="h-4 w-4" />
                     </Link>
                   </Button>
-                  <Button
+                  {/*<Button
                     variant="outline"
                     size="sm"
                     className="w-10 h-10 p-0 bg-background/50 hover:bg-primary hover:text-primary-foreground border-primary/20"
@@ -74,7 +74,7 @@ export function Footer() {
                     <Link href="#" aria-label="Facebook">
                       <Facebook className="h-4 w-4" />
                     </Link>
-                  </Button>
+                  </Button>*/}
                   <Button
                     variant="outline"
                     size="sm"
