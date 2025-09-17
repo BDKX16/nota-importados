@@ -13,6 +13,8 @@ services:
       - NODE_ENV=production
     ports:
       - 3021:3001
+    volumes:
+      - uploads_data:/api/uploads # Persistir directorio uploads
     networks:
       - proyectos-network
   nextjs:
@@ -33,3 +35,7 @@ networks:
   proyectos-network:
     external: true
     name: proyectos-network
+
+volumes:
+  uploads_data:
+    driver: local
