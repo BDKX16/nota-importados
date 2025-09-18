@@ -21,10 +21,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Luxe Parfums - Perfumes Importados de Lujo",
+  title: "Nota Importados - Perfumes Importados",
   description:
     "Descubre nuestra exclusiva colección de perfumes importados de las mejores marcas del mundo.",
-  generator: "v0.app",
 };
 
 export default function RootLayout({
