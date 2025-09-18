@@ -166,9 +166,13 @@ export const getTopProducts = () => {
   }
 
   return {
-    call: axios.get(process.env.NEXT_PUBLIC_API_URL + "/top-products", headers, {
-      signal: controller.signal,
-    }),
+    call: axios.get(
+      process.env.NEXT_PUBLIC_API_URL + "/top-products",
+      headers,
+      {
+        signal: controller.signal,
+      }
+    ),
     controller,
   };
 };
@@ -177,9 +181,13 @@ export const getTopProducts = () => {
 export const sendContactForm = (contactData) => {
   const controller = loadAbort();
   return {
-    call: axios.post(process.env.NEXT_PUBLIC_API_URL + "/contact", contactData, {
-      signal: controller.signal,
-    }),
+    call: axios.post(
+      process.env.NEXT_PUBLIC_API_URL + "/contact",
+      contactData,
+      {
+        signal: controller.signal,
+      }
+    ),
     controller,
   };
 };

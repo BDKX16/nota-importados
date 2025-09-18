@@ -29,10 +29,14 @@ export const addContent = (data) => {
     return;
   }
   return {
-    call: axios
-      .post(process.env.NEXT_PUBLIC_API_URL + "/admin/content", data, headers, {
+    call: axios.post(
+      process.env.NEXT_PUBLIC_API_URL + "/admin/content",
+      data,
+      headers,
+      {
         signal: controller.signal,
-      }),
+      }
+    ),
     controller,
   };
 };
@@ -51,10 +55,13 @@ export const getAdminBeers = () => {
   }
 
   return {
-    call: axios
-      .get(process.env.NEXT_PUBLIC_API_URL + "/admin/products/beers", headers, {
+    call: axios.get(
+      process.env.NEXT_PUBLIC_API_URL + "/admin/products/beers",
+      headers,
+      {
         signal: controller.signal,
-      }),
+      }
+    ),
     controller,
   };
 };
@@ -69,14 +76,13 @@ export const getAdminBeerById = (beerId) => {
   }
 
   return {
-    call: axios
-      .get(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/products/beers/${beerId}`,
-        headers,
-        {
-          signal: controller.signal,
-        }
-      ),
+    call: axios.get(
+      process.env.NEXT_PUBLIC_API_URL + `/admin/products/beers/${beerId}`,
+      headers,
+      {
+        signal: controller.signal,
+      }
+    ),
     controller,
   };
 };
@@ -91,15 +97,14 @@ export const createBeer = (beerData) => {
   }
 
   return {
-    call: axios
-      .post(
-        process.env.NEXT_PUBLIC_API_URL + "/admin/products/beers",
-        beerData,
-        headers,
-        {
-          signal: controller.signal,
-        }
-      ),
+    call: axios.post(
+      process.env.NEXT_PUBLIC_API_URL + "/admin/products/beers",
+      beerData,
+      headers,
+      {
+        signal: controller.signal,
+      }
+    ),
     controller,
   };
 };
@@ -114,13 +119,12 @@ export const updateBeer = (beerId, beerData) => {
   }
 
   return {
-    call: axios
-      .put(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/products/beers/${beerId}`,
-        beerData,
-        headers,
-        { signal: controller.signal }
-      ),
+    call: axios.put(
+      process.env.NEXT_PUBLIC_API_URL + `/admin/products/beers/${beerId}`,
+      beerData,
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -135,12 +139,11 @@ export const deleteBeer = (beerId) => {
   }
 
   return {
-    call: axios
-      .delete(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/products/beers/${beerId}`,
-        headers,
-        { signal: controller.signal }
-      ),
+    call: axios.delete(
+      process.env.NEXT_PUBLIC_API_URL + `/admin/products/beers/${beerId}`,
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -159,10 +162,13 @@ export const getAdminProducts = () => {
   }
 
   return {
-    call: axios
-      .get(process.env.NEXT_PUBLIC_API_URL + "/admin/products", headers, {
+    call: axios.get(
+      process.env.NEXT_PUBLIC_API_URL + "/admin/products",
+      headers,
+      {
         signal: controller.signal,
-      }),
+      }
+    ),
     controller,
   };
 };
@@ -177,14 +183,13 @@ export const getAdminProductById = (productId) => {
   }
 
   return {
-    call: axios
-      .get(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/products/${productId}`,
-        headers,
-        {
-          signal: controller.signal,
-        }
-      ),
+    call: axios.get(
+      process.env.NEXT_PUBLIC_API_URL + `/admin/products/${productId}`,
+      headers,
+      {
+        signal: controller.signal,
+      }
+    ),
     controller,
   };
 };
@@ -199,15 +204,14 @@ export const createProduct = (productData) => {
   }
 
   return {
-    call: axios
-      .post(
-        process.env.NEXT_PUBLIC_API_URL + "/admin/products",
-        productData,
-        headers,
-        {
-          signal: controller.signal,
-        }
-      ),
+    call: axios.post(
+      process.env.NEXT_PUBLIC_API_URL + "/admin/products",
+      productData,
+      headers,
+      {
+        signal: controller.signal,
+      }
+    ),
     controller,
   };
 };
@@ -222,13 +226,12 @@ export const updateProduct = (productId, productData) => {
   }
 
   return {
-    call: axios
-      .put(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/products/${productId}`,
-        productData,
-        headers,
-        { signal: controller.signal }
-      ),
+    call: axios.put(
+      process.env.NEXT_PUBLIC_API_URL + `/admin/products/${productId}`,
+      productData,
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -243,12 +246,11 @@ export const deleteProduct = (productId) => {
   }
 
   return {
-    call: axios
-      .delete(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/products/${productId}`,
-        headers,
-        { signal: controller.signal }
-      ),
+    call: axios.delete(
+      process.env.NEXT_PUBLIC_API_URL + `/admin/products/${productId}`,
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -267,14 +269,13 @@ export const getAdminCategories = () => {
   }
 
   return {
-    call: axios
-      .get(
-        process.env.NEXT_PUBLIC_API_URL + "/admin/products/categories",
-        headers,
-        {
-          signal: controller.signal,
-        }
-      ),
+    call: axios.get(
+      process.env.NEXT_PUBLIC_API_URL + "/admin/products/categories",
+      headers,
+      {
+        signal: controller.signal,
+      }
+    ),
     controller,
   };
 };
@@ -289,15 +290,14 @@ export const getCategoryById = (categoryId) => {
   }
 
   return {
-    call: axios
-      .get(
-        process.env.NEXT_PUBLIC_API_URL +
-          `/admin/products/categories/${categoryId}`,
-        headers,
-        {
-          signal: controller.signal,
-        }
-      ),
+    call: axios.get(
+      process.env.NEXT_PUBLIC_API_URL +
+        `/admin/products/categories/${categoryId}`,
+      headers,
+      {
+        signal: controller.signal,
+      }
+    ),
     controller,
   };
 };
@@ -312,15 +312,14 @@ export const createCategory = (categoryData) => {
   }
 
   return {
-    call: axios
-      .post(
-        process.env.NEXT_PUBLIC_API_URL + "/admin/products/categories",
-        categoryData,
-        headers,
-        {
-          signal: controller.signal,
-        }
-      ),
+    call: axios.post(
+      process.env.NEXT_PUBLIC_API_URL + "/admin/products/categories",
+      categoryData,
+      headers,
+      {
+        signal: controller.signal,
+      }
+    ),
     controller,
   };
 };
@@ -335,14 +334,13 @@ export const updateCategory = (categoryId, categoryData) => {
   }
 
   return {
-    call: axios
-      .put(
-        process.env.NEXT_PUBLIC_API_URL +
-          `/admin/products/categories/${categoryId}`,
-        categoryData,
-        headers,
-        { signal: controller.signal }
-      ),
+    call: axios.put(
+      process.env.NEXT_PUBLIC_API_URL +
+        `/admin/products/categories/${categoryId}`,
+      categoryData,
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -357,13 +355,12 @@ export const deleteCategory = (categoryId) => {
   }
 
   return {
-    call: axios
-      .delete(
-        process.env.NEXT_PUBLIC_API_URL +
-          `/admin/products/categories/${categoryId}`,
-        headers,
-        { signal: controller.signal }
-      ),
+    call: axios.delete(
+      process.env.NEXT_PUBLIC_API_URL +
+        `/admin/products/categories/${categoryId}`,
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -381,14 +378,13 @@ export const getAdminSubscriptionPlans = () => {
     return;
   }
   return {
-    call: axios
-      .get(
-        process.env.NEXT_PUBLIC_API_URL + "/admin/products/subscription-plans",
-        headers,
-        {
-          signal: controller.signal,
-        }
-      ),
+    call: axios.get(
+      process.env.NEXT_PUBLIC_API_URL + "/admin/products/subscription-plans",
+      headers,
+      {
+        signal: controller.signal,
+      }
+    ),
     controller,
   };
 };
@@ -403,15 +399,14 @@ export const getAdminSubscriptionPlanById = (planId) => {
   }
 
   return {
-    call: axios
-      .get(
-        process.env.NEXT_PUBLIC_API_URL +
-          `/admin/products/subscription-plan/${planId}`,
-        headers,
-        {
-          signal: controller.signal,
-        }
-      ),
+    call: axios.get(
+      process.env.NEXT_PUBLIC_API_URL +
+        `/admin/products/subscription-plan/${planId}`,
+      headers,
+      {
+        signal: controller.signal,
+      }
+    ),
     controller,
   };
 };
@@ -426,13 +421,12 @@ export const createSubscriptionPlan = (planData) => {
   }
 
   return {
-    call: axios
-      .post(
-        process.env.NEXT_PUBLIC_API_URL + "/admin/products/subscriptions",
-        planData,
-        headers,
-        { signal: controller.signal }
-      ),
+    call: axios.post(
+      process.env.NEXT_PUBLIC_API_URL + "/admin/products/subscriptions",
+      planData,
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -447,14 +441,13 @@ export const updateSubscriptionPlan = (planId, planData) => {
   }
 
   return {
-    call: axios
-      .put(
-        process.env.NEXT_PUBLIC_API_URL +
-          `/admin/products/subscriptions/${planId}`,
-        planData,
-        headers,
-        { signal: controller.signal }
-      ),
+    call: axios.put(
+      process.env.NEXT_PUBLIC_API_URL +
+        `/admin/products/subscriptions/${planId}`,
+      planData,
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -469,13 +462,12 @@ export const deleteSubscriptionPlan = (planId) => {
   }
 
   return {
-    call: axios
-      .delete(
-        process.env.NEXT_PUBLIC_API_URL +
-          `/admin/products/subscriptions/${planId}`,
-        headers,
-        { signal: controller.signal }
-      ),
+    call: axios.delete(
+      process.env.NEXT_PUBLIC_API_URL +
+        `/admin/products/subscriptions/${planId}`,
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -494,14 +486,13 @@ export const getAdminDiscounts = () => {
   }
 
   return {
-    call: axios
-      .get(
-        process.env.NEXT_PUBLIC_API_URL + "/admin/products/discounts",
-        headers,
-        {
-          signal: controller.signal,
-        }
-      ),
+    call: axios.get(
+      process.env.NEXT_PUBLIC_API_URL + "/admin/products/discounts",
+      headers,
+      {
+        signal: controller.signal,
+      }
+    ),
     controller,
   };
 };
@@ -516,15 +507,14 @@ export const getAdminDiscountById = (discountId) => {
   }
 
   return {
-    call: axios
-      .get(
-        process.env.NEXT_PUBLIC_API_URL +
-          `/admin/products/discounts/${discountId}`,
-        headers,
-        {
-          signal: controller.signal,
-        }
-      ),
+    call: axios.get(
+      process.env.NEXT_PUBLIC_API_URL +
+        `/admin/products/discounts/${discountId}`,
+      headers,
+      {
+        signal: controller.signal,
+      }
+    ),
     controller,
   };
 };
@@ -539,13 +529,12 @@ export const createDiscount = (discountData) => {
   }
 
   return {
-    call: axios
-      .post(
-        process.env.NEXT_PUBLIC_API_URL + "/admin/products/discounts",
-        discountData,
-        headers,
-        { signal: controller.signal }
-      ),
+    call: axios.post(
+      process.env.NEXT_PUBLIC_API_URL + "/admin/products/discounts",
+      discountData,
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -560,13 +549,12 @@ export const updateDiscount = (discountId, discountData) => {
   }
 
   return {
-    call: axios
-      .put(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/discounts/${discountId}`,
-        discountData,
-        headers,
-        { signal: controller.signal }
-      ),
+    call: axios.put(
+      process.env.NEXT_PUBLIC_API_URL + `/admin/discounts/${discountId}`,
+      discountData,
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -581,12 +569,11 @@ export const deleteDiscount = (discountId) => {
   }
 
   return {
-    call: axios
-      .delete(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/discounts/${discountId}`,
-        headers,
-        { signal: controller.signal }
-      ),
+    call: axios.delete(
+      process.env.NEXT_PUBLIC_API_URL + `/admin/discounts/${discountId}`,
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -601,14 +588,12 @@ export const toggleDiscount = (discountId) => {
   }
 
   return {
-    call: axios
-      .patch(
-        process.env.NEXT_PUBLIC_API_URL +
-          `/admin/discounts/${discountId}/toggle`,
-        {},
-        headers,
-        { signal: controller.signal }
-      ),
+    call: axios.patch(
+      process.env.NEXT_PUBLIC_API_URL + `/admin/discounts/${discountId}/toggle`,
+      {},
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -639,15 +624,13 @@ export const getAdminOrders = (filters = {}) => {
     : "";
 
   return {
-    call: axios
-      .get(
-        process.env.NEXT_PUBLIC_API_URL +
-          `/admin/payments/orders${queryString}`,
-        headers,
-        {
-          signal: controller.signal,
-        }
-      ),
+    call: axios.get(
+      process.env.NEXT_PUBLIC_API_URL + `/admin/payments/orders${queryString}`,
+      headers,
+      {
+        signal: controller.signal,
+      }
+    ),
     controller,
   };
 };
@@ -662,14 +645,13 @@ export const getAdminOrderById = (orderId) => {
   }
 
   return {
-    call: axios
-      .get(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/payments/orders/${orderId}`,
-        headers,
-        {
-          signal: controller.signal,
-        }
-      ),
+    call: axios.get(
+      process.env.NEXT_PUBLIC_API_URL + `/admin/payments/orders/${orderId}`,
+      headers,
+      {
+        signal: controller.signal,
+      }
+    ),
     controller,
   };
 };
@@ -684,14 +666,13 @@ export const updateOrderStatus = (orderId, status) => {
   }
 
   return {
-    call: axios
-      .patch(
-        process.env.NEXT_PUBLIC_API_URL +
-          `/admin/payments/orders/${orderId}/status`,
-        { status },
-        headers,
-        { signal: controller.signal }
-      ),
+    call: axios.patch(
+      process.env.NEXT_PUBLIC_API_URL +
+        `/admin/payments/orders/${orderId}/status`,
+      { status },
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -706,14 +687,13 @@ export const updateOrderDelivery = (orderId, deliveryTime) => {
   }
 
   return {
-    call: axios
-      .patch(
-        process.env.NEXT_PUBLIC_API_URL +
-          `/admin/payments/orders/${orderId}/delivery`,
-        { deliveryTime },
-        headers,
-        { signal: controller.signal }
-      ),
+    call: axios.patch(
+      process.env.NEXT_PUBLIC_API_URL +
+        `/admin/payments/orders/${orderId}/delivery`,
+      { deliveryTime },
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -728,14 +708,13 @@ export const cancelOrder = (orderId, cancellationReason) => {
   }
 
   return {
-    call: axios
-      .patch(
-        process.env.NEXT_PUBLIC_API_URL +
-          `/admin/payments/orders/${orderId}/cancel`,
-        { cancellationReason },
-        headers,
-        { signal: controller.signal }
-      ),
+    call: axios.patch(
+      process.env.NEXT_PUBLIC_API_URL +
+        `/admin/payments/orders/${orderId}/cancel`,
+      { cancellationReason },
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -750,15 +729,14 @@ export const getAdminOrderStats = (period = "month") => {
   }
 
   return {
-    call: axios
-      .get(
-        process.env.NEXT_PUBLIC_API_URL +
-          `/admin/payments/stats?period=${period}`,
-        headers,
-        {
-          signal: controller.signal,
-        }
-      ),
+    call: axios.get(
+      process.env.NEXT_PUBLIC_API_URL +
+        `/admin/payments/stats?period=${period}`,
+      headers,
+      {
+        signal: controller.signal,
+      }
+    ),
     controller,
   };
 };
@@ -773,24 +751,22 @@ export const sendDeliveryScheduleEmail = (orderData) => {
   }
 
   return {
-    call: axios
-      .post(
-        process.env.NEXT_PUBLIC_API_URL +
-          "/admin/emails/send/delivery-schedule",
-        {
-          email: orderData.customer.email,
-          orderId: orderData._id, // Usar el ObjectId de MongoDB
-          customerName: orderData.customer.name,
-          orderData: {
-            orderId: orderData.id, // Mantener el ID personalizado para mostrar al cliente
-            orderDate: orderData.date,
-            total: orderData.total,
-            items: orderData.items,
-          },
+    call: axios.post(
+      process.env.NEXT_PUBLIC_API_URL + "/admin/emails/send/delivery-schedule",
+      {
+        email: orderData.customer.email,
+        orderId: orderData._id, // Usar el ObjectId de MongoDB
+        customerName: orderData.customer.name,
+        orderData: {
+          orderId: orderData.id, // Mantener el ID personalizado para mostrar al cliente
+          orderDate: orderData.date,
+          total: orderData.total,
+          items: orderData.items,
         },
-        headers,
-        { signal: controller.signal }
-      ),
+      },
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -820,14 +796,13 @@ export const getAdminUserSubscriptions = (filters = {}) => {
     : "";
 
   return {
-    call: axios
-      .get(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/subscriptions${queryString}`,
-        headers,
-        {
-          signal: controller.signal,
-        }
-      ),
+    call: axios.get(
+      process.env.NEXT_PUBLIC_API_URL + `/admin/subscriptions${queryString}`,
+      headers,
+      {
+        signal: controller.signal,
+      }
+    ),
     controller,
   };
 };
@@ -842,15 +817,14 @@ export const getAdminUserSubscriptionById = (subscriptionId) => {
   }
 
   return {
-    call: axios
-      .get(
-        process.env.NEXT_PUBLIC_API_URL +
-          `/admin/subscriptions/${subscriptionId}`,
-        headers,
-        {
-          signal: controller.signal,
-        }
-      ),
+    call: axios.get(
+      process.env.NEXT_PUBLIC_API_URL +
+        `/admin/subscriptions/${subscriptionId}`,
+      headers,
+      {
+        signal: controller.signal,
+      }
+    ),
     controller,
   };
 };
@@ -869,14 +843,13 @@ export const updateAdminSubscriptionStatus = (
   }
 
   return {
-    call: axios
-      .patch(
-        process.env.NEXT_PUBLIC_API_URL +
-          `/admin/subscriptions/${subscriptionId}/status`,
-        { status, reason },
-        headers,
-        { signal: controller.signal }
-      ),
+    call: axios.patch(
+      process.env.NEXT_PUBLIC_API_URL +
+        `/admin/subscriptions/${subscriptionId}/status`,
+      { status, reason },
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -891,14 +864,13 @@ export const addSubscriptionDelivery = (subscriptionId, deliveryData) => {
   }
 
   return {
-    call: axios
-      .post(
-        process.env.NEXT_PUBLIC_API_URL +
-          `/admin/subscriptions/${subscriptionId}/deliveries`,
-        deliveryData,
-        headers,
-        { signal: controller.signal }
-      ),
+    call: axios.post(
+      process.env.NEXT_PUBLIC_API_URL +
+        `/admin/subscriptions/${subscriptionId}/deliveries`,
+      deliveryData,
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -913,14 +885,13 @@ export const updateDeliveryStatus = (subscriptionId, deliveryIndex, status) => {
   }
 
   return {
-    call: axios
-      .patch(
-        process.env.NEXT_PUBLIC_API_URL +
-          `/admin/subscriptions/${subscriptionId}/deliveries/${deliveryIndex}`,
-        { status },
-        headers,
-        { signal: controller.signal }
-      ),
+    call: axios.patch(
+      process.env.NEXT_PUBLIC_API_URL +
+        `/admin/subscriptions/${subscriptionId}/deliveries/${deliveryIndex}`,
+      { status },
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -935,14 +906,13 @@ export const getSubscriptionStats = () => {
   }
 
   return {
-    call: axios
-      .get(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/products/subscriptions/stats`,
-        headers,
-        {
-          signal: controller.signal,
-        }
-      ),
+    call: axios.get(
+      process.env.NEXT_PUBLIC_API_URL + `/admin/products/subscriptions/stats`,
+      headers,
+      {
+        signal: controller.signal,
+      }
+    ),
     controller,
   };
 };
@@ -961,14 +931,13 @@ export const getRecipes = () => {
   }
 
   return {
-    call: axios
-      .get(
-        process.env.NEXT_PUBLIC_API_URL + "/admin/products/recipes",
-        headers,
-        {
-          signal: controller.signal,
-        }
-      ),
+    call: axios.get(
+      process.env.NEXT_PUBLIC_API_URL + "/admin/products/recipes",
+      headers,
+      {
+        signal: controller.signal,
+      }
+    ),
     controller,
   };
 };
@@ -983,14 +952,13 @@ export const getRecipeById = (recipeId) => {
   }
 
   return {
-    call: axios
-      .get(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/products/recipes/${recipeId}`,
-        headers,
-        {
-          signal: controller.signal,
-        }
-      ),
+    call: axios.get(
+      process.env.NEXT_PUBLIC_API_URL + `/admin/products/recipes/${recipeId}`,
+      headers,
+      {
+        signal: controller.signal,
+      }
+    ),
     controller,
   };
 };
@@ -1005,15 +973,14 @@ export const createRecipe = (recipeData) => {
   }
 
   return {
-    call: axios
-      .post(
-        process.env.NEXT_PUBLIC_API_URL + "/admin/products/recipes",
-        recipeData,
-        headers,
-        {
-          signal: controller.signal,
-        }
-      ),
+    call: axios.post(
+      process.env.NEXT_PUBLIC_API_URL + "/admin/products/recipes",
+      recipeData,
+      headers,
+      {
+        signal: controller.signal,
+      }
+    ),
     controller,
   };
 };
@@ -1028,13 +995,12 @@ export const updateRecipe = (recipeId, recipeData) => {
   }
 
   return {
-    call: axios
-      .put(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/products/recipes/${recipeId}`,
-        recipeData,
-        headers,
-        { signal: controller.signal }
-      ),
+    call: axios.put(
+      process.env.NEXT_PUBLIC_API_URL + `/admin/products/recipes/${recipeId}`,
+      recipeData,
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -1049,12 +1015,11 @@ export const deleteRecipe = (recipeId) => {
   }
 
   return {
-    call: axios
-      .delete(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/products/recipes/${recipeId}`,
-        headers,
-        { signal: controller.signal }
-      ),
+    call: axios.delete(
+      process.env.NEXT_PUBLIC_API_URL + `/admin/products/recipes/${recipeId}`,
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -1069,13 +1034,12 @@ export const startBrewing = (recipeId) => {
   }
 
   return {
-    call: axios
-      .post(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/recipes/${recipeId}/start`,
-        {},
-        headers,
-        { signal: controller.signal }
-      ),
+    call: axios.post(
+      process.env.NEXT_PUBLIC_API_URL + `/admin/recipes/${recipeId}/start`,
+      {},
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -1090,13 +1054,12 @@ export const pauseBrewing = (recipeId) => {
   }
 
   return {
-    call: axios
-      .post(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/recipes/${recipeId}/pause`,
-        {},
-        headers,
-        { signal: controller.signal }
-      ),
+    call: axios.post(
+      process.env.NEXT_PUBLIC_API_URL + `/admin/recipes/${recipeId}/pause`,
+      {},
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -1111,13 +1074,12 @@ export const resumeBrewing = (recipeId) => {
   }
 
   return {
-    call: axios
-      .post(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/recipes/${recipeId}/resume`,
-        {},
-        headers,
-        { signal: controller.signal }
-      ),
+    call: axios.post(
+      process.env.NEXT_PUBLIC_API_URL + `/admin/recipes/${recipeId}/resume`,
+      {},
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -1132,13 +1094,12 @@ export const completeBrewing = (recipeId, data = {}) => {
   }
 
   return {
-    call: axios
-      .post(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/recipes/${recipeId}/complete`,
-        data,
-        headers,
-        { signal: controller.signal }
-      ),
+    call: axios.post(
+      process.env.NEXT_PUBLIC_API_URL + `/admin/recipes/${recipeId}/complete`,
+      data,
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -1153,12 +1114,11 @@ export const getBrewingStatus = (recipeId) => {
   }
 
   return {
-    call: axios
-      .get(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/recipes/${recipeId}/status`,
-        headers,
-        { signal: controller.signal }
-      ),
+    call: axios.get(
+      process.env.NEXT_PUBLIC_API_URL + `/admin/recipes/${recipeId}/status`,
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -1173,14 +1133,13 @@ export const completeStep = (recipeId, stepId) => {
   }
 
   return {
-    call: axios
-      .post(
-        process.env.NEXT_PUBLIC_API_URL +
-          `/admin/recipes/${recipeId}/steps/${stepId}/complete`,
-        {},
-        headers,
-        { signal: controller.signal }
-      ),
+    call: axios.post(
+      process.env.NEXT_PUBLIC_API_URL +
+        `/admin/recipes/${recipeId}/steps/${stepId}/complete`,
+      {},
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -1195,13 +1154,12 @@ export const uncompleteStep = (recipeId, stepId) => {
   }
 
   return {
-    call: axios
-      .delete(
-        process.env.NEXT_PUBLIC_API_URL +
-          `/admin/recipes/${recipeId}/steps/${stepId}/complete`,
-        headers,
-        { signal: controller.signal }
-      ),
+    call: axios.delete(
+      process.env.NEXT_PUBLIC_API_URL +
+        `/admin/recipes/${recipeId}/steps/${stepId}/complete`,
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -1216,13 +1174,12 @@ export const updateBrewingTime = (recipeId, currentTime) => {
   }
 
   return {
-    call: axios
-      .patch(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/recipes/${recipeId}/time`,
-        { currentTime },
-        headers,
-        { signal: controller.signal }
-      ),
+    call: axios.patch(
+      process.env.NEXT_PUBLIC_API_URL + `/admin/recipes/${recipeId}/time`,
+      { currentTime },
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -1237,14 +1194,13 @@ export const updateGravityMeasurements = (recipeId, data) => {
   }
 
   return {
-    call: axios
-      .patch(
-        process.env.NEXT_PUBLIC_API_URL +
-          `/admin/products/recipes/${recipeId}/gravity`,
-        data,
-        headers,
-        { signal: controller.signal }
-      ),
+    call: axios.patch(
+      process.env.NEXT_PUBLIC_API_URL +
+        `/admin/products/recipes/${recipeId}/gravity`,
+      data,
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -1259,12 +1215,11 @@ export const getBrewingSessions = () => {
   }
 
   return {
-    call: axios
-      .get(
-        process.env.NEXT_PUBLIC_API_URL + "/admin/products/brewing-sessions",
-        headers,
-        { signal: controller.signal }
-      ),
+    call: axios.get(
+      process.env.NEXT_PUBLIC_API_URL + "/admin/products/brewing-sessions",
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -1279,13 +1234,12 @@ export const deleteBrewingSession = (sessionId) => {
   }
 
   return {
-    call: axios
-      .delete(
-        process.env.NEXT_PUBLIC_API_URL +
-          `/admin/products/brewing-sessions/${sessionId}`,
-        headers,
-        { signal: controller.signal }
-      ),
+    call: axios.delete(
+      process.env.NEXT_PUBLIC_API_URL +
+        `/admin/products/brewing-sessions/${sessionId}`,
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -1300,14 +1254,13 @@ export const updateBrewingSessionPackaging = (sessionId, packagingData) => {
   }
 
   return {
-    call: axios
-      .patch(
-        process.env.NEXT_PUBLIC_API_URL +
-          `/admin/products/brewing-sessions/${sessionId}/packaging`,
-        packagingData,
-        headers,
-        { signal: controller.signal }
-      ),
+    call: axios.patch(
+      process.env.NEXT_PUBLIC_API_URL +
+        `/admin/products/brewing-sessions/${sessionId}/packaging`,
+      packagingData,
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -1322,14 +1275,13 @@ export const addRecipeStep = (recipeId, stepData) => {
   }
 
   return {
-    call: axios
-      .post(
-        process.env.NEXT_PUBLIC_API_URL +
-          `/admin/products/recipes/${recipeId}/steps`,
-        stepData,
-        headers,
-        { signal: controller.signal }
-      ),
+    call: axios.post(
+      process.env.NEXT_PUBLIC_API_URL +
+        `/admin/products/recipes/${recipeId}/steps`,
+      stepData,
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -1344,14 +1296,13 @@ export const updateRecipeStep = (recipeId, stepId, stepData) => {
   }
 
   return {
-    call: axios
-      .put(
-        process.env.NEXT_PUBLIC_API_URL +
-          `/admin/recipes/${recipeId}/steps/${stepId}`,
-        stepData,
-        headers,
-        { signal: controller.signal }
-      ),
+    call: axios.put(
+      process.env.NEXT_PUBLIC_API_URL +
+        `/admin/recipes/${recipeId}/steps/${stepId}`,
+      stepData,
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -1366,13 +1317,12 @@ export const deleteRecipeStep = (recipeId, stepId) => {
   }
 
   return {
-    call: axios
-      .delete(
-        process.env.NEXT_PUBLIC_API_URL +
-          `/admin/recipes/${recipeId}/steps/${stepId}`,
-        headers,
-        { signal: controller.signal }
-      ),
+    call: axios.delete(
+      process.env.NEXT_PUBLIC_API_URL +
+        `/admin/recipes/${recipeId}/steps/${stepId}`,
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -1387,14 +1337,13 @@ export const addSessionCustomStep = (recipeId, sessionId, stepData) => {
   }
 
   return {
-    call: axios
-      .post(
-        process.env.NEXT_PUBLIC_API_URL +
-          `/admin/recipes/${recipeId}/brewing-sessions/${sessionId}/custom-steps`,
-        stepData,
-        headers,
-        { signal: controller.signal }
-      ),
+    call: axios.post(
+      process.env.NEXT_PUBLIC_API_URL +
+        `/admin/recipes/${recipeId}/brewing-sessions/${sessionId}/custom-steps`,
+      stepData,
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -1414,14 +1363,13 @@ export const updateSessionCustomStep = (
   }
 
   return {
-    call: axios
-      .put(
-        process.env.NEXT_PUBLIC_API_URL +
-          `/admin/recipes/${recipeId}/brewing-sessions/${sessionId}/custom-steps/${stepId}`,
-        stepData,
-        headers,
-        { signal: controller.signal }
-      ),
+    call: axios.put(
+      process.env.NEXT_PUBLIC_API_URL +
+        `/admin/recipes/${recipeId}/brewing-sessions/${sessionId}/custom-steps/${stepId}`,
+      stepData,
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -1436,13 +1384,12 @@ export const deleteSessionCustomStep = (recipeId, sessionId, stepId) => {
   }
 
   return {
-    call: axios
-      .delete(
-        process.env.NEXT_PUBLIC_API_URL +
-          `/admin/recipes/${recipeId}/brewing-sessions/${sessionId}/custom-steps/${stepId}`,
-        headers,
-        { signal: controller.signal }
-      ),
+    call: axios.delete(
+      process.env.NEXT_PUBLIC_API_URL +
+        `/admin/recipes/${recipeId}/brewing-sessions/${sessionId}/custom-steps/${stepId}`,
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -1461,10 +1408,9 @@ export const getDashboardStats = () => {
   }
 
   return {
-    call: axios
-      .get(`${baseUrl}/admin/payments/dashboard`, headers, {
-        signal: controller.signal,
-      }),
+    call: axios.get(`${baseUrl}/admin/payments/dashboard`, headers, {
+      signal: controller.signal,
+    }),
     controller,
   };
 };
@@ -1478,14 +1424,13 @@ export const getTopProducts = (limit = 5) => {
     return;
   }
   return {
-    call: axios
-      .get(
-        `${baseUrl}/admin/payments/dashboard/top-products?limit=${limit}`,
-        headers,
-        {
-          signal: controller.signal,
-        }
-      ),
+    call: axios.get(
+      `${baseUrl}/admin/payments/dashboard/top-products?limit=${limit}`,
+      headers,
+      {
+        signal: controller.signal,
+      }
+    ),
     controller,
   };
 };
@@ -1498,14 +1443,13 @@ export const getRecentOrders = (limit = 5) => {
     return;
   }
   return {
-    call: axios
-      .get(
-        `${baseUrl}/admin/payments/dashboard/recent-orders?limit=${limit}`,
-        headers,
-        {
-          signal: controller.signal,
-        }
-      ),
+    call: axios.get(
+      `${baseUrl}/admin/payments/dashboard/recent-orders?limit=${limit}`,
+      headers,
+      {
+        signal: controller.signal,
+      }
+    ),
     controller,
   };
 };
@@ -1524,15 +1468,14 @@ export const addCustomStepToSession = (sessionId, stepData) => {
   }
 
   return {
-    call: axios
-      .post(
-        `${baseUrl}/admin/products/brewing-sessions/${sessionId}/custom-steps`,
-        stepData,
-        {
-          ...headers,
-          signal: controller.signal,
-        }
-      ),
+    call: axios.post(
+      `${baseUrl}/admin/products/brewing-sessions/${sessionId}/custom-steps`,
+      stepData,
+      {
+        ...headers,
+        signal: controller.signal,
+      }
+    ),
     controller,
   };
 };
@@ -1547,15 +1490,14 @@ export const updateCustomStepInSession = (sessionId, stepId, stepData) => {
   }
 
   return {
-    call: axios
-      .put(
-        `${baseUrl}/admin/products/brewing-sessions/${sessionId}/custom-steps/${stepId}`,
-        stepData,
-        {
-          ...headers,
-          signal: controller.signal,
-        }
-      ),
+    call: axios.put(
+      `${baseUrl}/admin/products/brewing-sessions/${sessionId}/custom-steps/${stepId}`,
+      stepData,
+      {
+        ...headers,
+        signal: controller.signal,
+      }
+    ),
     controller,
   };
 };
@@ -1570,14 +1512,13 @@ export const deleteCustomStepFromSession = (sessionId, stepId) => {
   }
 
   return {
-    call: axios
-      .delete(
-        `${baseUrl}/admin/products/brewing-sessions/${sessionId}/custom-steps/${stepId}`,
-        {
-          ...headers,
-          signal: controller.signal,
-        }
-      ),
+    call: axios.delete(
+      `${baseUrl}/admin/products/brewing-sessions/${sessionId}/custom-steps/${stepId}`,
+      {
+        ...headers,
+        signal: controller.signal,
+      }
+    ),
     controller,
   };
 };
@@ -1596,11 +1537,10 @@ export const getAllUsers = () => {
   }
 
   return {
-    call: axios
-      .get(`${baseUrl}/admin/users`, {
-        ...headers,
-        signal: controller.signal,
-      }),
+    call: axios.get(`${baseUrl}/admin/users`, {
+      ...headers,
+      signal: controller.signal,
+    }),
     controller,
   };
 };
@@ -1615,11 +1555,10 @@ export const getUserOrders = (userId) => {
   }
 
   return {
-    call: axios
-      .get(`${baseUrl}/admin/users/${userId}/orders`, {
-        ...headers,
-        signal: controller.signal,
-      }),
+    call: axios.get(`${baseUrl}/admin/users/${userId}/orders`, {
+      ...headers,
+      signal: controller.signal,
+    }),
     controller,
   };
 };
@@ -1634,11 +1573,10 @@ export const getUserOrderById = (orderId) => {
   }
 
   return {
-    call: axios
-      .get(`${baseUrl}/payments/orders/${orderId}`, {
-        ...headers,
-        signal: controller.signal,
-      }),
+    call: axios.get(`${baseUrl}/payments/orders/${orderId}`, {
+      ...headers,
+      signal: controller.signal,
+    }),
     controller,
   };
 };
@@ -1653,15 +1591,14 @@ export const updateUserOrderDeliveryTime = (orderId, deliveryTime) => {
   }
 
   return {
-    call: axios
-      .patch(
-        `${baseUrl}/payments/orders/${orderId}/delivery-time`,
-        { deliveryTime },
-        {
-          ...headers,
-          signal: controller.signal,
-        }
-      ),
+    call: axios.patch(
+      `${baseUrl}/payments/orders/${orderId}/delivery-time`,
+      { deliveryTime },
+      {
+        ...headers,
+        signal: controller.signal,
+      }
+    ),
     controller,
   };
 };
@@ -1676,11 +1613,10 @@ export const updateUserStatus = (userId, statusData) => {
   }
 
   return {
-    call: axios
-      .put(`${baseUrl}/admin/users/${userId}/status`, statusData, {
-        ...headers,
-        signal: controller.signal,
-      }),
+    call: axios.put(`${baseUrl}/admin/users/${userId}/status`, statusData, {
+      ...headers,
+      signal: controller.signal,
+    }),
     controller,
   };
 };
@@ -1695,11 +1631,10 @@ export const deleteUser = (userId) => {
   }
 
   return {
-    call: axios
-      .delete(`${baseUrl}/admin/users/${userId}`, {
-        ...headers,
-        signal: controller.signal,
-      }),
+    call: axios.delete(`${baseUrl}/admin/users/${userId}`, {
+      ...headers,
+      signal: controller.signal,
+    }),
     controller,
   };
 };
@@ -1714,11 +1649,10 @@ export const updateUserProfile = (profileData) => {
   }
 
   return {
-    call: axios
-      .put(`${baseUrl}/users/profile`, profileData, {
-        ...headers,
-        signal: controller.signal,
-      }),
+    call: axios.put(`${baseUrl}/users/profile`, profileData, {
+      ...headers,
+      signal: controller.signal,
+    }),
     controller,
   };
 };
@@ -1773,11 +1707,10 @@ export const createMercadoPagoPreference = (checkoutData) => {
   }
 
   return {
-    call: axios
-      .post(`${baseUrl}/payments/create-preference`, checkoutData, {
-        ...headers,
-        signal: controller.signal,
-      }),
+    call: axios.post(`${baseUrl}/payments/create-preference`, checkoutData, {
+      ...headers,
+      signal: controller.signal,
+    }),
     controller,
   };
 };
@@ -1792,11 +1725,10 @@ export const processDirectPayment = (paymentData) => {
   }
 
   return {
-    call: axios
-      .post(`${baseUrl}/payments/process-payment`, paymentData, {
-        ...headers,
-        signal: controller.signal,
-      }),
+    call: axios.post(`${baseUrl}/payments/process-payment`, paymentData, {
+      ...headers,
+      signal: controller.signal,
+    }),
     controller,
   };
 };
@@ -1811,11 +1743,10 @@ export const createCashOrder = (orderData) => {
   }
 
   return {
-    call: axios
-      .post(`${baseUrl}/payments/create-cash-order`, orderData, {
-        ...headers,
-        signal: controller.signal,
-      }),
+    call: axios.post(`${baseUrl}/payments/create-cash-order`, orderData, {
+      ...headers,
+      signal: controller.signal,
+    }),
     controller,
   };
 };
@@ -1834,10 +1765,13 @@ export const getAdminBrands = () => {
   }
 
   return {
-    call: axios
-      .get(process.env.NEXT_PUBLIC_API_URL + "/admin/brands", headers, {
+    call: axios.get(
+      process.env.NEXT_PUBLIC_API_URL + "/admin/brands",
+      headers,
+      {
         signal: controller.signal,
-      }),
+      }
+    ),
     controller,
   };
 };
@@ -1852,14 +1786,13 @@ export const getAdminBrandById = (brandId) => {
   }
 
   return {
-    call: axios
-      .get(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/brands/${brandId}`,
-        headers,
-        {
-          signal: controller.signal,
-        }
-      ),
+    call: axios.get(
+      process.env.NEXT_PUBLIC_API_URL + `/admin/brands/${brandId}`,
+      headers,
+      {
+        signal: controller.signal,
+      }
+    ),
     controller,
   };
 };
@@ -1874,15 +1807,14 @@ export const createBrand = (brandData) => {
   }
 
   return {
-    call: axios
-      .post(
-        process.env.NEXT_PUBLIC_API_URL + "/admin/brands",
-        brandData,
-        headers,
-        {
-          signal: controller.signal,
-        }
-      ),
+    call: axios.post(
+      process.env.NEXT_PUBLIC_API_URL + "/admin/brands",
+      brandData,
+      headers,
+      {
+        signal: controller.signal,
+      }
+    ),
     controller,
   };
 };
@@ -1897,13 +1829,12 @@ export const updateBrand = (brandId, brandData) => {
   }
 
   return {
-    call: axios
-      .put(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/brands/${brandId}`,
-        brandData,
-        headers,
-        { signal: controller.signal }
-      ),
+    call: axios.put(
+      process.env.NEXT_PUBLIC_API_URL + `/admin/brands/${brandId}`,
+      brandData,
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -1918,12 +1849,11 @@ export const deleteBrand = (brandId) => {
   }
 
   return {
-    call: axios
-      .delete(
-        process.env.NEXT_PUBLIC_API_URL + `/admin/brands/${brandId}`,
-        headers,
-        { signal: controller.signal }
-      ),
+    call: axios.delete(
+      process.env.NEXT_PUBLIC_API_URL + `/admin/brands/${brandId}`,
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
