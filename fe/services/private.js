@@ -32,9 +32,6 @@ export const addContent = (data) => {
     call: axios
       .post(process.env.NEXT_PUBLIC_API_URL + "/admin/content", data, headers, {
         signal: controller.signal,
-      })
-      .catch((error) => {
-        notifyError(error);
       }),
     controller,
   };
@@ -57,9 +54,6 @@ export const getAdminBeers = () => {
     call: axios
       .get(process.env.NEXT_PUBLIC_API_URL + "/admin/products/beers", headers, {
         signal: controller.signal,
-      })
-      .catch((error) => {
-        notifyError(error);
       }),
     controller,
   };
@@ -82,10 +76,7 @@ export const getAdminBeerById = (beerId) => {
         {
           signal: controller.signal,
         }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -108,10 +99,7 @@ export const createBeer = (beerData) => {
         {
           signal: controller.signal,
         }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -132,10 +120,7 @@ export const updateBeer = (beerId, beerData) => {
         beerData,
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -155,10 +140,7 @@ export const deleteBeer = (beerId) => {
         process.env.NEXT_PUBLIC_API_URL + `/admin/products/beers/${beerId}`,
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -180,9 +162,6 @@ export const getAdminProducts = () => {
     call: axios
       .get(process.env.NEXT_PUBLIC_API_URL + "/admin/products", headers, {
         signal: controller.signal,
-      })
-      .catch((error) => {
-        notifyError(error);
       }),
     controller,
   };
@@ -205,10 +184,7 @@ export const getAdminProductById = (productId) => {
         {
           signal: controller.signal,
         }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -231,10 +207,7 @@ export const createProduct = (productData) => {
         {
           signal: controller.signal,
         }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -255,10 +228,7 @@ export const updateProduct = (productId, productData) => {
         productData,
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -278,10 +248,7 @@ export const deleteProduct = (productId) => {
         process.env.NEXT_PUBLIC_API_URL + `/admin/products/${productId}`,
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -307,10 +274,7 @@ export const getAdminCategories = () => {
         {
           signal: controller.signal,
         }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -333,10 +297,7 @@ export const getCategoryById = (categoryId) => {
         {
           signal: controller.signal,
         }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -359,10 +320,7 @@ export const createCategory = (categoryData) => {
         {
           signal: controller.signal,
         }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -384,10 +342,7 @@ export const updateCategory = (categoryId, categoryData) => {
         categoryData,
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -408,10 +363,7 @@ export const deleteCategory = (categoryId) => {
           `/admin/products/categories/${categoryId}`,
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -436,10 +388,7 @@ export const getAdminSubscriptionPlans = () => {
         {
           signal: controller.signal,
         }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -462,10 +411,7 @@ export const getAdminSubscriptionPlanById = (planId) => {
         {
           signal: controller.signal,
         }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -486,10 +432,7 @@ export const createSubscriptionPlan = (planData) => {
         planData,
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -511,10 +454,7 @@ export const updateSubscriptionPlan = (planId, planData) => {
         planData,
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -535,10 +475,7 @@ export const deleteSubscriptionPlan = (planId) => {
           `/admin/products/subscriptions/${planId}`,
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -564,10 +501,7 @@ export const getAdminDiscounts = () => {
         {
           signal: controller.signal,
         }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -590,10 +524,7 @@ export const getAdminDiscountById = (discountId) => {
         {
           signal: controller.signal,
         }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -614,10 +545,7 @@ export const createDiscount = (discountData) => {
         discountData,
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -638,10 +566,7 @@ export const updateDiscount = (discountId, discountData) => {
         discountData,
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -661,10 +586,7 @@ export const deleteDiscount = (discountId) => {
         process.env.NEXT_PUBLIC_API_URL + `/admin/discounts/${discountId}`,
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -686,10 +608,7 @@ export const toggleDiscount = (discountId) => {
         {},
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -728,10 +647,7 @@ export const getAdminOrders = (filters = {}) => {
         {
           signal: controller.signal,
         }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -753,10 +669,7 @@ export const getAdminOrderById = (orderId) => {
         {
           signal: controller.signal,
         }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -778,10 +691,7 @@ export const updateOrderStatus = (orderId, status) => {
         { status },
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -803,10 +713,7 @@ export const updateOrderDelivery = (orderId, deliveryTime) => {
         { deliveryTime },
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -828,10 +735,7 @@ export const cancelOrder = (orderId, cancellationReason) => {
         { cancellationReason },
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -854,10 +758,7 @@ export const getAdminOrderStats = (period = "month") => {
         {
           signal: controller.signal,
         }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -889,10 +790,7 @@ export const sendDeliveryScheduleEmail = (orderData) => {
         },
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -929,10 +827,7 @@ export const getAdminUserSubscriptions = (filters = {}) => {
         {
           signal: controller.signal,
         }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -955,10 +850,7 @@ export const getAdminUserSubscriptionById = (subscriptionId) => {
         {
           signal: controller.signal,
         }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -984,10 +876,7 @@ export const updateAdminSubscriptionStatus = (
         { status, reason },
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -1009,10 +898,7 @@ export const addSubscriptionDelivery = (subscriptionId, deliveryData) => {
         deliveryData,
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -1034,10 +920,7 @@ export const updateDeliveryStatus = (subscriptionId, deliveryIndex, status) => {
         { status },
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -1059,10 +942,7 @@ export const getSubscriptionStats = () => {
         {
           signal: controller.signal,
         }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -1088,10 +968,7 @@ export const getRecipes = () => {
         {
           signal: controller.signal,
         }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -1113,10 +990,7 @@ export const getRecipeById = (recipeId) => {
         {
           signal: controller.signal,
         }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -1139,10 +1013,7 @@ export const createRecipe = (recipeData) => {
         {
           signal: controller.signal,
         }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -1163,10 +1034,7 @@ export const updateRecipe = (recipeId, recipeData) => {
         recipeData,
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -1186,10 +1054,7 @@ export const deleteRecipe = (recipeId) => {
         process.env.NEXT_PUBLIC_API_URL + `/admin/products/recipes/${recipeId}`,
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -1210,10 +1075,7 @@ export const startBrewing = (recipeId) => {
         {},
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -1234,10 +1096,7 @@ export const pauseBrewing = (recipeId) => {
         {},
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -1258,10 +1117,7 @@ export const resumeBrewing = (recipeId) => {
         {},
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -1282,10 +1138,7 @@ export const completeBrewing = (recipeId, data = {}) => {
         data,
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -1305,10 +1158,7 @@ export const getBrewingStatus = (recipeId) => {
         process.env.NEXT_PUBLIC_API_URL + `/admin/recipes/${recipeId}/status`,
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -1330,10 +1180,7 @@ export const completeStep = (recipeId, stepId) => {
         {},
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -1354,10 +1201,7 @@ export const uncompleteStep = (recipeId, stepId) => {
           `/admin/recipes/${recipeId}/steps/${stepId}/complete`,
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -1378,10 +1222,7 @@ export const updateBrewingTime = (recipeId, currentTime) => {
         { currentTime },
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -1403,10 +1244,7 @@ export const updateGravityMeasurements = (recipeId, data) => {
         data,
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -1426,10 +1264,7 @@ export const getBrewingSessions = () => {
         process.env.NEXT_PUBLIC_API_URL + "/admin/products/brewing-sessions",
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -1450,10 +1285,7 @@ export const deleteBrewingSession = (sessionId) => {
           `/admin/products/brewing-sessions/${sessionId}`,
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -1475,10 +1307,7 @@ export const updateBrewingSessionPackaging = (sessionId, packagingData) => {
         packagingData,
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -1500,10 +1329,7 @@ export const addRecipeStep = (recipeId, stepData) => {
         stepData,
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -1525,10 +1351,7 @@ export const updateRecipeStep = (recipeId, stepId, stepData) => {
         stepData,
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -1549,10 +1372,7 @@ export const deleteRecipeStep = (recipeId, stepId) => {
           `/admin/recipes/${recipeId}/steps/${stepId}`,
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -1574,10 +1394,7 @@ export const addSessionCustomStep = (recipeId, sessionId, stepData) => {
         stepData,
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -1604,10 +1421,7 @@ export const updateSessionCustomStep = (
         stepData,
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -1628,10 +1442,7 @@ export const deleteSessionCustomStep = (recipeId, sessionId, stepId) => {
           `/admin/recipes/${recipeId}/brewing-sessions/${sessionId}/custom-steps/${stepId}`,
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -1653,9 +1464,6 @@ export const getDashboardStats = () => {
     call: axios
       .get(`${baseUrl}/admin/payments/dashboard`, headers, {
         signal: controller.signal,
-      })
-      .catch((error) => {
-        notifyError(error);
       }),
     controller,
   };
@@ -1677,10 +1485,7 @@ export const getTopProducts = (limit = 5) => {
         {
           signal: controller.signal,
         }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -1700,32 +1505,9 @@ export const getRecentOrders = (limit = 5) => {
         {
           signal: controller.signal,
         }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
-};
-
-/**********
- * FUNCTIONS
- ************/
-
-const notifyError = (error) => {
-  if (error.status === 401) {
-    // enqueueSnackbar("No autorizado", {
-    //   variant: "error",
-    // });
-    window.location.href = "/login";
-  } else if (error.status !== 200) {
-    // enqueueSnackbar(
-    //   error.response?.data?.error?.message || "Error desconocido",
-    //   {
-    //     variant: "error",
-    //   }
-    // );
-  }
 };
 
 /**********
@@ -1750,11 +1532,7 @@ export const addCustomStepToSession = (sessionId, stepData) => {
           ...headers,
           signal: controller.signal,
         }
-      )
-      .catch((error) => {
-        console.error("Error adding custom step:", error);
-        throw error;
-      }),
+      ),
     controller,
   };
 };
@@ -1777,11 +1555,7 @@ export const updateCustomStepInSession = (sessionId, stepId, stepData) => {
           ...headers,
           signal: controller.signal,
         }
-      )
-      .catch((error) => {
-        console.error("Error updating custom step:", error);
-        throw error;
-      }),
+      ),
     controller,
   };
 };
@@ -1803,11 +1577,7 @@ export const deleteCustomStepFromSession = (sessionId, stepId) => {
           ...headers,
           signal: controller.signal,
         }
-      )
-      .catch((error) => {
-        console.error("Error deleting custom step:", error);
-        throw error;
-      }),
+      ),
     controller,
   };
 };
@@ -1830,10 +1600,6 @@ export const getAllUsers = () => {
       .get(`${baseUrl}/admin/users`, {
         ...headers,
         signal: controller.signal,
-      })
-      .catch((error) => {
-        console.error("Error fetching users:", error);
-        throw error;
       }),
     controller,
   };
@@ -1853,10 +1619,6 @@ export const getUserOrders = (userId) => {
       .get(`${baseUrl}/admin/users/${userId}/orders`, {
         ...headers,
         signal: controller.signal,
-      })
-      .catch((error) => {
-        console.error("Error fetching user orders:", error);
-        throw error;
       }),
     controller,
   };
@@ -1876,10 +1638,6 @@ export const getUserOrderById = (orderId) => {
       .get(`${baseUrl}/payments/orders/${orderId}`, {
         ...headers,
         signal: controller.signal,
-      })
-      .catch((error) => {
-        console.error("Error fetching user order:", error);
-        throw error;
       }),
     controller,
   };
@@ -1903,11 +1661,7 @@ export const updateUserOrderDeliveryTime = (orderId, deliveryTime) => {
           ...headers,
           signal: controller.signal,
         }
-      )
-      .catch((error) => {
-        console.error("Error updating delivery time:", error);
-        throw error;
-      }),
+      ),
     controller,
   };
 };
@@ -1926,10 +1680,6 @@ export const updateUserStatus = (userId, statusData) => {
       .put(`${baseUrl}/admin/users/${userId}/status`, statusData, {
         ...headers,
         signal: controller.signal,
-      })
-      .catch((error) => {
-        console.error("Error updating user status:", error);
-        throw error;
       }),
     controller,
   };
@@ -1949,10 +1699,6 @@ export const deleteUser = (userId) => {
       .delete(`${baseUrl}/admin/users/${userId}`, {
         ...headers,
         signal: controller.signal,
-      })
-      .catch((error) => {
-        console.error("Error deleting user:", error);
-        throw error;
       }),
     controller,
   };
@@ -1972,10 +1718,6 @@ export const updateUserProfile = (profileData) => {
       .put(`${baseUrl}/users/profile`, profileData, {
         ...headers,
         signal: controller.signal,
-      })
-      .catch((error) => {
-        console.error("Error updating user profile:", error);
-        throw error;
       }),
     controller,
   };
@@ -1991,18 +1733,10 @@ export const getMyOrders = () => {
   }
 
   return {
-    call: axios
-      .get(`${baseUrl}/payments/my-orders`, {
-        ...headers,
-        signal: controller.signal,
-      })
-      .catch((error) => {
-        // Solo loggear errores que no sean de cancelación
-        if (error.name !== "CanceledError" && error.name !== "AbortError") {
-          console.error("Error fetching my orders:", error);
-        }
-        throw error;
-      }),
+    call: axios.get(`${baseUrl}/payments/my-orders`, {
+      ...headers,
+      signal: controller.signal,
+    }),
     controller,
   };
 };
@@ -2017,18 +1751,10 @@ export const getOrderStatus = (orderId) => {
   }
 
   return {
-    call: axios
-      .get(`${baseUrl}/payments/order-status/${orderId}`, {
-        ...headers,
-        signal: controller.signal,
-      })
-      .catch((error) => {
-        // Solo loggear errores que no sean de cancelación
-        if (error.name !== "CanceledError" && error.name !== "AbortError") {
-          console.error("Error fetching order status:", error);
-        }
-        throw error;
-      }),
+    call: axios.get(`${baseUrl}/payments/order-status/${orderId}`, {
+      ...headers,
+      signal: controller.signal,
+    }),
     controller,
   };
 };
@@ -2051,10 +1777,6 @@ export const createMercadoPagoPreference = (checkoutData) => {
       .post(`${baseUrl}/payments/create-preference`, checkoutData, {
         ...headers,
         signal: controller.signal,
-      })
-      .catch((error) => {
-        console.error("Error creating MercadoPago preference:", error);
-        throw error;
       }),
     controller,
   };
@@ -2074,10 +1796,6 @@ export const processDirectPayment = (paymentData) => {
       .post(`${baseUrl}/payments/process-payment`, paymentData, {
         ...headers,
         signal: controller.signal,
-      })
-      .catch((error) => {
-        console.error("Error processing direct payment:", error);
-        throw error;
       }),
     controller,
   };
@@ -2097,10 +1815,6 @@ export const createCashOrder = (orderData) => {
       .post(`${baseUrl}/payments/create-cash-order`, orderData, {
         ...headers,
         signal: controller.signal,
-      })
-      .catch((error) => {
-        console.error("Error creating cash order:", error);
-        throw error;
       }),
     controller,
   };
@@ -2123,9 +1837,6 @@ export const getAdminBrands = () => {
     call: axios
       .get(process.env.NEXT_PUBLIC_API_URL + "/admin/brands", headers, {
         signal: controller.signal,
-      })
-      .catch((error) => {
-        notifyError(error);
       }),
     controller,
   };
@@ -2148,10 +1859,7 @@ export const getAdminBrandById = (brandId) => {
         {
           signal: controller.signal,
         }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -2174,10 +1882,7 @@ export const createBrand = (brandData) => {
         {
           signal: controller.signal,
         }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -2198,10 +1903,7 @@ export const updateBrand = (brandId, brandData) => {
         brandData,
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };
@@ -2221,10 +1923,7 @@ export const deleteBrand = (brandId) => {
         process.env.NEXT_PUBLIC_API_URL + `/admin/brands/${brandId}`,
         headers,
         { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+      ),
     controller,
   };
 };

@@ -7,15 +7,13 @@ import { useDispatch } from "react-redux";
 import { setUser, clearUser } from "@/redux/slices/userSlice";
 import useFetchAndLoad from "@/hooks/useFetchAndLoad";
 import { LoadingScreen } from "@/components/ui/loading-screen";
+import { useSnackbar } from "notistack";
 
 interface AuthContextType {
   user: any | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (
-    email: string,
-    password: string
-  ) => Promise<{ success: boolean; error?: string }>;
+  login: (email: string, password: string) => Promise<{ success: boolean }>;
   logout: () => void;
   updateUser: (userData: any) => void;
 }
@@ -40,6 +38,7 @@ const AuthProviderInner = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { callEndpoint } = useFetchAndLoad();
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     // Solo ejecuta en el cliente
@@ -83,7 +82,73 @@ const AuthProviderInner = ({ children }: { children: React.ReactNode }) => {
     setIsLoading(true);
     try {
       const response = await callEndpoint(loginService(email, password));
-      if (response && response.data) {
+
+      // Si callEndpoint fue cancelado
+      if (response === null) {
+        setIsLoading(false);
+        enqueueSnackbar("Operación cancelada", { variant: "warning" });
+        return { success: false };
+      }
+
+      // Si hay un error en la respuesta
+      if (response && response.error) {
+        setIsLoading(false);
+
+        // Manejar errores según el tipo
+        if (response.type === "network") {
+          enqueueSnackbar("Error de conexión. Verifica tu internet", {
+            variant: "error",
+          });
+          return { success: false };
+        }
+
+        if (response.status) {
+          // Manejar errores HTTP específicos
+          switch (response.status) {
+            case 401:
+              enqueueSnackbar("Email o contraseña incorrectos", {
+                variant: "error",
+              });
+              break;
+            case 404:
+              enqueueSnackbar("No existe una cuenta con este email", {
+                variant: "error",
+              });
+              break;
+            case 429:
+              enqueueSnackbar("Demasiados intentos. Espera un momento", {
+                variant: "warning",
+              });
+              break;
+            case 500:
+              enqueueSnackbar("Error del servidor. Intenta más tarde", {
+                variant: "error",
+              });
+              break;
+            case 400:
+              enqueueSnackbar("Datos inválidos. Verifica tu información", {
+                variant: "error",
+              });
+              break;
+            default:
+              enqueueSnackbar(
+                response.data?.error ||
+                  response.message ||
+                  "Error al iniciar sesión",
+                { variant: "error" }
+              );
+          }
+        } else {
+          enqueueSnackbar(response.message || "Error desconocido", {
+            variant: "error",
+          });
+        }
+
+        return { success: false };
+      }
+
+      // Verificar si es una respuesta exitosa
+      if (response && response.data && response.data.status === "success") {
         const { token, userData } = response.data;
         const user = userData;
         // Guardar en localStorage
@@ -95,35 +160,30 @@ const AuthProviderInner = ({ children }: { children: React.ReactNode }) => {
         dispatch(setUser({ ...user, token }));
 
         setIsLoading(false);
+        enqueueSnackbar("¡Bienvenido de vuelta!", { variant: "success" });
         return { success: true };
       }
-      setIsLoading(false);
-      return { success: false, error: "Credenciales inválidas" };
-    } catch (error: any) {
-      console.error("Login error", error);
-      setIsLoading(false);
 
-      // Retornar información específica del error
-      if (error.response?.status === 401) {
-        return { success: false, error: "Email o contraseña incorrectos." };
-      } else if (error.response?.status === 404) {
-        return {
-          success: false,
-          error: "No existe una cuenta con este email.",
-        };
-      } else if (error.response?.status === 400) {
-        return {
-          success: false,
-          error: "Datos inválidos. Verifica tu email y contraseña.",
-        };
-      } else if (error.message?.includes("Network Error")) {
-        return {
-          success: false,
-          error: "Error de conexión. Verifica tu internet.",
-        };
+      // Si hay response pero es un error del servidor
+      if (response && response.data && response.data.status === "error") {
+        setIsLoading(false);
+        enqueueSnackbar(response.data.error || "Error del servidor", {
+          variant: "error",
+        });
+        return { success: false };
       }
 
-      return { success: false, error: "Error al iniciar sesión." };
+      // Si el response no tiene la estructura esperada
+      setIsLoading(false);
+      enqueueSnackbar("Respuesta inesperada del servidor", {
+        variant: "error",
+      });
+      return { success: false };
+    } catch (error: any) {
+      console.error("Login error:", error);
+      setIsLoading(false);
+      enqueueSnackbar("Error inesperado", { variant: "error" });
+      return { success: false };
     }
   };
 

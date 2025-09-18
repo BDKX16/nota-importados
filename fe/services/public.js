@@ -21,15 +21,11 @@ const getAxiosHeaders = () => {
 export const login = (username, password) => {
   const controller = loadAbort();
   return {
-    call: axios
-      .post(
-        process.env.NEXT_PUBLIC_API_URL + "/users/login",
-        { email: username, password },
-        { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+    call: axios.post(
+      process.env.NEXT_PUBLIC_API_URL + "/users/login",
+      { email: username, password },
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -37,93 +33,17 @@ export const login = (username, password) => {
 export const register = (name, username, password, phone, address) => {
   const controller = loadAbort();
   return {
-    call: axios
-      .post(
-        process.env.NEXT_PUBLIC_API_URL + "/users/register",
-        {
-          name: name,
-          email: username,
-          password: password,
-          phone: phone,
-          address: address,
-        },
-        { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
-    controller,
-  };
-};
-
-// Productos - Cervezas
-export const getBeers = () => {
-  const controller = loadAbort();
-  return {
-    call: axios
-      .get(process.env.NEXT_PUBLIC_API_URL + "/beers", {
-        signal: controller.signal,
-      })
-      .catch((error) => {
-        notifyError(error);
-      }),
-    controller,
-  };
-};
-
-export const getBeerById = (beerId) => {
-  const controller = loadAbort();
-  return {
-    call: axios
-      .get(process.env.NEXT_PUBLIC_API_URL + `/beers/${beerId}`, {
-        signal: controller.signal,
-      })
-      .catch((error) => {
-        notifyError(error);
-      }),
-    controller,
-  };
-};
-
-// Productos - Suscripciones
-export const getSubscriptionPlans = () => {
-  const controller = loadAbort();
-  return {
-    call: axios
-      .get(process.env.NEXT_PUBLIC_API_URL + "/subscriptions", {
-        signal: controller.signal,
-      })
-      .catch((error) => {
-        notifyError(error);
-      }),
-    controller,
-  };
-};
-
-export const getSubscriptionPlanById = (planId) => {
-  const controller = loadAbort();
-  return {
-    call: axios
-      .get(process.env.NEXT_PUBLIC_API_URL + `/subscriptions/${planId}`, {
-        signal: controller.signal,
-      })
-      .catch((error) => {
-        notifyError(error);
-      }),
-    controller,
-  };
-};
-
-export const getFeaturedSubscriptions = () => {
-  const controller = loadAbort();
-  return {
-    call: axios
-      .get(process.env.NEXT_PUBLIC_API_URL + "/featured-subscriptions", {
-        signal: controller.signal,
-      })
-      .catch((error) => {
-        notifyError(error);
-      }),
+    call: axios.post(
+      process.env.NEXT_PUBLIC_API_URL + "/users/register",
+      {
+        name: name,
+        email: username,
+        password: password,
+        phone: phone,
+        address: address,
+      },
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -132,120 +52,11 @@ export const getFeaturedSubscriptions = () => {
 export const validateDiscount = (code, cartItems) => {
   const controller = loadAbort();
   return {
-    call: axios
-      .post(
-        process.env.NEXT_PUBLIC_API_URL + "/validate-discount",
-        { code, cartItems },
-        { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
-    controller,
-  };
-};
-
-// Suscripciones de usuario (requiere autenticación)
-export const getUserSubscriptions = () => {
-  const controller = loadAbort();
-  const headers = getAxiosHeaders();
-
-  if (!headers) {
-    return {
-      call: Promise.reject(new Error("No hay token de autenticación")),
-      controller,
-    };
-  }
-
-  return {
-    call: axios
-      .get(process.env.NEXT_PUBLIC_API_URL + "/my-subscriptions", headers, {
-        signal: controller.signal,
-      })
-      .catch((error) => {
-        notifyError(error);
-      }),
-    controller,
-  };
-};
-
-export const getUserSubscriptionById = (subscriptionId) => {
-  const controller = loadAbort();
-  const headers = getAxiosHeaders();
-
-  if (!headers) {
-    return {
-      call: Promise.reject(new Error("No hay token de autenticación")),
-      controller,
-    };
-  }
-
-  return {
-    call: axios
-      .get(
-        process.env.NEXT_PUBLIC_API_URL + `/my-subscriptions/${subscriptionId}`,
-        headers,
-        {
-          signal: controller.signal,
-        }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
-    controller,
-  };
-};
-
-export const updateSubscriptionStatus = (subscriptionId, status) => {
-  const controller = loadAbort();
-  const headers = getAxiosHeaders();
-
-  if (!headers) {
-    return {
-      call: Promise.reject(new Error("No hay token de autenticación")),
-      controller,
-    };
-  }
-
-  return {
-    call: axios
-      .patch(
-        process.env.NEXT_PUBLIC_API_URL +
-          `/my-subscriptions/${subscriptionId}/status`,
-        { status },
-        headers,
-        { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
-    controller,
-  };
-};
-
-export const cancelUserSubscription = (subscriptionId, reason) => {
-  const controller = loadAbort();
-  const headers = getAxiosHeaders();
-
-  if (!headers) {
-    return {
-      call: Promise.reject(new Error("No hay token de autenticación")),
-      controller,
-    };
-  }
-
-  return {
-    call: axios
-      .patch(
-        process.env.NEXT_PUBLIC_API_URL +
-          `/my-subscriptions/${subscriptionId}/cancel`,
-        { reason },
-        headers,
-        { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+    call: axios.post(
+      process.env.NEXT_PUBLIC_API_URL + "/validate-discount",
+      { code, cartItems },
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -266,17 +77,13 @@ export const updateSubscriptionBeerType = (
   }
 
   return {
-    call: axios
-      .patch(
-        process.env.NEXT_PUBLIC_API_URL +
-          `/my-subscriptions/${subscriptionId}/beer-type`,
-        { beerType, beerName },
-        headers,
-        { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+    call: axios.patch(
+      process.env.NEXT_PUBLIC_API_URL +
+        `/my-subscriptions/${subscriptionId}/beer-type`,
+      { beerType, beerName },
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -293,16 +100,12 @@ export const createSubscription = (subscriptionId, beerType, beerName) => {
   }
 
   return {
-    call: axios
-      .post(
-        process.env.NEXT_PUBLIC_API_URL + `/subscriptions`,
-        { subscriptionId, beerType, beerName },
-        headers,
-        { signal: controller.signal }
-      )
-      .catch((error) => {
-        notifyError(error);
-      }),
+    call: axios.post(
+      process.env.NEXT_PUBLIC_API_URL + `/subscriptions`,
+      { subscriptionId, beerType, beerName },
+      headers,
+      { signal: controller.signal }
+    ),
     controller,
   };
 };
@@ -323,13 +126,9 @@ export const getBrands = (params = {}) => {
   }`;
 
   return {
-    call: axios
-      .get(url, {
-        signal: controller.signal,
-      })
-      .catch((error) => {
-        notifyError(error);
-      }),
+    call: axios.get(url, {
+      signal: controller.signal,
+    }),
     controller,
   };
 };
@@ -337,13 +136,9 @@ export const getBrands = (params = {}) => {
 export const getBrandBySlug = (slug) => {
   const controller = loadAbort();
   return {
-    call: axios
-      .get(process.env.NEXT_PUBLIC_API_URL + `/brands/${slug}`, {
-        signal: controller.signal,
-      })
-      .catch((error) => {
-        notifyError(error);
-      }),
+    call: axios.get(process.env.NEXT_PUBLIC_API_URL + `/brands/${slug}`, {
+      signal: controller.signal,
+    }),
     controller,
   };
 };
@@ -351,13 +146,9 @@ export const getBrandBySlug = (slug) => {
 export const getPremiumBrands = () => {
   const controller = loadAbort();
   return {
-    call: axios
-      .get(process.env.NEXT_PUBLIC_API_URL + "/brands/premium", {
-        signal: controller.signal,
-      })
-      .catch((error) => {
-        notifyError(error);
-      }),
+    call: axios.get(process.env.NEXT_PUBLIC_API_URL + "/brands/premium", {
+      signal: controller.signal,
+    }),
     controller,
   };
 };
@@ -375,66 +166,20 @@ export const getTopProducts = () => {
   }
 
   return {
-    call: axios
-      .get(process.env.NEXT_PUBLIC_API_URL + "/top-products", headers, {
-        signal: controller.signal,
-      })
-      .catch((error) => {
-        notifyError(error);
-      }),
+    call: axios.get(process.env.NEXT_PUBLIC_API_URL + "/top-products", headers, {
+      signal: controller.signal,
+    }),
     controller,
   };
-};
-
-/**********
- * FUNCTIONS
- ************/
-
-const notifyError = (error) => {
-  if (error.status === 401) {
-    // enqueueSnackbar("No autorizado", {
-    //   variant: "error",
-    // });
-  } else if (error.status !== 200) {
-    // enqueueSnackbar(
-    //   error.response?.data?.error?.message || "Error desconocido",
-    //   {
-    //     variant: "error",
-    //   }
-    // );
-  }
 };
 
 // Contacto
 export const sendContactForm = (contactData) => {
   const controller = loadAbort();
   return {
-    call: axios
-      .post(process.env.NEXT_PUBLIC_API_URL + "/contact", contactData, {
-        signal: controller.signal,
-      })
-      .catch((error) => {
-        if (error.name === "AbortError") {
-          throw error;
-        }
-
-        // Manejar errores específicos de validación
-        if (error.response?.status === 400) {
-          throw new Error(
-            error.response.data.error || "Datos del formulario inválidos"
-          );
-        }
-
-        if (error.response?.status === 500) {
-          throw new Error("Error del servidor. Inténtalo de nuevo más tarde.");
-        }
-
-        throw new Error(
-          error.response?.data?.error ||
-            error.message ||
-            "Error al enviar el formulario de contacto"
-        );
-      }),
+    call: axios.post(process.env.NEXT_PUBLIC_API_URL + "/contact", contactData, {
+      signal: controller.signal,
+    }),
     controller,
   };
 };

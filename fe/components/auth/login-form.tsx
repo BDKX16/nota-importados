@@ -18,39 +18,150 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { login } from "@/services/public";
+import useFetchAndLoad from "@/hooks/useFetchAndLoad";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState({ email: "", password: "" });
+  const { loading, callEndpoint } = useFetchAndLoad();
   const { toast } = useToast();
   const router = useRouter();
 
+  // Validaciones del cliente
+  const validateForm = () => {
+    const newErrors = { email: "", password: "" };
+    let isValid = true;
+
+    // Validar email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email.trim()) {
+      newErrors.email = "El email es obligatorio";
+      isValid = false;
+    } else if (!emailRegex.test(email)) {
+      newErrors.email = "Ingresa un email válido";
+      isValid = false;
+    }
+
+    // Validar contraseña
+    if (!password.trim()) {
+      newErrors.password = "La contraseña es obligatoria";
+      isValid = false;
+    } else if (password.length < 6) {
+      newErrors.password = "La contraseña debe tener al menos 6 caracteres";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+
+    // Limpiar errores previos
+    setErrors({ email: "", password: "" });
+
+    // Validar formulario
+    if (!validateForm()) {
+      return;
+    }
 
     try {
-      // Simulación de login exitoso
-      // En una implementación real, aquí iría la llamada a la API de autenticación
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const result = await callEndpoint(login(email, password));
 
-      toast({
-        title: "Inicio de sesión exitoso",
-        description: "Bienvenido de nuevo a Nota Importados",
-      });
+      if (result?.status === "success") {
+        toast({
+          title: "¡Bienvenido de nuevo!",
+          description: "Has iniciado sesión correctamente",
+        });
 
-      // Redirigir al usuario a la página principal
-      router.push("/");
-    } catch (error) {
-      toast({
-        title: "Error al iniciar sesión",
-        description: "Por favor verifica tus credenciales e intenta nuevamente",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
+        // Aquí deberías actualizar el estado global del usuario
+        // Por ejemplo: dispatch(setUser(result.userData, result.token));
+
+        router.push("/");
+      } else {
+        // Este caso no debería ocurrir si el endpoint devuelve error correctamente
+        toast({
+          title: "Error al iniciar sesión",
+          description: "Ha ocurrido un error inesperado",
+          variant: "destructive",
+        });
+      }
+    } catch (error: any) {
+      console.error("Error en login:", error);
+
+      // Manejar errores específicos según el status code
+      if (error.response) {
+        const status = error.response.status;
+        const errorData = error.response.data;
+
+        switch (status) {
+          case 401:
+            // Credenciales inválidas
+            toast({
+              title: "Credenciales incorrectas",
+              description:
+                "El email o la contraseña son incorrectos. Verifica tus datos e intenta nuevamente.",
+              variant: "destructive",
+            });
+            break;
+          case 404:
+            // Email no encontrado
+            toast({
+              title: "Email no registrado",
+              description:
+                "No encontramos una cuenta con este email. ¿Quieres crear una cuenta nueva?",
+              variant: "destructive",
+            });
+            break;
+          case 429:
+            // Muchos intentos
+            toast({
+              title: "Demasiados intentos",
+              description:
+                "Has realizado muchos intentos de inicio de sesión. Espera un momento antes de intentar nuevamente.",
+              variant: "destructive",
+            });
+            break;
+          case 500:
+            // Error del servidor
+            toast({
+              title: "Error del servidor",
+              description:
+                "Tenemos problemas técnicos. Por favor intenta más tarde.",
+              variant: "destructive",
+            });
+            break;
+          default:
+            // Error genérico
+            toast({
+              title: "Error al iniciar sesión",
+              description:
+                errorData?.error ||
+                "Ha ocurrido un error inesperado. Por favor intenta nuevamente.",
+              variant: "destructive",
+            });
+        }
+      } else if (error.request) {
+        // Error de conexión
+        toast({
+          title: "Error de conexión",
+          description:
+            "No pudimos conectar con el servidor. Verifica tu conexión a internet.",
+          variant: "destructive",
+        });
+      } else {
+        // Error desconocido
+        toast({
+          title: "Error inesperado",
+          description:
+            "Ha ocurrido un error inesperado. Por favor intenta nuevamente.",
+          variant: "destructive",
+        });
+      }
     }
   };
 
@@ -71,9 +182,16 @@ export default function LoginForm() {
               type="email"
               placeholder="tu@email.com"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (errors.email) setErrors((prev) => ({ ...prev, email: "" }));
+              }}
+              className={errors.email ? "border-red-500" : ""}
               required
             />
+            {errors.email && (
+              <p className="text-sm text-red-600">{errors.email}</p>
+            )}
           </div>
           <div className="space-y-2">
             <div className="flex items-center justify-between">
@@ -91,7 +209,12 @@ export default function LoginForm() {
                 type={showPassword ? "text" : "password"}
                 placeholder="••••••••"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  if (errors.password)
+                    setErrors((prev) => ({ ...prev, password: "" }));
+                }}
+                className={errors.password ? "border-red-500" : ""}
                 required
               />
               <Button
@@ -111,13 +234,16 @@ export default function LoginForm() {
                 </span>
               </Button>
             </div>
+            {errors.password && (
+              <p className="text-sm text-red-600">{errors.password}</p>
+            )}
           </div>
           <Button
             type="submit"
             className="w-full bg-amber-600 hover:bg-amber-700"
-            disabled={isLoading}
+            disabled={loading}
           >
-            {isLoading ? (
+            {loading ? (
               <span className="flex items-center gap-2">
                 <svg
                   className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"

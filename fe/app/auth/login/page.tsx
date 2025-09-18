@@ -21,7 +21,6 @@ import Image from "next/image";
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showRegistrationSuccess, setShowRegistrationSuccess] = useState(false);
   const { login, isLoading: authLoading } = useAuth();
@@ -36,7 +35,6 @@ export default function LoginPage() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
     setIsLoading(true);
 
     try {
@@ -47,12 +45,11 @@ export default function LoginPage() {
       if (result.success) {
         const redirectPath = searchParams?.get("redirect") || "/";
         router.push(redirectPath);
-      } else {
-        setError(result.error || "Error al iniciar sesión.");
       }
+      // No necesitamos manejar errores aquí porque ahora se manejan con notificaciones
     } catch (err: any) {
       console.error("Error en login:", err);
-      setError("Error inesperado. Por favor, intenta de nuevo.");
+      // Error inesperado que no fue capturado por AuthContext
     } finally {
       setIsLoading(false);
     }
@@ -111,24 +108,6 @@ export default function LoginPage() {
             )}
 
             <form onSubmit={handleLogin} className="space-y-6">
-              {error && (
-                <Alert className="bg-red-50 border-red-200">
-                  <AlertDescription className="text-red-800">
-                    {error}
-                    {error.includes("No existe una cuenta") && (
-                      <div className="mt-2">
-                        <Link
-                          href="/auth/registro"
-                          className="text-luxury-brown hover:text-luxury-brown-dark underline font-medium"
-                        >
-                          Crear cuenta nueva
-                        </Link>
-                      </div>
-                    )}
-                  </AlertDescription>
-                </Alert>
-              )}
-
               <div className="space-y-2">
                 <label
                   htmlFor="email"

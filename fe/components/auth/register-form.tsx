@@ -19,9 +19,12 @@ import {
 } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from "@/components/ui/textarea";
+import { register } from "@/services/public";
+import useFetchAndLoad from "@/hooks/useFetchAndLoad";
 
 export default function RegisterForm() {
   const [formData, setFormData] = useState({
+    name: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -29,7 +32,15 @@ export default function RegisterForm() {
     address: "",
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    phone: "",
+    address: "",
+  });
+  const { loading, callEndpoint } = useFetchAndLoad();
   const { toast } = useToast();
   const router = useRouter();
 
@@ -38,43 +49,218 @@ export default function RegisterForm() {
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+
+    // Limpiar error del campo cuando el usuario empiece a escribir
+    if (errors[name as keyof typeof errors]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
+  };
+
+  // Validaciones del cliente
+  const validateForm = () => {
+    const newErrors = {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      phone: "",
+      address: "",
+    };
+    let isValid = true;
+
+    // Validar nombre
+    if (!formData.name.trim()) {
+      newErrors.name = "El nombre es obligatorio";
+      isValid = false;
+    } else if (formData.name.trim().length < 2) {
+      newErrors.name = "El nombre debe tener al menos 2 caracteres";
+      isValid = false;
+    }
+
+    // Validar email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formData.email.trim()) {
+      newErrors.email = "El email es obligatorio";
+      isValid = false;
+    } else if (!emailRegex.test(formData.email)) {
+      newErrors.email = "Ingresa un email válido";
+      isValid = false;
+    }
+
+    // Validar contraseña
+    if (!formData.password.trim()) {
+      newErrors.password = "La contraseña es obligatoria";
+      isValid = false;
+    } else if (formData.password.length < 8) {
+      newErrors.password = "La contraseña debe tener al menos 8 caracteres";
+      isValid = false;
+    } else if (!/(?=.*[a-z])/.test(formData.password)) {
+      newErrors.password = "La contraseña debe tener al menos una minúscula";
+      isValid = false;
+    } else if (!/(?=.*[A-Z])/.test(formData.password)) {
+      newErrors.password = "La contraseña debe tener al menos una mayúscula";
+      isValid = false;
+    } else if (!/(?=.*\d)/.test(formData.password)) {
+      newErrors.password = "La contraseña debe tener al menos un número";
+      isValid = false;
+    }
+
+    // Validar confirmación de contraseña
+    if (!formData.confirmPassword.trim()) {
+      newErrors.confirmPassword = "Confirma tu contraseña";
+      isValid = false;
+    } else if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = "Las contraseñas no coinciden";
+      isValid = false;
+    }
+
+    // Validar teléfono
+    const phoneRegex = /^\+?[\d\s\-\(\)]{10,}$/;
+    if (!formData.phone.trim()) {
+      newErrors.phone = "El teléfono es obligatorio";
+      isValid = false;
+    } else if (!phoneRegex.test(formData.phone.trim())) {
+      newErrors.phone = "Ingresa un número de teléfono válido";
+      isValid = false;
+    }
+
+    // Validar dirección
+    if (!formData.address.trim()) {
+      newErrors.address = "La dirección es obligatoria";
+      isValid = false;
+    } else if (formData.address.trim().length < 10) {
+      newErrors.address =
+        "La dirección debe ser más específica (mínimo 10 caracteres)";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validar que las contraseñas coincidan
-    if (formData.password !== formData.confirmPassword) {
-      toast({
-        title: "Las contraseñas no coinciden",
-        description: "Por favor verifica que ambas contraseñas sean iguales",
-        variant: "destructive",
-      });
+    // Limpiar errores previos
+    setErrors({
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      phone: "",
+      address: "",
+    });
+
+    // Validar formulario
+    if (!validateForm()) {
       return;
     }
 
-    setIsLoading(true);
-
     try {
-      // Simulación de registro exitoso
-      // En una implementación real, aquí iría la llamada a la API de registro
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const result = await callEndpoint(
+        register(
+          formData.name,
+          formData.email,
+          formData.password,
+          formData.phone,
+          formData.address
+        )
+      );
 
-      toast({
-        title: "Registro exitoso",
-        description: "Te hemos enviado un correo para verificar tu cuenta",
-      });
+      if (result?.status === "success") {
+        toast({
+          title: "¡Cuenta creada exitosamente!",
+          description:
+            "Te hemos enviado un correo de bienvenida. Ya puedes iniciar sesión.",
+        });
 
-      // Redirigir al usuario a la página principal
-      router.push("/");
-    } catch (error) {
-      toast({
-        title: "Error al registrarse",
-        description: "Ha ocurrido un error. Por favor intenta nuevamente",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
+        // Redirigir al login
+        router.push("/auth/login");
+      } else {
+        toast({
+          title: "Error al crear la cuenta",
+          description: "Ha ocurrido un error inesperado",
+          variant: "destructive",
+        });
+      }
+    } catch (error: any) {
+      console.error("Error en registro:", error);
+
+      // Manejar errores específicos según el status code
+      if (error.response) {
+        const status = error.response.status;
+        const errorData = error.response.data;
+
+        switch (status) {
+          case 409:
+            // Email ya existe
+            toast({
+              title: "Email ya registrado",
+              description:
+                "Ya existe una cuenta con este email. ¿Quieres iniciar sesión en su lugar?",
+              variant: "destructive",
+            });
+            // También marcar el campo email como con error
+            setErrors((prev) => ({
+              ...prev,
+              email: "Este email ya está registrado",
+            }));
+            break;
+          case 400:
+            // Error de validación
+            toast({
+              title: "Datos inválidos",
+              description:
+                errorData?.error ||
+                "Revisa todos los campos y asegúrate de que estén correctos.",
+              variant: "destructive",
+            });
+            break;
+          case 429:
+            // Muchos intentos
+            toast({
+              title: "Demasiados intentos",
+              description:
+                "Has realizado muchos intentos de registro. Espera un momento antes de intentar nuevamente.",
+              variant: "destructive",
+            });
+            break;
+          case 500:
+            // Error del servidor
+            toast({
+              title: "Error del servidor",
+              description:
+                "Tenemos problemas técnicos. Por favor intenta más tarde.",
+              variant: "destructive",
+            });
+            break;
+          default:
+            // Error genérico
+            toast({
+              title: "Error al registrarse",
+              description:
+                errorData?.error ||
+                "Ha ocurrido un error inesperado. Por favor intenta nuevamente.",
+              variant: "destructive",
+            });
+        }
+      } else if (error.request) {
+        // Error de conexión
+        toast({
+          title: "Error de conexión",
+          description:
+            "No pudimos conectar con el servidor. Verifica tu conexión a internet.",
+          variant: "destructive",
+        });
+      } else {
+        // Error desconocido
+        toast({
+          title: "Error inesperado",
+          description:
+            "Ha ocurrido un error inesperado. Por favor intenta nuevamente.",
+          variant: "destructive",
+        });
+      }
     }
   };
 
@@ -89,6 +275,22 @@ export default function RegisterForm() {
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
+            <Label htmlFor="name">Nombre completo</Label>
+            <Input
+              id="name"
+              name="name"
+              type="text"
+              placeholder="Tu nombre completo"
+              value={formData.name}
+              onChange={handleChange}
+              className={errors.name ? "border-red-500" : ""}
+              required
+            />
+            {errors.name && (
+              <p className="text-sm text-red-600">{errors.name}</p>
+            )}
+          </div>
+          <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
               id="email"
@@ -97,8 +299,12 @@ export default function RegisterForm() {
               placeholder="tu@email.com"
               value={formData.email}
               onChange={handleChange}
+              className={errors.email ? "border-red-500" : ""}
               required
             />
+            {errors.email && (
+              <p className="text-sm text-red-600">{errors.email}</p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Contraseña</Label>
@@ -110,6 +316,7 @@ export default function RegisterForm() {
                 placeholder="••••••••"
                 value={formData.password}
                 onChange={handleChange}
+                className={errors.password ? "border-red-500" : ""}
                 required
                 minLength={8}
               />
@@ -130,6 +337,13 @@ export default function RegisterForm() {
                 </span>
               </Button>
             </div>
+            {errors.password && (
+              <p className="text-sm text-red-600">{errors.password}</p>
+            )}
+            <p className="text-xs text-muted-foreground">
+              La contraseña debe tener al menos 8 caracteres, una mayúscula, una
+              minúscula y un número
+            </p>
           </div>
           <div className="space-y-2">
             <Label htmlFor="confirmPassword">Confirmar contraseña</Label>
@@ -141,9 +355,13 @@ export default function RegisterForm() {
                 placeholder="••••••••"
                 value={formData.confirmPassword}
                 onChange={handleChange}
+                className={errors.confirmPassword ? "border-red-500" : ""}
                 required
               />
             </div>
+            {errors.confirmPassword && (
+              <p className="text-sm text-red-600">{errors.confirmPassword}</p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="phone">Número de teléfono</Label>
@@ -154,8 +372,12 @@ export default function RegisterForm() {
               placeholder="+54 223 634-4785"
               value={formData.phone}
               onChange={handleChange}
+              className={errors.phone ? "border-red-500" : ""}
               required
             />
+            {errors.phone && (
+              <p className="text-sm text-red-600">{errors.phone}</p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="address">Dirección de entrega y facturación</Label>
@@ -165,16 +387,21 @@ export default function RegisterForm() {
               placeholder="Av. Constitución 5500, Mar del Plata, Argentina"
               value={formData.address}
               onChange={handleChange}
+              className={`min-h-[80px] ${
+                errors.address ? "border-red-500" : ""
+              }`}
               required
-              className="min-h-[80px]"
             />
+            {errors.address && (
+              <p className="text-sm text-red-600">{errors.address}</p>
+            )}
           </div>
           <Button
             type="submit"
             className="w-full bg-amber-600 hover:bg-amber-700"
-            disabled={isLoading}
+            disabled={loading}
           >
-            {isLoading ? (
+            {loading ? (
               <span className="flex items-center gap-2">
                 <svg
                   className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"

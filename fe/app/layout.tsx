@@ -6,6 +6,7 @@ import { ReduxProvider } from "@/redux/ReduxProvider";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CartSidebar } from "@/components/cart-sidebar";
 import { Suspense } from "react";
+import NotificationProvider from "@/components/providers/NotificationProvider";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -35,12 +36,14 @@ export default function RootLayout({
     <html lang="es">
       <body className={`font-sans ${playfair.variable} ${inter.variable}`}>
         <Suspense fallback={null}>
-          <ReduxProvider>
-            <AuthProvider>
-              {children}
-              <CartSidebar />
-            </AuthProvider>
-          </ReduxProvider>
+          <NotificationProvider>
+            <ReduxProvider>
+              <AuthProvider>
+                {children}
+                <CartSidebar />
+              </AuthProvider>
+            </ReduxProvider>
+          </NotificationProvider>
         </Suspense>
       </body>
     </html>
