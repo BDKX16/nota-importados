@@ -960,8 +960,7 @@ export default function CheckoutPage() {
                 ) : (
                   <span>
                     <span className="font-bold">Envío gratis</span> a partir de
-                    3 cervezas o con cualquier suscripción. Tienes{" "}
-                    {getTotalBeerQuantity()}/3 cervezas en tu carrito.
+                    $50.000.
                   </span>
                 )}
               </AlertDescription>

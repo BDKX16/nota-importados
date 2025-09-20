@@ -47,6 +47,7 @@ import {
 } from "@/services/private";
 import MercadoPagoOptions from "@/components/checkout/MercadoPagoOptions";
 import LoadingSpinner from "@/components/ui/loading-spinner";
+import ShippingCostCard from "@/components/checkout/ShippingCostCard";
 
 interface Discount {
   id: string;
@@ -87,6 +88,8 @@ export default function CheckoutPage() {
   const [modalAddress, setModalAddress] = useState("");
   const [modalErrors, setModalErrors] = useState({ phone: "", address: "" });
   const [savingAddress, setSavingAddress] = useState(false);
+  const [calculatedShippingCost, setCalculatedShippingCost] =
+    useState<number>(0);
 
   const router = useRouter();
   const { toast } = useToast();
@@ -137,6 +140,11 @@ export default function CheckoutPage() {
     setIsEditingAddress(false);
   };
 
+  // Handler para el cálculo de envío
+  const handleShippingCalculated = (cost: number) => {
+    setCalculatedShippingCost(cost);
+  };
+
   // Cálculos para el carrito
   const calculateSubtotal = () => {
     return cartTotal;
@@ -175,7 +183,8 @@ export default function CheckoutPage() {
       return 0;
     }
 
-    return 15;
+    // Si hay un costo calculado por Andreani, usarlo; sino usar el por defecto
+    return calculatedShippingCost > 0 ? calculatedShippingCost : 15;
   };
 
   const calculateTotal = () => {
@@ -343,8 +352,8 @@ export default function CheckoutPage() {
                 ) : (
                   <span>
                     <span className="font-bold">Envío gratis</span> a partir de
-                    $100 o con cualquier suscripción. Te faltan $
-                    {(100 - calculateSubtotal()).toFixed(2)} para envío gratis.
+                    $50.000. Te faltan ${(50 - calculateSubtotal()).toFixed(2)}{" "}
+                    para envío gratis.
                   </span>
                 )}
               </AlertDescription>
@@ -596,6 +605,12 @@ export default function CheckoutPage() {
                       </Button>
                     </CardContent>
                   </Card>
+
+                  {/* Calculadora de envío */}
+                  <ShippingCostCard
+                    cartItems={cart}
+                    onShippingCalculated={handleShippingCalculated}
+                  />
                 </div>
               )}
             </div>

@@ -109,6 +109,12 @@ app.use(
 app.use("/api/payments", noCache, require("./routes/payments.js"));
 app.use("/api/orders", userGetLimiter, noCache, require("./routes/orders.js"));
 app.use(
+  "/api/shipping",
+  userGetLimiter,
+  noCache,
+  require("./routes/shipping.js")
+);
+app.use(
   "/api/contact",
   userGetLimiter,
   noCache,

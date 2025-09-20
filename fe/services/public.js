@@ -191,3 +191,32 @@ export const sendContactForm = (contactData) => {
     controller,
   };
 };
+
+// Cálculo de envío
+export const calculateShipping = (postalCode, items) => {
+  const controller = loadAbort();
+  return {
+    call: axios.post(
+      process.env.NEXT_PUBLIC_API_URL + "/shipping/calculate",
+      {
+        postalCode,
+        items,
+      },
+      {
+        signal: controller.signal,
+      }
+    ),
+    controller,
+  };
+};
+
+// Zonas de envío disponibles
+export const getShippingZones = () => {
+  const controller = loadAbort();
+  return {
+    call: axios.get(process.env.NEXT_PUBLIC_API_URL + "/shipping/zones", {
+      signal: controller.signal,
+    }),
+    controller,
+  };
+};
