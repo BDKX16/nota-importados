@@ -99,7 +99,7 @@ export default function UserAuthForm({
             id="phone"
             name="phone"
             type="tel"
-            placeholder="+54 223 634-4785"
+            placeholder="+54 11 57712816"
             value={formData.phone}
             onChange={handleChange}
             required

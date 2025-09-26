@@ -65,23 +65,30 @@ export default function AyudaPage() {
     {
       question: "¿Cuánto demora el envío?",
       answer:
-        "CABA y GBA: 24-48 horas. Interior del país: 3-7 días hábiles. Todos los envíos incluyen seguimiento.",
+        "Mar del Plata: 24-48 horas. Interior del país: 3-7 días hábiles. Todos los envíos incluyen seguimiento.",
       category: "envios",
       keywords: ["envío", "demora", "tiempo", "entrega", "días"],
     },
     {
       question: "¿A qué zonas realizan envíos?",
       answer:
-        "Realizamos envíos a toda Argentina. CABA y GBA gratis en compras +$50.000. Interior consultamos disponibilidad.",
+        "Realizamos envíos a toda Argentina. Mar del Plata gratis en compras +$50.000. Interior consultamos disponibilidad.",
       category: "envios",
-      keywords: ["zonas", "envío", "argentina", "caba", "gba", "interior"],
+      keywords: [
+        "zonas",
+        "envío",
+        "argentina",
+        "mar del plata",
+        "gba",
+        "interior",
+      ],
     },
     {
       question: "¿Cómo funciona el envío gratis?",
       answer:
-        "Envío gratuito en CABA y GBA para compras superiores a $50.000. Se aplica automáticamente en el checkout.",
+        "Envío gratuito en Mar del Plata para compras superiores a $50.000. Se aplica automáticamente en el checkout.",
       category: "envios",
-      keywords: ["envío", "gratis", "gratuito", "caba", "gba"],
+      keywords: ["envío", "gratis", "gratuito", "mar del plata"],
     },
     {
       question: "¿Puedo cambiar la dirección de envío?",
@@ -95,7 +102,7 @@ export default function AyudaPage() {
     {
       question: "¿Qué métodos de pago aceptan?",
       answer:
-        "MercadoPago, transferencias bancarias, tarjetas de crédito/débito y efectivo para entregas en CABA.",
+        "MercadoPago, transferencias bancarias, tarjetas de crédito/débito y efectivo para entregas en Mar del Plata.",
       category: "pagos",
       keywords: [
         "pago",
@@ -311,7 +318,7 @@ export default function AyudaPage() {
     },
     {
       question: "¿Cuánto demora el envío?",
-      answer: "CABA y GBA: 24-48 horas. Interior: 3-7 días hábiles.",
+      answer: "Mar del Plata: 24-48 horas. Interior: 3-7 días hábiles.",
     },
     {
       question: "¿Puedo cambiar o cancelar mi pedido?",
@@ -327,9 +334,9 @@ export default function AyudaPage() {
     {
       icon: Phone,
       title: "Teléfono",
-      description: "+54 9 11 27060002",
+      description: "+54 11 5771-2816",
       detail: "Lun-Vie 9:00-18:00",
-      action: "tel:+5491127060002",
+      action: "tel:+541157712816",
       color: "bg-blue-50 text-blue-600 border-blue-200",
     },
     {
@@ -337,7 +344,7 @@ export default function AyudaPage() {
       title: "WhatsApp",
       description: "Chat en vivo",
       detail: "Respuesta inmediata",
-      action: "https://wa.me/5491127060002",
+      action: "https://wa.me/541157712816",
       color: "bg-green-50 text-green-600 border-green-200",
     },
     {

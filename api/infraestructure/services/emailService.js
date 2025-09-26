@@ -10,7 +10,7 @@ class EmailService {
   constructor() {
     this.transporter = null;
     this.from =
-      process.env.EMAIL_FROM || "Nota Importados <noreply@notaimport.com>";
+      process.env.EMAIL_FROM || "Nota Importados <notaimportados@gmail.com>";
     this.initializeTransporter();
   }
 
@@ -309,8 +309,8 @@ class EmailService {
         
         <div class="footer">
           <p><strong>Nota Importados</strong></p>
-          <p>📍 Buenos Aires, Argentina</p>
-          <p>📞 +54 (11) 1234-5678 | ✉️ info@notaimport.com</p>
+          <p>📍 Formosa 179, Mar del Plata, Argentina</p>
+          <p>📞 +54 (11)5771-2816 | ✉️ notaimportados@gmail.com</p>
           
           <div class="social-links">
             <a href="#" target="_blank">Instagram</a>
@@ -802,7 +802,7 @@ class EmailService {
       
       <div style="text-align: center;">
         <p><strong>📞 ¿Necesitas ayuda?</strong></p>
-        <p>Contáctanos: <a href="mailto:contacto@notaimport.com" style="color: #d97706;">contacto@notaimport.com</a></p>
+        <p>Contáctanos: <a href="mailto:notaimportados@gmail.com" style="color: #d97706;">notaimportados@gmail.com</a></p>
       </div>
       
       <p>¡Esperamos que disfrutes mucho tu producto importado! 🍺<br>

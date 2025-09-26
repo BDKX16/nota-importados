@@ -2183,7 +2183,7 @@ export default function CheckoutPage() {
               <Input
                 id="modal-phone"
                 type="tel"
-                placeholder="+54 11 1234-5678"
+                placeholder="+54 11 5771-2816"
                 value={modalPhone}
                 onChange={(e) => {
                   setModalPhone(e.target.value);
