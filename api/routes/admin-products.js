@@ -75,14 +75,20 @@ router.post(
       const {
         id,
         code,
+        name,
         type,
         value,
         minPurchase,
+        maxDiscount,
         validFrom,
         validUntil,
         description,
         appliesTo,
+        targetIds,
         active,
+        isActive,
+        usageLimit,
+        userLimit,
       } = req.body;
 
       // Verificar si ya existe
@@ -100,15 +106,25 @@ router.post(
       const discount = new Discount({
         id,
         code,
+        name: name || code,
         type,
         value,
         minPurchase,
+        maxDiscount,
         validFrom,
         validUntil,
         description,
         appliesTo,
-        active: active !== undefined ? active : true,
+        targetIds: targetIds || [],
+        isActive:
+          isActive !== undefined
+            ? isActive
+            : active !== undefined
+            ? active
+            : true,
         usageCount: 0,
+        usageLimit,
+        userLimit: userLimit || 1,
       });
 
       await discount.save();
@@ -129,14 +145,20 @@ router.put(
     try {
       const {
         code,
+        name,
         type,
         value,
         minPurchase,
+        maxDiscount,
         validFrom,
         validUntil,
         description,
         appliesTo,
+        targetIds,
         active,
+        isActive,
+        usageLimit,
+        userLimit,
       } = req.body;
 
       const discount = await Discount.findOne({
@@ -163,15 +185,29 @@ router.put(
 
       // Actualizar campos
       discount.code = code || discount.code;
+      discount.name = name || discount.name || discount.code;
       discount.type = type || discount.type;
       discount.value = value !== undefined ? value : discount.value;
       discount.minPurchase =
         minPurchase !== undefined ? minPurchase : discount.minPurchase;
+      discount.maxDiscount =
+        maxDiscount !== undefined ? maxDiscount : discount.maxDiscount;
       discount.validFrom = validFrom || discount.validFrom;
       discount.validUntil = validUntil || discount.validUntil;
       discount.description = description || discount.description;
       discount.appliesTo = appliesTo || discount.appliesTo;
-      discount.active = active !== undefined ? active : discount.active;
+      discount.targetIds =
+        targetIds !== undefined ? targetIds : discount.targetIds;
+      discount.isActive =
+        isActive !== undefined
+          ? isActive
+          : active !== undefined
+          ? active
+          : discount.isActive;
+      discount.usageLimit =
+        usageLimit !== undefined ? usageLimit : discount.usageLimit;
+      discount.userLimit =
+        userLimit !== undefined ? userLimit : discount.userLimit;
 
       await discount.save();
       res

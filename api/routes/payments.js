@@ -42,6 +42,156 @@ if (!isTestEnvironment && process.env.NODE_ENV !== "production") {
 }
 
 /**
+ * HELPER FUNCTIONS
+ */
+
+// Validar y aplicar descuento durante el checkout
+async function validateAndApplyDiscount(discountCode, cartItems, userId) {
+  if (!discountCode) {
+    return { valid: false, discountAmount: 0 };
+  }
+
+  try {
+    // Buscar el descuento
+    const discount = await Discount.findOne({
+      code: discountCode.toUpperCase(),
+      isActive: true,
+    });
+
+    if (!discount) {
+      return { valid: false, error: "Código de descuento no válido" };
+    }
+
+    // Validar si el descuento está vigente
+    if (!discount.isValid()) {
+      let errorMessage = "Código de descuento expirado";
+      const now = new Date();
+
+      if (discount.validFrom > now) {
+        errorMessage = "Este descuento aún no está disponible";
+      } else if (
+        discount.usageLimit &&
+        discount.usageCount >= discount.usageLimit
+      ) {
+        errorMessage = "Este descuento ya alcanzó su límite de uso";
+      }
+
+      return { valid: false, error: errorMessage };
+    }
+
+    // Validar aplicabilidad según el tipo
+    let applicableItems = [];
+    let totalApplicableAmount = 0;
+
+    for (const item of cartItems) {
+      let canApply = false;
+
+      if (discount.appliesTo === "all") {
+        canApply = true;
+      } else if (discount.appliesTo === "product") {
+        canApply = discount.targetIds.some((id) => id.toString() === item.id);
+      } else if (discount.appliesTo === "category") {
+        // Buscar el producto para obtener su categoría
+        const product =
+          (await Product.findById(item.id)) ||
+          (await PerfumeProduct.findById(item.id));
+        if (product) {
+          canApply = discount.targetIds.some(
+            (id) => id.toString() === product.category?.toString()
+          );
+        }
+      } else if (discount.appliesTo === "brand") {
+        // Buscar el producto para obtener su marca
+        const product =
+          (await Product.findById(item.id)) ||
+          (await PerfumeProduct.findById(item.id));
+        if (product) {
+          canApply = discount.targetIds.some(
+            (id) => id.toString() === product.brand?.toString()
+          );
+        }
+      }
+
+      if (canApply) {
+        applicableItems.push(item);
+        totalApplicableAmount += item.price * item.quantity;
+      }
+    }
+
+    if (applicableItems.length === 0) {
+      return {
+        valid: false,
+        error: "Este descuento no aplica a los productos en tu carrito",
+      };
+    }
+
+    // Validar compra mínima
+    if (discount.minPurchase && totalApplicableAmount < discount.minPurchase) {
+      return {
+        valid: false,
+        error: `Compra mínima requerida: $${discount.minPurchase}`,
+      };
+    }
+
+    // Calcular descuento
+    let discountAmount = 0;
+    if (discount.type === "percentage") {
+      discountAmount = (totalApplicableAmount * discount.value) / 100;
+    } else if (discount.type === "fixed") {
+      discountAmount = discount.value;
+    }
+
+    // Aplicar límite máximo de descuento
+    if (discount.maxDiscount && discountAmount > discount.maxDiscount) {
+      discountAmount = discount.maxDiscount;
+    }
+
+    // No puede ser mayor al total aplicable
+    if (discountAmount > totalApplicableAmount) {
+      discountAmount = totalApplicableAmount;
+    }
+
+    // Incrementar contador de uso (solo en checkout exitoso)
+    // Esta parte se llamará desde el webhook de confirmación
+
+    return {
+      valid: true,
+      discount: discount,
+      discountAmount: Math.round(discountAmount * 100) / 100,
+      applicableAmount: totalApplicableAmount,
+      applicableItems: applicableItems.map((item) => item.id),
+    };
+  } catch (error) {
+    console.error("Error validando descuento:", error);
+    return {
+      valid: false,
+      error: "Error al validar el descuento",
+    };
+  }
+}
+
+// Incrementar uso del descuento (llamar cuando se confirme el pago)
+async function incrementDiscountUsage(discountCode, userId) {
+  try {
+    const discount = await Discount.findOne({
+      code: discountCode.toUpperCase(),
+      isActive: true,
+    });
+
+    if (discount) {
+      discount.usageCount += 1;
+      await discount.save();
+
+      console.log(
+        `Descuento ${discountCode} usado. Total usos: ${discount.usageCount}`
+      );
+    }
+  } catch (error) {
+    console.error("Error incrementando uso de descuento:", error);
+  }
+}
+
+/**
  * CHECKOUT API ROUTES
  */
 
@@ -120,15 +270,23 @@ router.post("/create-preference", checkAuth, async (req, res) => {
       totalAmount += shippingCost;
     }
 
-    // Aplicar descuento si existe
-    if (discountInfo && discountInfo.valid) {
-      const originalTotal = totalAmount;
+    // Validar y aplicar descuento si existe
+    let validatedDiscount = { valid: false, discountAmount: 0 };
+    if (discountInfo && discountInfo.code) {
+      validatedDiscount = await validateAndApplyDiscount(
+        discountInfo.code,
+        cartItems,
+        userId
+      );
 
-      if (discountInfo.type === "percentage") {
-        totalAmount = totalAmount * (1 - discountInfo.value / 100);
-      } else if (discountInfo.type === "fixed") {
-        totalAmount = Math.max(totalAmount - discountInfo.value, 0);
+      if (!validatedDiscount.valid) {
+        return res.status(400).json({
+          success: false,
+          message: validatedDiscount.error || "Descuento no válido",
+        });
       }
+
+      totalAmount -= validatedDiscount.discountAmount;
     }
 
     // Crear orden en la base de datos
@@ -173,12 +331,10 @@ router.post("/create-preference", checkAuth, async (req, res) => {
       paymentStatus: "pending",
       deliveryTime: shippingInfo.deliveryTime || null,
       customerSelectedTime: !!shippingInfo.deliveryTime,
-      discountCode: discountInfo?.code || null,
-      discountAmount: discountInfo
-        ? discountInfo.type === "percentage"
-          ? totalAmount * (discountInfo.value / 100)
-          : discountInfo.value
-        : 0,
+      discountCode: validatedDiscount.valid
+        ? validatedDiscount.discount.code
+        : null,
+      discountAmount: validatedDiscount.discountAmount || 0,
       shippingCost: shippingCost || 0, // Agregar campo específico para costo de envío
       trackingSteps: [
         {
@@ -398,6 +554,21 @@ router.post("/process-payment", checkAuth, async (req, res) => {
         date: new Date(),
         description: "Tu pago ha sido confirmado exitosamente",
       });
+
+      // Incrementar uso del descuento si se aplicó uno
+      if (order.discount && order.discount.code) {
+        try {
+          await incrementDiscountUsage(order.discount.code);
+          console.log(
+            `✅ Descuento ${order.discount.code} incrementado correctamente`
+          );
+        } catch (discountError) {
+          console.error(
+            `❌ Error al incrementar descuento ${order.discount.code}:`,
+            discountError
+          );
+        }
+      }
     } else if (result.status === "pending") {
       order.paymentStatus = "pending";
       order.status = "pending_payment";
@@ -682,6 +853,21 @@ router.post("/webhook", async (req, res) => {
             completed: true,
             current: true,
           });
+
+          // Incrementar uso del descuento si se aplicó uno
+          if (order.discount && order.discount.code) {
+            try {
+              await incrementDiscountUsage(order.discount.code);
+              console.log(
+                `✅ Descuento ${order.discount.code} incrementado correctamente`
+              );
+            } catch (discountError) {
+              console.error(
+                `❌ Error al incrementar descuento ${order.discount.code}:`,
+                discountError
+              );
+            }
+          }
 
           // Reducir stock de productos
           for (const item of order.items) {
@@ -990,23 +1176,24 @@ router.post("/create-cash-order", checkAuth, async (req, res) => {
       }
     }
 
-    // Aplicar descuento si existe
-    let discountAmount = 0;
+    // Validar y aplicar descuento si existe
+    let validatedDiscount = { valid: false, discountAmount: 0 };
     if (discountCode) {
-      const discount = await Discount.findOne({
-        code: discountCode,
-        isActive: true,
-        expirationDate: { $gte: new Date() },
-      });
+      validatedDiscount = await validateAndApplyDiscount(
+        discountCode,
+        cartItems,
+        req.userData._id
+      );
 
-      if (discount) {
-        if (discount.type === "percentage") {
-          discountAmount = totalAmount * (discount.value / 100);
-        } else if (discount.type === "fixed") {
-          discountAmount = Math.min(discount.value, totalAmount);
-        }
+      if (!validatedDiscount.valid) {
+        return res.status(400).json({
+          success: false,
+          message: validatedDiscount.error || "Descuento no válido",
+        });
       }
     }
+
+    const discountAmount = validatedDiscount.discountAmount || 0;
 
     // Calcular costo de envío (0 para retiro en local)
     const shippingCost = deliveryMethod === "pickup" ? 0 : 1500;
@@ -1145,5 +1332,34 @@ router.post("/create-cash-order", checkAuth, async (req, res) => {
     });
   }
 });
+
+// Endpoint de test para validar descuentos (solo desarrollo)
+if (process.env.NODE_ENV === "development") {
+  router.post("/test-discount", async (req, res) => {
+    try {
+      const { discountCode, cartItems, userId } = req.body;
+
+      console.log("🧪 Test de descuento:", { discountCode, cartItems, userId });
+
+      const result = await validateAndApplyDiscount(
+        discountCode,
+        cartItems,
+        userId
+      );
+
+      res.json({
+        success: true,
+        message: "Validación exitosa",
+        data: result,
+      });
+    } catch (error) {
+      res.json({
+        success: false,
+        message: error.message,
+        error: error.message,
+      });
+    }
+  });
+}
 
 module.exports = router;

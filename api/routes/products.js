@@ -282,4 +282,148 @@ router.get("/:slug", trackInteraction("landing", true), async (req, res) => {
   }
 });
 
+// Validar descuento
+router.post("/validate-discount", async (req, res) => {
+  try {
+    const { code, cartItems } = req.body;
+
+    if (!code) {
+      return res.status(400).json({
+        valid: false,
+        error: "Código de descuento requerido",
+      });
+    }
+
+    if (!cartItems || !Array.isArray(cartItems) || cartItems.length === 0) {
+      return res.status(400).json({
+        valid: false,
+        error: "Carrito vacío o inválido",
+      });
+    }
+
+    // Buscar el descuento
+    const discount = await Discount.findOne({
+      code: code.toUpperCase(),
+      isActive: true,
+    });
+
+    if (!discount) {
+      return res.status(404).json({
+        valid: false,
+        error: "Código de descuento no válido",
+      });
+    }
+
+    // Validar si el descuento está vigente
+    if (!discount.isValid()) {
+      let errorMessage = "Código de descuento expirado";
+      const now = new Date();
+
+      if (discount.validFrom > now) {
+        errorMessage = "Este descuento aún no está disponible";
+      } else if (
+        discount.usageLimit &&
+        discount.usageCount >= discount.usageLimit
+      ) {
+        errorMessage = "Este descuento ya alcanzó su límite de uso";
+      }
+
+      return res.status(400).json({
+        valid: false,
+        error: errorMessage,
+      });
+    }
+
+    // Validar aplicabilidad según el tipo
+    let applicableItems = [];
+    let totalApplicableAmount = 0;
+
+    for (const item of cartItems) {
+      let canApply = false;
+
+      if (discount.appliesTo === "all") {
+        canApply = true;
+      } else if (discount.appliesTo === "product") {
+        canApply = discount.targetIds.some((id) => id.toString() === item.id);
+      } else if (discount.appliesTo === "category") {
+        // Buscar el producto para obtener su categoría
+        const product = await Product.findById(item.id);
+        if (product) {
+          canApply = discount.targetIds.some(
+            (id) => id.toString() === product.category.toString()
+          );
+        }
+      } else if (discount.appliesTo === "brand") {
+        // Buscar el producto para obtener su marca
+        const product = await Product.findById(item.id);
+        if (product) {
+          canApply = discount.targetIds.some(
+            (id) => id.toString() === product.brand.toString()
+          );
+        }
+      }
+
+      if (canApply) {
+        applicableItems.push(item);
+        totalApplicableAmount += item.price * item.quantity;
+      }
+    }
+
+    if (applicableItems.length === 0) {
+      return res.status(400).json({
+        valid: false,
+        error: "Este descuento no aplica a los productos en tu carrito",
+      });
+    }
+
+    // Validar compra mínima
+    if (discount.minPurchase && totalApplicableAmount < discount.minPurchase) {
+      return res.status(400).json({
+        valid: false,
+        error: `Compra mínima requerida: $${discount.minPurchase}`,
+      });
+    }
+
+    // Calcular descuento
+    let discountAmount = 0;
+    if (discount.type === "percentage") {
+      discountAmount = (totalApplicableAmount * discount.value) / 100;
+    } else if (discount.type === "fixed") {
+      discountAmount = discount.value;
+    }
+
+    // Aplicar límite máximo de descuento
+    if (discount.maxDiscount && discountAmount > discount.maxDiscount) {
+      discountAmount = discount.maxDiscount;
+    }
+
+    // No puede ser mayor al total aplicable
+    if (discountAmount > totalApplicableAmount) {
+      discountAmount = totalApplicableAmount;
+    }
+
+    res.status(200).json({
+      valid: true,
+      discount: {
+        id: discount.id,
+        code: discount.code,
+        name: discount.name,
+        description: discount.description,
+        type: discount.type,
+        value: discount.value,
+        appliesTo: discount.appliesTo,
+        discountAmount: Math.round(discountAmount * 100) / 100,
+        applicableAmount: totalApplicableAmount,
+        applicableItems: applicableItems.map((item) => item.id),
+      },
+    });
+  } catch (error) {
+    console.error("Error al validar descuento:", error);
+    res.status(500).json({
+      valid: false,
+      error: "Error al validar el descuento",
+    });
+  }
+});
+
 module.exports = router;

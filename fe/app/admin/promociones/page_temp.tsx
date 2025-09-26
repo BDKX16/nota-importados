@@ -81,10 +81,10 @@ export default function PromocionesPage() {
     value: 10,
     appliesTo: "all",
     description: "",
-    validFrom: new Date().toISOString().split("T")[0],
-    validUntil: new Date(new Date().setMonth(new Date().getMonth() + 3))
-      .toISOString()
-      .split("T")[0],
+    validFrom: new Date().toISOString().split('T')[0],
+    validUntil: new Date(
+      new Date().setMonth(new Date().getMonth() + 3)
+    ).toISOString().split('T')[0],
     active: true,
     targetIds: [],
     usageLimit: undefined,
@@ -253,11 +253,7 @@ export default function PromocionesPage() {
         validFrom: newDiscount.validFrom || "",
         validUntil: newDiscount.validUntil || "",
         description: newDiscount.description || "",
-        appliesTo: newDiscount.appliesTo as
-          | "all"
-          | "product"
-          | "category"
-          | "brand",
+        appliesTo: newDiscount.appliesTo as "all" | "product" | "category" | "brand",
         targetIds: newDiscount.targetIds || [],
         active: newDiscount.active || false,
         isActive: newDiscount.active || false,
@@ -278,10 +274,10 @@ export default function PromocionesPage() {
           value: 10,
           appliesTo: "all",
           description: "",
-          validFrom: new Date().toISOString().split("T")[0],
-          validUntil: new Date(new Date().setMonth(new Date().getMonth() + 3))
-            .toISOString()
-            .split("T")[0],
+          validFrom: new Date().toISOString().split('T')[0],
+          validUntil: new Date(
+            new Date().setMonth(new Date().getMonth() + 3)
+          ).toISOString().split('T')[0],
           active: true,
           targetIds: [],
           usageLimit: undefined,
@@ -450,7 +446,6 @@ export default function PromocionesPage() {
                     <Label htmlFor="new-valid-from">Válido desde</Label>
                     <Input
                       id="new-valid-from"
-                      type="date"
                       value={newDiscount.validFrom}
                       onChange={(e) =>
                         setNewDiscount({
@@ -458,13 +453,13 @@ export default function PromocionesPage() {
                           validFrom: e.target.value,
                         })
                       }
+                      placeholder="Ej: 01 Jan, 2025"
                     />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="new-valid-until">Válido hasta</Label>
                     <Input
                       id="new-valid-until"
-                      type="date"
                       value={newDiscount.validUntil}
                       onChange={(e) =>
                         setNewDiscount({
@@ -472,6 +467,7 @@ export default function PromocionesPage() {
                           validUntil: e.target.value,
                         })
                       }
+                      placeholder="Ej: 31 Dec, 2025"
                     />
                   </div>
                 </div>
@@ -484,11 +480,7 @@ export default function PromocionesPage() {
                       onValueChange={(value) =>
                         setNewDiscount({
                           ...newDiscount,
-                          appliesTo: value as
-                            | "all"
-                            | "product"
-                            | "category"
-                            | "brand",
+                          appliesTo: value as "all" | "product" | "category" | "brand",
                         })
                       }
                     >
@@ -497,9 +489,7 @@ export default function PromocionesPage() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">Todos los productos</SelectItem>
-                        <SelectItem value="product">
-                          Productos específicos
-                        </SelectItem>
+                        <SelectItem value="product">Productos específicos</SelectItem>
                         <SelectItem value="category">Por categoría</SelectItem>
                         <SelectItem value="brand">Por marca</SelectItem>
                       </SelectContent>
@@ -524,61 +514,6 @@ export default function PromocionesPage() {
                       placeholder="Sin límite"
                     />
                   </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="new-name">Nombre del descuento</Label>
-                    <Input
-                      id="new-name"
-                      value={newDiscount.name || ""}
-                      onChange={(e) =>
-                        setNewDiscount({
-                          ...newDiscount,
-                          name: e.target.value,
-                        })
-                      }
-                      placeholder="Nombre descriptivo"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="new-max-discount">
-                      Descuento máximo (opcional)
-                    </Label>
-                    <Input
-                      id="new-max-discount"
-                      type="number"
-                      step="0.01"
-                      value={newDiscount.maxDiscount || ""}
-                      onChange={(e) =>
-                        setNewDiscount({
-                          ...newDiscount,
-                          maxDiscount: e.target.value
-                            ? Number(e.target.value)
-                            : undefined,
-                        })
-                      }
-                      placeholder="Sin límite máximo"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="new-user-limit">
-                    Usos por usuario (por defecto: 1)
-                  </Label>
-                  <Input
-                    id="new-user-limit"
-                    type="number"
-                    value={newDiscount.userLimit || 1}
-                    onChange={(e) =>
-                      setNewDiscount({
-                        ...newDiscount,
-                        userLimit: e.target.value ? Number(e.target.value) : 1,
-                      })
-                    }
-                    placeholder="1"
-                  />
                 </div>
 
                 <div className="flex items-center space-x-2 pt-2">
@@ -707,8 +642,8 @@ export default function PromocionesPage() {
                               {discount.appliesTo === "all"
                                 ? "Todos los productos"
                                 : discount.appliesTo === "product"
-                                ? "Productos espec�ficos"
-                                : "Por categor�a"}
+                                ? "Solo cervezas"
+                                : "Solo suscripciones"}
                             </div>
                           </div>
                         </TableCell>
@@ -880,7 +815,6 @@ export default function PromocionesPage() {
                                         </Label>
                                         <Input
                                           id="edit-valid-from"
-                                          type="date"
                                           value={editingDiscount.validFrom}
                                           onChange={(e) =>
                                             setEditingDiscount({
@@ -896,7 +830,6 @@ export default function PromocionesPage() {
                                         </Label>
                                         <Input
                                           id="edit-valid-until"
-                                          type="date"
                                           value={editingDiscount.validUntil}
                                           onChange={(e) =>
                                             setEditingDiscount({
@@ -934,10 +867,10 @@ export default function PromocionesPage() {
                                               Todos los productos
                                             </SelectItem>
                                             <SelectItem value="product">
-                                              Productos espec�ficos
+                                              Solo cervezas
                                             </SelectItem>
-                                            <SelectItem value="category">
-                                              Por categor�a
+                                            <SelectItem value="subscription">
+                                              Solo suscripciones
                                             </SelectItem>
                                           </SelectContent>
                                         </Select>
@@ -1098,8 +1031,8 @@ export default function PromocionesPage() {
                               {discount.appliesTo === "all"
                                 ? "Todos los productos"
                                 : discount.appliesTo === "product"
-                                ? "Productos espec�ficos"
-                                : "Por categor�a"}
+                                ? "Solo cervezas"
+                                : "Solo suscripciones"}
                             </div>
                           </div>
                         </TableCell>

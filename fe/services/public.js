@@ -53,7 +53,7 @@ export const validateDiscount = (code, cartItems) => {
   const controller = loadAbort();
   return {
     call: axios.post(
-      process.env.NEXT_PUBLIC_API_URL + "/validate-discount",
+      process.env.NEXT_PUBLIC_API_URL + "/products/validate-discount",
       { code, cartItems },
       { signal: controller.signal }
     ),
