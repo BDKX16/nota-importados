@@ -790,7 +790,7 @@ export default function CheckoutPage() {
                 id="phone"
                 value={modalPhone}
                 onChange={(e) => setModalPhone(e.target.value)}
-                placeholder="Ej: +54 11 1234-5678"
+                placeholder="Ej: +54 11 5771-2816"
               />
               {modalErrors.phone && (
                 <p className="text-sm text-red-600 mt-1">{modalErrors.phone}</p>

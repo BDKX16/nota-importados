@@ -35,13 +35,13 @@ const faqs: FAQ[] = [
   {
     question: "¿A qué zonas realizan envíos?",
     answer:
-      "Realizamos envíos a toda Argentina. Para CABA y GBA los envíos son gratuitos en compras superiores a $50.000. Para el interior del país, consultamos disponibilidad y tarifas según la ubicación.",
+      "Realizamos envíos a toda Argentina. Para Mar del Plata los envíos son gratuitos en compras superiores a $50.000. Para el interior del país, consultamos disponibilidad y tarifas según la ubicación.",
     category: "envios",
   },
   {
     question: "¿Cuánto demora el envío?",
     answer:
-      "En CABA y GBA: 24-48 horas. Interior del país: 3-7 días hábiles según la ubicación. Todos los envíos incluyen número de seguimiento.",
+      "En Mar del Plata: 24-48 horas. Interior del país: 3-7 días hábiles según la ubicación. Todos los envíos incluyen número de seguimiento.",
     category: "envios",
   },
   {
@@ -55,7 +55,7 @@ const faqs: FAQ[] = [
   {
     question: "¿Qué métodos de pago aceptan?",
     answer:
-      "Aceptamos MercadoPago, transferencias bancarias, tarjetas de crédito y débito. También aceptamos pagos en efectivo para entregas en CABA.",
+      "Aceptamos MercadoPago, transferencias bancarias, tarjetas de crédito y débito. También aceptamos pagos en efectivo para entregas en Mar del Plata.",
     category: "pagos",
   },
   {

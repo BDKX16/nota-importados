@@ -425,8 +425,8 @@ export default function DeliveryTimePage() {
 
               <p className="text-sm text-muted-foreground mt-6">
                 Te enviaremos un email de confirmación con estos detalles. Si
-                necesitas hacer algún cambio, por favor contáctanos al +54 223
-                634-4785.
+                necesitas hacer algún cambio, por favor contáctanos al +54 11
+                57712816.
               </p>
 
               <Button
@@ -568,8 +568,8 @@ export default function DeliveryTimePage() {
                   <AlertDescription className="text-red-700">
                     No se puede cambiar el horario de entrega porque faltan
                     menos de 1 hora para la entrega programada. Si necesitas
-                    hacer algún cambio urgente, por favor contáctanos al +54 223
-                    555-1234.
+                    hacer algún cambio urgente, por favor contáctanos al +54 11
+                    57712816.
                   </AlertDescription>
                 </Alert>
               )}

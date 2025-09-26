@@ -240,8 +240,8 @@ function createUserConfirmationTemplate(data) {
         <div style="background: #e3f2fd; padding: 20px; border-radius: 8px; margin: 25px 0; border: 1px solid #bbdefb;">
           <h3 style="margin: 0 0 15px; color: #1976d2; font-size: 16px;">Mientras tanto, también puedes:</h3>
           <ul style="margin: 0; padding-left: 20px; color: #666;">
-            <li style="margin-bottom: 8px;">Contactarnos por WhatsApp: <a href="https://wa.me/5491127060002" style="color: #25D366; text-decoration: none;">+54 9 11 27060002</a></li>
-            <li style="margin-bottom: 8px;">Llamarnos directamente: <a href="tel:+5491127060002" style="color: #667eea; text-decoration: none;">+54 9 11 27060002</a></li>
+            <li style="margin-bottom: 8px;">Contactarnos por WhatsApp: <a href="https://wa.me/541157712816" style="color: #25D366; text-decoration: none;">+54 11 5771-2816</a></li>
+            <li style="margin-bottom: 8px;">Llamarnos directamente: <a href="tel:+541157712816" style="color: #667eea; text-decoration: none;">+54 11 5771-2816</a></li>
             <li style="margin-bottom: 8px;">Explorar nuestros productos en el sitio web</li>
           </ul>
         </div>

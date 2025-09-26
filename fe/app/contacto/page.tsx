@@ -73,13 +73,13 @@ export default function ContactPage() {
     {
       icon: MapPin,
       title: "Ubicación",
-      info: "Buenos Aires, Argentina",
-      detail: "CABA y Gran Buenos Aires",
+      info: "Formosa 179, Mar del Plata, Argentina",
+      detail: "Buenos Aires",
     },
     {
       icon: Phone,
       title: "Teléfono",
-      info: "+54 9 11 27060002",
+      info: "+54 11 5771-2816",
       detail: "Lunes a Viernes 9:00 - 18:00",
     },
     {
@@ -289,7 +289,7 @@ export default function ContactPage() {
                       value={formData.phone}
                       onChange={handleInputChange}
                       className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                      placeholder="+54 9 11 27060002"
+                      placeholder="+54 11 5771-2816"
                     />
                   </div>
 
