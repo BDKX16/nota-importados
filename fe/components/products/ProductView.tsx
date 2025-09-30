@@ -265,9 +265,9 @@ export default function ProductView({ product }: ProductViewProps) {
             {/* Información adicional */}
             <div className="bg-gray-50 p-4 rounded-lg space-y-3">
               <div className="flex items-center gap-3">
-                <Truck className="h-5 w-5 text-green-600" />
+                <Truck className="h-5 w-5 text-blue-600" />
                 <span className="text-sm">
-                  Envío gratis en pedidos superiores a $15.000
+                  Envío se cotiza una vez recibido el pedido
                 </span>
               </div>
               <div className="flex items-center gap-3">

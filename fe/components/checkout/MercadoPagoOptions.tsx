@@ -82,18 +82,11 @@ export default function MercadoPagoOptions({
     };
   }, [cardFormInstance]);
 
-  // Función para calcular el costo de envío
+  // Función para calcular el costo de envío (se cotiza posterior al pedido)
   const calculateShippingCost = () => {
-    const subtotal = calculateSubtotal();
-    const hasSubscription = cart.some((item) => item.type === "subscription");
-
-    // Envío gratis para suscripciones o compras mayores a $100
-    if (hasSubscription || subtotal >= 100) {
-      return 0;
-    }
-
-    // Costo base de envío
-    return 15; // $15 de envío si es menos de $100 y no hay suscripción
+    // El envío se cotiza una vez recibido el pedido
+    // No se cobra por adelantado
+    return 0;
   };
 
   // Preparar datos para la preferencia

@@ -84,11 +84,11 @@ export default function AyudaPage() {
       ],
     },
     {
-      question: "¿Cómo funciona el envío gratis?",
+      question: "¿Cómo funciona el envío?",
       answer:
-        "Envío gratuito en Mar del Plata para compras superiores a $50.000. Se aplica automáticamente en el checkout.",
+        "Te cotizamos el envío una vez recibido el pedido. NO hace falta pagar por adelantado. Nos pondremos en contacto contigo para coordinar la entrega.",
       category: "envios",
-      keywords: ["envío", "gratis", "gratuito", "mar del plata"],
+      keywords: ["envío", "cotización", "entrega", "coordinación"],
     },
     {
       question: "¿Puedo cambiar la dirección de envío?",

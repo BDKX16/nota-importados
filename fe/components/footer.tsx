@@ -220,7 +220,7 @@ export function Footer() {
                     100% Auténtico
                   </div>
                   <div className="bg-primary/10 text-primary px-2 py-1 rounded text-xs font-medium">
-                    Envío Gratis
+                    Envío a todo el país
                   </div>
                 </div>
               </div>

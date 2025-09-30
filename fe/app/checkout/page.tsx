@@ -168,14 +168,9 @@ export default function CheckoutPage() {
   };
 
   const calculateShippingCost = () => {
-    const subtotal = calculateSubtotal();
-    const hasSubscription = cart.some((item) => item.type === "subscription");
-
-    if (hasSubscription || subtotal >= 100) {
-      return 0;
-    }
-
-    return 15;
+    // El envío se cotiza una vez recibido el pedido
+    // No se cobra por adelantado
+    return 0;
   };
 
   const calculateTotal = () => {
@@ -312,41 +307,13 @@ export default function CheckoutPage() {
 
           {/* Información de envío */}
           <div className="mb-6">
-            <Alert
-              className={`${
-                calculateShippingCost() === 0
-                  ? "bg-green-50 border-green-200"
-                  : "bg-amber-50 border-amber-200"
-              }`}
-            >
-              <Truck
-                className={`h-4 w-4 ${
-                  calculateShippingCost() === 0
-                    ? "text-green-600"
-                    : "text-amber-600"
-                }`}
-              />
-              <AlertDescription
-                className={
-                  calculateShippingCost() === 0
-                    ? "text-green-800"
-                    : "text-amber-800"
-                }
-              >
-                {calculateShippingCost() === 0 ? (
-                  <span>
-                    <span className="font-bold">¡Envío GRATIS!</span>
-                    {cart.some((item) => item.type === "subscription")
-                      ? " Tienes una suscripción en tu carrito."
-                      : ` Tu compra supera los $100.`}
-                  </span>
-                ) : (
-                  <span>
-                    <span className="font-bold">Envío gratis</span> a partir de
-                    $100 o con cualquier suscripción. Te faltan $
-                    {(100 - calculateSubtotal()).toFixed(2)} para envío gratis.
-                  </span>
-                )}
+            <Alert className="bg-blue-50 border-blue-200">
+              <Truck className="h-4 w-4 text-blue-600" />
+              <AlertDescription className="text-blue-800">
+                <span className="font-bold">
+                  Te cotizamos el envío una vez recibido el pedido, NO hace
+                  falta pagar por adelantado.
+                </span>
               </AlertDescription>
             </Alert>
           </div>
@@ -527,10 +494,8 @@ export default function CheckoutPage() {
 
                         <div className="flex justify-between">
                           <span>Envío</span>
-                          <span>
-                            {calculateShippingCost() === 0
-                              ? "Gratis"
-                              : `$${calculateShippingCost().toFixed(2)}`}
+                          <span className="text-sm text-muted-foreground">
+                            Se cotiza posterior
                           </span>
                         </div>
 
@@ -691,10 +656,8 @@ export default function CheckoutPage() {
                         )}
                         <div className="flex justify-between">
                           <span>Envío</span>
-                          <span>
-                            {calculateShippingCost() === 0
-                              ? "Gratis"
-                              : `$${calculateShippingCost().toFixed(2)}`}
+                          <span className="text-sm text-muted-foreground">
+                            Se cotiza posterior
                           </span>
                         </div>
                         <Separator />

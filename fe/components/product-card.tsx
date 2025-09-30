@@ -124,15 +124,13 @@ export const ProductCard = memo(function ProductCard({
               ${product.price}
             </div>
 
-            {/* Envío gratis - condicional */}
-            {product.price >= 50 && (
-              <Badge
-                variant="secondary"
-                className="text-xs w-fit bg-green-100 text-green-700"
-              >
-                Envío Gratis
-              </Badge>
-            )}
+            {/* Información de envío */}
+            <Badge
+              variant="secondary"
+              className="text-xs w-fit bg-blue-100 text-blue-700"
+            >
+              Envío se cotiza posterior a la compra
+            </Badge>
 
             {/* Botón agregar */}
             <Button
