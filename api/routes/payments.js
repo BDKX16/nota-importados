@@ -422,7 +422,7 @@ router.post("/create-preference", checkAuth, async (req, res) => {
 
     const initialPayment = new Payments({
       userId,
-      orderId: orderId,
+      orderId: newOrder._id.toString(),
       amount: totalAmount,
       currency: "ARS",
       paymentMethod: "mercadopago",
@@ -798,11 +798,7 @@ router.post("/webhook", async (req, res) => {
       return res.status(400).send();
     }
 
-    const finalOrderIdVisual = paymentInfo.external_reference;
-
-    const findOrder = await Order.findOne({ id: finalOrderIdVisual });
-
-    const finalOrderId = findOrder._id;
+    const finalOrderId = paymentInfo.external_reference;
     // Buscar registro de pago existente
     const existingPayment = await Payments.findOne({ orderId: finalOrderId });
     if (!existingPayment) {
