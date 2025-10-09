@@ -798,7 +798,11 @@ router.post("/webhook", async (req, res) => {
       return res.status(400).send();
     }
 
-    const finalOrderId = paymentInfo.external_reference;
+    const finalOrderIdVisual = paymentInfo.external_reference;
+
+    const findOrder = await Order.findOne({ id: finalOrderIdVisual });
+
+    const finalOrderId = findOrder._id;
     // Buscar registro de pago existente
     const existingPayment = await Payments.findOne({ orderId: finalOrderId });
     if (!existingPayment) {
